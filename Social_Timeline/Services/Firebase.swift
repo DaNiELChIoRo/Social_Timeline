@@ -8,11 +8,24 @@
 
 import Firebase
 
+protocol FirebaseUserCreated {
+    func onUserCreated(user:Usuario)
+}
+
 class FirebaseService {
     
     var userDelegate: userDelegate!
+    var firebaseUserCreatedDelegate: FirebaseUserCreated!
     
     let Auth = Firebase.Auth.self
+    
+    init() {
+        
+    }
+    
+    init(delegateFirebaseUser: FirebaseUserCreated){
+        self.firebaseUserCreatedDelegate = delegateFirebaseUser
+    }
     
     func getUser() -> Usuario? {
         var usuario = Usuario()
@@ -27,24 +40,16 @@ class FirebaseService {
         }
     }
     
-    func registerUser(email: String, password:String, callback: @escaping (_ error:String) -> Void) -> Bool {
-        var response:Bool = false
-        var usuario = Usuario()
+    func registerUser(email: String, password:String, callback: @escaping (_ error:String) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
-            if let error = error {
-                let errorMessage = error.localizedDescription
-                response = false
+            guard let user = result?.user else {
+                let errorMessage = error!.localizedDescription
                 callback(errorMessage)
-            } else {
-                if let result = result {
-                    let user = result.user
-                    usuario.email = user.email
-                    usuario.uid = user.uid
-                    response = true
-                }
+                return
             }
+            var usuario = Usuario(uid: user.uid, username: user.email, email: user.email)
+            self.firebaseUserCreatedDelegate.onUserCreated(user: usuario)
         }
-         return response
     }
     
     func signIn(email:String, password:String, callback: @escaping (_ error:String) -> Void) -> Bool {
