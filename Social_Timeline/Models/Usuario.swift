@@ -25,4 +25,9 @@ struct Usuario {
         self.email = email
     }
     
+    init(uid: String?, username: String?){
+        self.uid = uid
+        self.username = username
+    }
+    
 }

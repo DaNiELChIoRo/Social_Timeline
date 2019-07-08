@@ -10,6 +10,7 @@ import Firebase
 
 protocol FirebaseUserCreated {
     func onUserCreated(user:Usuario)
+    func onUserLogged(user:Usuario)
 }
 
 class FirebaseService {
@@ -19,9 +20,7 @@ class FirebaseService {
     
     let Auth = Firebase.Auth.self
     
-    init() {
-        
-    }
+    init() { }
     
     init(delegateFirebaseUser: FirebaseUserCreated){
         self.firebaseUserCreatedDelegate = delegateFirebaseUser
@@ -40,29 +39,30 @@ class FirebaseService {
         }
     }
     
-    func registerUser(email: String, password:String, callback: @escaping (_ error:String) -> Void) {
+    func registerUser(username: String, email: String, password:String, callback: @escaping (_ error:String) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
             guard let user = result?.user else {
                 let errorMessage = error!.localizedDescription
                 callback(errorMessage)
                 return
             }
-            var usuario = Usuario(uid: user.uid, username: user.email, email: user.email)
+            let usuario = Usuario(uid: user.uid, username: username, email: user.email)
             self.firebaseUserCreatedDelegate.onUserCreated(user: usuario)
         }
     }
     
-    func signIn(email:String, password:String, callback: @escaping (_ error:String) -> Void) -> Bool {
-        var response = false
+    func signIn(email:String, password:String, callback: @escaping (_ error:String) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
-            if let error = error {
-                print("Somethign went wrong while singin with the user, error: \(error)")
-                callback(error.localizedDescription)
-            } else {
-                response = true
+            guard let user = result?.user else {
+                if let error = error {
+                    print("Somethign went wrong while singin with the user, error: \(error)")
+                    callback(error.localizedDescription)
+                }
+                return
             }
+            let usuario = Usuario(uid: user.uid, username: user.email)
+            self.firebaseUserCreatedDelegate.onUserLogged(user: usuario)
         }
-        return response
     }
     
     func signOut(handler: () -> Void) {

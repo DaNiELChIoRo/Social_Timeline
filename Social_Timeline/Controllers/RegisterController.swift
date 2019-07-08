@@ -56,17 +56,19 @@ class RegisterController: UIViewController {
     @objc func registerButtonHandler() {
         print("registerButton has been pressed!")
         let fireBase = FirebaseService(delegateFirebaseUser: self)
-        fireBase.registerUser(email: emailInput!.text!, password: passwordInput!.text!, callback: callback)
+        fireBase.registerUser(username: userNameInput!.text!, email: emailInput!.text!, password: passwordInput!.text!, callback: callback)
 
     }
     
 }
 
 extension RegisterController: FirebaseUserCreated {
+    func onUserLogged(user: Usuario) { }
+    
     func onUserCreated(user: Usuario) {
         RealtimeDatabase().writeUser(user: user)
         
         let viewController = ViewController()
-        present(viewController, animated: true)
+        present(viewController, animated: true)
     }
 }

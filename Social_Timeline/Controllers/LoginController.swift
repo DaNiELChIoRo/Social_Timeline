@@ -16,6 +16,8 @@ class LoginController: UIViewController, UITextViewDelegate {
     var loginButton: UIButton? = UIButton().createDefaultButton("Login", .red, 12, #selector(loginButtonHandler))
     var registerButton: UIButton? = UIButton().createDefaultButton("Sing Up!", .blue, 12, #selector(registerButtonHandler))
     
+    var firebase:FirebaseService!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -45,6 +47,10 @@ class LoginController: UIViewController, UITextViewDelegate {
         navigationController?.navigationBar.barTintColor = .white
     }
     
+    func setupSubscriptions() {
+        firebase = FirebaseService(delegateFirebaseUser: self)
+    }
+    
     func onError(_ error: String) {
         let Alert = UIAlertController(title: "Error al ingresar", message: "A ocurrido un error al intentar ingresar con tu ususario, \nError: \(error)", preferredStyle: .alert)
         let AlertAction = UIAlertAction(title: "Aceptar", style: .destructive) { (action) in
@@ -56,11 +62,7 @@ class LoginController: UIViewController, UITextViewDelegate {
     
     @objc func loginButtonHandler() {
         print("the login button have been pressed!")
-        let response = FirebaseService().signIn(email: emailInput!.text!, password: passwordInput!.text!, callback: onError)
-        if(response){
-            let viewController = ViewController()
-            present(viewController, animated: true)            
-        }
+        firebase.signIn(email: emailInput!.text!, password: passwordInput!.text!, callback: onError)
     }
     
     @objc func registerButtonHandler() {
@@ -74,4 +76,14 @@ class LoginController: UIViewController, UITextViewDelegate {
         return false
     }
     
+}
+
+extension LoginController: FirebaseUserCreated {
+    func onUserCreated(user: Usuario) { }
+    
+    func onUserLogged(user: Usuario) {
+        let viewController = ViewController()
+        present(viewController, animated: true)
+    }
+
 }
