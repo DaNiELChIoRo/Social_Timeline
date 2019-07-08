@@ -27,31 +27,37 @@ class FirebaseService {
         }
     }
     
-    func createUser(email: String, password:String) -> Usuario? {
+    func registerUser(email: String, password:String, callback: @escaping (_ error:String) -> Void) -> Bool {
+        var response:Bool = false
         var usuario = Usuario()
         Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
             if let error = error {
-                print("Something went wrong while creating the new usuer, error: \(error)")
-                return
+                let errorMessage = error.localizedDescription
+                response = false
+                callback(errorMessage)
             } else {
                 if let result = result {
                     let user = result.user
                     usuario.email = user.email
                     usuario.uid = user.uid
-                   
+                    response = true
                 }
             }
         }
-         return usuario
+         return response
     }
     
-    func signIn(email:String, password:String) {
+    func signIn(email:String, password:String, callback: @escaping (_ error:String) -> Void) -> Bool {
+        var response = false
         Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
             if let error = error {
                 print("Somethign went wrong while singin with the user, error: \(error)")
-                return
+                callback(error.localizedDescription)
+            } else {
+                response = true
             }
         }
+        return response
     }
     
     func signOut(handler: () -> Void) {

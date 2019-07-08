@@ -10,10 +10,10 @@ import UIKit
 
 extension UIView {
 
-    func autoAnchorsToTop(view: UIView, topMargin:CGFloat, horizontalPadding:CGFloat, heightPercentage: CGFloat) {
+    func autoAnchorsToTop(view: UIView, topMargin:CGFloat, horizontalPadding:CGFloat?, heightPercentage: CGFloat) {
         NSLayoutConstraint.activate([
             view.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: topMargin),
-            view.widthAnchor.constraint(equalTo: self.widthAnchor, constant: (horizontalPadding * -2)),
+            view.widthAnchor.constraint(equalTo: self.widthAnchor, constant: (horizontalPadding ?? 0 * -2 )),
             view.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor),
             view.heightAnchor.constraint(equalToConstant: (self.frame.height * heightPercentage ))
         ])
@@ -21,7 +21,7 @@ extension UIView {
     
     func autoAnchorsToBottom(bottomMargin:CGFloat, horizontalPadding:CGFloat, heightPercentage: CGFloat) {
         NSLayoutConstraint.activate([
-            self.bottomAnchor.constraint(equalTo: (self.superview?.safeAreaLayoutGuide.bottomAnchor)!, constant: bottomMargin),
+            self.bottomAnchor.constraint(equalTo: (self.superview?.safeAreaLayoutGuide.bottomAnchor)!, constant: -bottomMargin),
             self.widthAnchor.constraint(equalTo: self.superview!.widthAnchor, constant: (horizontalPadding * -2)),
             self.centerXAnchor.constraint(equalTo: (self.superview?.safeAreaLayoutGuide.centerXAnchor)!),
             self.heightAnchor.constraint(equalToConstant: (((self.superview?.frame.height)!) * heightPercentage ))
@@ -48,7 +48,7 @@ extension UIView {
     
     func autoAnchorsXCenter(bottomView: UIView, bottomMargin:CGFloat, horizontalPadding:CGFloat?, heightPercentage: CGFloat, widthPercentage:CGFloat) {
         NSLayoutConstraint.activate([
-            self.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: bottomMargin),
+            self.bottomAnchor.constraint(equalTo: bottomView.topAnchor, constant: -bottomMargin),
             self.centerXAnchor.constraint(equalTo: (self.superview?.safeAreaLayoutGuide.centerXAnchor)!, constant: horizontalPadding ?? 0),
             self.widthAnchor.constraint(equalToConstant: ((self.superview?.frame.width)! * widthPercentage)),
             self.heightAnchor.constraint(equalToConstant: ((self.superview?.frame.height)! * heightPercentage ))

@@ -43,10 +43,25 @@ class RegisterController: UIViewController {
         
     }
     
+    func callback (_ error: String) { print("trantando de leer el error: \(error)")
+        let Alert = UIAlertController(title: "Error al registar usuario", message: "A ocurrido un error al intentar registrar el ususario, \nError: \(error)", preferredStyle: .alert)
+        let AlertAction = UIAlertAction(title: "Aceptar", style: .destructive) { (action) in
+            Alert.dismiss(animated: true, completion: nil)
+        }
+        Alert.addAction(AlertAction)
+        self.present(Alert, animated: true, completion: nil)
+    }
+    
+    
     @objc func registerButtonHandler() {
         print("registerButton has been pressed!")
-        let viewController = ViewController()
-        present(viewController, animated: true)
+        
+        let response = FirebaseService().registerUser(email: emailInput!.text!, password: passwordInput!.text!, callback: callback)
+            
+        if (response){
+            let viewController = ViewController()
+            present(viewController, animated: true)
+        }
     }
     
 }

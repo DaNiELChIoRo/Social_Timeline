@@ -14,7 +14,7 @@ class ProfileController: UIViewController {
     var userEmail:UILabel? = UILabel().createDefaultLabel("user email", 24, .bold, .black, .center)
     var logOutButton: UIButton? = UIButton().createDefaultButton("LogOut", .red, 12, #selector(logOutHandler))
     var ressetPassButton: UIButton? = UIButton().createDefaultButton("Reset Password", .red, 12, #selector(logOutHandler))
-    var userImage: UIImageView? = UIImageView().defaultImageViewCreator(((UIImage(named: "avatar")?.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)))!))
+    var userImageThumbnailView:UIView? = ThumbnailImageView(image: UIImage(named: "avatar")!)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,35 +28,40 @@ class ProfileController: UIViewController {
     func setupView() {
         view.backgroundColor = .white
         
-        print("total height: \(height)")
-        print("total width: \(width)")
-        view.addSubview(userImage!)
-        userImage?.layer.cornerRadius = 75
-        userImage?.backgroundColor = .gray
-        view.autoAnchorsToTop(view: userImage!, topMargin: 50, horizontalPadding: 150, heightPercentage: 0.08)
-        
+        view.addSubview(userImageThumbnailView!)
+        userImageThumbnailView?.backgroundColor = .gray
+        userImageThumbnailView?.translatesAutoresizingMaskIntoConstraints = false
+        view.autoAnchorsToTop(view: userImageThumbnailView!, topMargin: 50, horizontalPadding: nil, heightPercentage: 0.18)
         
         view.addSubview(userName!)
         userName?.backgroundColor = .red
-        userName?.autoAnchorsXCenter(topView: userImage!, topMargin: 12, horizontalPadding: nil, heightPercentage: 0.05, widthPercentage: 0.5)
+        userName?.autoAnchorsXCenter(topView: userImageThumbnailView!, topMargin: 12, horizontalPadding: nil, heightPercentage: 0.05, widthPercentage: 0.5)
         
         
         view.addSubview(userEmail!)
         userEmail?.backgroundColor = .green
         userEmail?.autoAnchorsXCenter(topView: userName!, topMargin: 5, horizontalPadding: nil, heightPercentage: 0.05, widthPercentage: 0.4)
         
-
-//        view.addSubview(ressetPassButton!)
-//        ressetPassButton?.autoAnchorsXCenter(bottomView: logOutButton!, bottomMargin: 15, horizontalPadding: nil, heightPercentage: 0.065, widthPercentage: 0.4)
-        
         view.addSubview(logOutButton!)
-        logOutButton!.autoAnchorsToBottom(bottomMargin: 0, horizontalPadding: 50, heightPercentage: 0.065)
+        logOutButton!.autoAnchorsToBottom(bottomMargin: 30, horizontalPadding: 50, heightPercentage: 0.065)
+        
+        view.addSubview(ressetPassButton!)
+        ressetPassButton?.autoAnchorsXCenter(bottomView: logOutButton!, bottomMargin: 12, horizontalPadding: nil, heightPercentage: 0.065, widthPercentage: 0.4)
+        
+    }
+    
+    override func viewDidLayoutSubviews() {
+        userImageThumbnailView!.clipsToBounds = true
+        print(self.userImageThumbnailView!.frame.size)
+        let height = self.userImageThumbnailView!.frame.size.height
+        self.userImageThumbnailView!.frame.size.width = height
+        self.userImageThumbnailView!.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        self.userImageThumbnailView!.layer.cornerRadius = height/2
     }
     
     @objc func logOutHandler() {
         print("Logout Handler!")
-        let loginView = LoginController()
-        self.dismiss(animated: true, completion: nil)       
+        self.dismiss(animated: true, completion: nil)
 //        FirebaseService().signOut {
 //            print("SingOut sucessfully!")
 //        }

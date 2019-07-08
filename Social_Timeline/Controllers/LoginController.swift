@@ -45,10 +45,22 @@ class LoginController: UIViewController, UITextViewDelegate {
         navigationController?.navigationBar.barTintColor = .white
     }
     
+    func onError(_ error: String) {
+        let Alert = UIAlertController(title: "Error al ingresar", message: "A ocurrido un error al intentar ingresar con tu ususario, \nError: \(error)", preferredStyle: .alert)
+        let AlertAction = UIAlertAction(title: "Aceptar", style: .destructive) { (action) in
+            Alert.dismiss(animated: true, completion: nil)
+        }
+        Alert.addAction(AlertAction)
+        self.present(Alert, animated: true, completion: nil)
+    }
+    
     @objc func loginButtonHandler() {
         print("the login button have been pressed!")
-        let viewController = ViewController()
-        present(viewController, animated: true)        
+        let response = FirebaseService().signIn(email: emailInput!.text!, password: passwordInput!.text!, callback: onError)
+        if(response){
+            let viewController = ViewController()
+            present(viewController, animated: true)            
+        }
     }
     
     @objc func registerButtonHandler() {
