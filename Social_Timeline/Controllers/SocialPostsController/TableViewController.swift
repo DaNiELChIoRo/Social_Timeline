@@ -39,6 +39,10 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {        
+        return UITableView.automaticDimension
+    }
+    
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let remove = UITableViewRowAction(style: .destructive, title: "Remove") { (action, index) in
             print("the cell is wanted to be remove!")

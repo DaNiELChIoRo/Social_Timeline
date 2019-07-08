@@ -10,41 +10,40 @@ import UIKit
 
 class ViewController: UITabBarController {
     
+    let filmsVC = GenericTableViewController(items: Film.stubFilms, configure: { (cell: SubtitleTableViewCell, film) in
+        cell.titleLabel?.text = film.title
+        cell.releaseYearTextLabel?.text = "released year: \(film.releaseYear)"
+        cell.starringLabel?.text = film.starring
+    }) { (film) in
+        print(film.title)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         setupView()
-        setupNavBar()
     }
     
     func setupView() {
         
-        let filmsVC = GenericTableViewController(items: Film.stubFilms, configure: { (cell: SubtitleTableViewCell, film) in
-            cell.textLabel?.text = film.title
-            cell.detailTextLabel?.text = "\(film.releaseYear)"
-            cell.starringLabel?.text = film.starring
-        }) { (film) in
-            print(film.title)
-        }
+        filmsVC.title = "Say Something!"
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonHandler))
+        filmsVC.navigationItem.rightBarButtonItem = addButton
         let filmsNavigationController = UINavigationController(rootViewController: filmsVC)
         filmsNavigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 001)
         
+        
         let profileView = ProfileController()
-//        profileView.navigationController?.tabBarItem = UITabBarItem(tabBarSystemItem: .favorites, tag: 002)
         let profileNavigation = UINavigationController(rootViewController: profileView)
         profileNavigation.tabBarItem = UITabBarItem(tabBarSystemItem: .featured, tag: 002)
         
         viewControllers = [filmsNavigationController, profileNavigation]
     }
-    
-    func setupNavBar() {
-        navigationItem.title = "Social TimeLine"
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonHandler))
-        navigationItem.rightBarButtonItem = addButton
-    }
 
     @objc func addButtonHandler() {
-        print("addb-uttonHandler")
+        print("addButtonHandler")
+        let addPost = addPostView()
+        filmsVC.navigationController?.pushViewController(addPost, animated: true)
     }    
 
 }

@@ -27,7 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window?.rootViewController = navigationController
         } else {
             let loginView = LoginController()
-            window?.rootViewController = loginView
+            let navigationController = UINavigationController(rootViewController: loginView)
+            window?.rootViewController = navigationController
         }
         
         // Override point for customization after application launch.

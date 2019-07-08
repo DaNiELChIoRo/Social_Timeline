@@ -21,6 +21,5 @@ extension UITextField {
         textInput.placeholder = placeholder
         textInput.translatesAutoresizingMaskIntoConstraints = false
         return textInput
-    }
-    
+    }    
 }

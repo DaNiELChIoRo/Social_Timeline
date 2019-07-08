@@ -10,7 +10,7 @@ import UIKit
 
 class RegisterController: UIViewController {
     
-    var registerTitle: UILabel? = UILabel().createDefaultLabel("Register", 35, .bold, .blue)
+    var registerTitle: UILabel? = UILabel().createDefaultLabel("Register", 35, .bold, .blue, .center)
     var userNameInput: UITextField? = UITextField().createDefaultTextInput(keyBoardType: .emailAddress, borderRadius: 12, placeholder: "Username")
     var emailInput: UITextField? = UITextField().createDefaultTextInput(keyBoardType: .emailAddress, borderRadius: 12, placeholder: "Email")
     var passwordInput: UITextField? = UITextField().createDefaultTextInput(keyBoardType: .alphabet, borderRadius: 12, placeholder: "Password")
@@ -25,7 +25,7 @@ class RegisterController: UIViewController {
         view.backgroundColor = .white
         
         view.addSubview(registerTitle!)
-        view.autoAnchorsToTop(view: registerTitle!, topMargin: 50, horizontalPadding: nil, heightPercentage: 0.1)
+        view.autoAnchorsToTop(view: registerTitle!, topMargin: 50, horizontalPadding: 35, heightPercentage: 0.1)
         
         view.addSubview(userNameInput!)
         userNameInput!.autoAnchorsXCenter(topView: registerTitle!, topMargin: 20, horizontalPadding: nil, heightPercentage: 0.08, widthPercentage: 0.7)

@@ -10,7 +10,7 @@ import UIKit
 
 class NoPostsView: UIView {
     
-    var noPostsLabel:UILabel? = UILabel().createDefaultLabel("No hay posts aún!", 24, .bold, .black)
+    var noPostsLabel:UILabel? = UILabel().createDefaultLabel("No hay posts aún!", 24, .bold, .black, .center)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,7 +25,7 @@ class NoPostsView: UIView {
         
         addSubview(noPostsLabel!)
         noPostsLabel?.backgroundColor = UIColor.red
-        self.autoAnchorsToTop(view: noPostsLabel!, topMargin: 30, horizontalPadding: nil, heightPercentage: 0.4)
+        self.autoAnchorsToTop(view: noPostsLabel!, topMargin: 30, horizontalPadding: 35, heightPercentage: 0.4)
     }
     
 }
