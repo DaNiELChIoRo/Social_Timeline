@@ -17,11 +17,21 @@ class ViewController: UITabBarController {
     }) { (film) in
         print(film.title)
     }
+    let profile = ProfileCoordinator()
+    let posts = PostsCoordinator()
+    
+    var coordinator: MainCoordinator!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         setupView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+//        coordinator?.tabBarCoordinator()
+        
+        viewControllers = [posts.navigationController, profile.navigationController]
     }
     
     func setupView() {
@@ -32,12 +42,11 @@ class ViewController: UITabBarController {
         let filmsNavigationController = UINavigationController(rootViewController: filmsVC)
         filmsNavigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 001)
         
-        
-        let profileView = ProfileController()
-        let profileNavigation = UINavigationController(rootViewController: profileView)
-        profileNavigation.tabBarItem = UITabBarItem(tabBarSystemItem: .featured, tag: 002)
-        
-        viewControllers = [filmsNavigationController, profileNavigation]
+//        let profileView = ProfileController()
+//        let profileNavigation = UINavigationController(rootViewController: profileView)
+//        profileNavigation.tabBarItem = UITabBarItem(tabBarSystemItem: .featured, tag: 002)
+//
+//        viewControllers = [posts.navigationController, profile.navigationController]
     }
 
     @objc func addButtonHandler() {

@@ -10,6 +10,7 @@ import UIKit
 
 class ProfileController: UIViewController {
     
+    weak var coordinator: ProfileCoordinator?
     var userName:UILabel? = UILabel().createDefaultLabel("UserName", 24, .bold, .black, .center)
     var userEmail:UILabel? = UILabel().createDefaultLabel("user email", 24, .bold, .black, .center)
     var logOutButton: UIButton? = UIButton().createDefaultButton("LogOut", .red, 12, #selector(logOutHandler))

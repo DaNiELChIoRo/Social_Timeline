@@ -10,6 +10,7 @@ import UIKit
 
 class RegisterController: UIViewController {
     
+    weak var coordinator: MainCoordinator?    
     var registerTitle: UILabel? = UILabel().createDefaultLabel("Register", 35, .bold, .blue, .center)
     var userNameInput: UITextField? = UITextField().createDefaultTextInput(keyBoardType: .emailAddress, borderRadius: 12, placeholder: "Username")
     var emailInput: UITextField? = UITextField().createDefaultTextInput(keyBoardType: .emailAddress, borderRadius: 12, placeholder: "Email")

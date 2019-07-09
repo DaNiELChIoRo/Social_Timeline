@@ -14,22 +14,19 @@ import Firebase
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    
+    var coordinator: MainCoordinator?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.makeKeyAndVisible()
+
+        let navController = UINavigationController()
+        coordinator = MainCoordinator(navigationController: navController)
         
-        if Firebase.Auth.auth().currentUser != nil {
-            let viewController = ViewController()
-            let navigationController = UINavigationController(rootViewController: viewController)
-            window?.rootViewController = navigationController
-        } else {
-            let loginView = LoginController()
-            let navigationController = UINavigationController(rootViewController: loginView)
-            window?.rootViewController = navigationController
-        }
+        coordinator?.start()
+        
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.rootViewController = navController
+        window?.makeKeyAndVisible()
         
         // Override point for customization after application launch.
         return true

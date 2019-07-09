@@ -12,11 +12,17 @@ import Firebase
 class RealtimeDatabase {
     
     var ref: DatabaseReference!
+    let userid = Auth.auth().currentUser?.uid
     
     func writeUser(user:Usuario){
-        let userid = Auth.auth().currentUser?.uid
         ref = Database.database().reference()
         ref.child("users").child(user.uid!).setValue(["username": user.username])
+    }
+    
+    func saveUserImagePath(userImagePath: String){
+        ref = Database.database().reference()
+        let value = ["userimage": userImagePath]
+        ref.child("users").child(userid!).setValue(value)
     }
     
 }

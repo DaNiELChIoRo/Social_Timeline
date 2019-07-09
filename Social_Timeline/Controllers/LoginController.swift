@@ -10,6 +10,7 @@ import UIKit
 
 class LoginController: UIViewController, UITextViewDelegate {
     
+    weak var coordinator: MainCoordinator?
     var loginTitle: UILabel? = UILabel().createDefaultLabel("Login", 35, .bold, .blue, .center)
     var emailInput: UITextField? = UITextField().createDefaultTextInput(keyBoardType: .emailAddress, borderRadius: 12, placeholder: "Email")
     var passwordInput: UITextField? = UITextField().createDefaultTextInput(keyBoardType: .alphabet, borderRadius: 12, placeholder: "Password")
