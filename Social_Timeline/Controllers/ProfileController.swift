@@ -62,7 +62,7 @@ class ProfileController: UIViewController {
     
     @objc func logOutHandler() {
         print("Logout Handler!")
-        self.dismiss(animated: true, completion: nil)
+        coordinator?.logOut()
 //        FirebaseService().signOut {
 //            print("SingOut sucessfully!")
 //        }

@@ -30,7 +30,7 @@ class ProfileCoordinator: Coordinator{
         navigationController.viewControllers = [vc]
     }
     
-    func didFinish(){
+    func logOut(){
         parentCoordinator?.childDidFinish()
     }
     

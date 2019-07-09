@@ -36,6 +36,11 @@ class TabBarCoordinator: NSObject, Coordinator {
         child.start()
     }
     
+    func addPost() {
+        let addPost = addPostView()
+        navigationController.pushViewController(addPost, animated: true)
+    }
+    
     func childDidFinish(){
         for(index, coordinator) in childCoordinators.enumerated() {
             if coordinator === ProfileController() || coordinator === PostsCoordinator() {

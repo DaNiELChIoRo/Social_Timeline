@@ -17,15 +17,12 @@ class ViewController: UITabBarController {
     }) { (film) in
         print(film.title)
     }
-    let profile = ProfileCoordinator()
-    let posts = PostsCoordinator()
     
     var coordinator: MainCoordinator!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-//        setupView()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -34,23 +31,7 @@ class ViewController: UITabBarController {
         var vis:[UIViewController] = [UIViewController]()
         views.forEach {  vis.append($0.navigationController as! UIViewController) }
         viewControllers = vis
-    }
-    
-    func setupView() {
-        
-        filmsVC.title = "Say Something!"
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonHandler))
-        filmsVC.navigationItem.rightBarButtonItem = addButton
-        let filmsNavigationController = UINavigationController(rootViewController: filmsVC)
-        filmsNavigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 001)
-        
-    }
-
-    @objc func addButtonHandler() {
-        print("addButtonHandler")
-        let addPost = addPostView()
-        filmsVC.navigationController?.pushViewController(addPost, animated: true)
-    }    
+    } 
 
 }
 

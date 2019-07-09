@@ -45,6 +45,8 @@ class PostsCoordinator: Coordinator {
     
     @objc func addButtonHandler(){
         print("addButtonHandler!")
+        let addPost = addPostView()
+        navigationController.pushViewController(addPost, animated: true)
     }
     
 }
