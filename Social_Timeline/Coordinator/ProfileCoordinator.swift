@@ -13,7 +13,7 @@ class ProfileCoordinator: Coordinator{
     var childCoordinators = [Coordinator]()
     var navigationController: UINavigationController
     
-    weak var parentCoordinator: MainCoordinator?
+    weak var parentCoordinator: TabBarCoordinator?
     
     init(navigationController: CoordinatedNavigationController = CoordinatedNavigationController()) {
         self.navigationController = navigationController

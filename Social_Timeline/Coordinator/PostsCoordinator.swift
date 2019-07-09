@@ -34,13 +34,9 @@ class PostsCoordinator: Coordinator {
         filmsVC.title = "Say Something!"
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonHandler))
         filmsVC.navigationItem.rightBarButtonItem = addButton
-        navigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 1)
+        navigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 1)                
         
-        let vc = ProfileController()
-        navigationController.tabBarItem =  UITabBarItem(tabBarSystemItem: .contacts, tag: 0)
-//        vc.coordinator = self
-        
-        navigationController.viewControllers = [vc, filmsVC]
+        navigationController.viewControllers = [filmsVC]
     }
     
     @objc func addButtonHandler(){

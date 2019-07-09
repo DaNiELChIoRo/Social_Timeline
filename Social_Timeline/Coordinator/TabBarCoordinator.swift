@@ -19,10 +19,22 @@ class TabBarCoordinator: NSObject, Coordinator {
         self.navigationController = navigationController
     }
     
-    func start() {
-        let profileCoordinator = ProfileCoordinator()
-        let postsCoordinator = PostsCoordinator()
-        
-        
+    func start() {        
+        postsCoordinator()
+        profileCoordinator()
+    }
+    
+    func profileCoordinator(){
+        let child = ProfileCoordinator()
+        child.parentCoordinator = self
+        childCoordinators.append(child)
+        child.start()
+    }
+    
+    func postsCoordinator(){
+        let child = PostsCoordinator()
+        child.parentCoordinator = self
+        childCoordinators.append(child)
+        child.start()
     }
 }
