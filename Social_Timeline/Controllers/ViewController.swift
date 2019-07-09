@@ -44,11 +44,6 @@ class ViewController: UITabBarController {
         let filmsNavigationController = UINavigationController(rootViewController: filmsVC)
         filmsNavigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 001)
         
-//        let profileView = ProfileController()
-//        let profileNavigation = UINavigationController(rootViewController: profileView)
-//        profileNavigation.tabBarItem = UITabBarItem(tabBarSystemItem: .featured, tag: 002)
-//
-//        viewControllers = [posts.navigationController, profile.navigationController]
     }
 
     @objc func addButtonHandler() {

@@ -19,6 +19,7 @@ class MainCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
     }
     
     func start() {
+        navigationController.setNavigationBarHidden(true, animated: false)
         navigationController.delegate = self
         if Firebase.Auth.auth().currentUser != nil {
             let vc = ViewController()
@@ -48,7 +49,7 @@ class MainCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
         child.parentCoordinator = self
         childCoordinators.append(child)
         child.start()
-    }        
+    }
     
     func childDidFinish(_ child: Coordinator){
         for(index, coordinator) in childCoordinators.enumerated() {

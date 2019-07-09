@@ -35,4 +35,14 @@ class TabBarCoordinator: NSObject, Coordinator {
         childCoordinators.append(child)
         child.start()
     }
+    
+    func childDidFinish(){
+        for(index, coordinator) in childCoordinators.enumerated() {
+            if coordinator === ProfileController() || coordinator === PostsCoordinator() {
+                childCoordinators.remove(at: index)
+            }
+        }
+        
+        parentCoordinator?.childDidFinish(self)
+    }
 }

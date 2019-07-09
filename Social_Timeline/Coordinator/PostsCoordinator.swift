@@ -27,6 +27,10 @@ class PostsCoordinator: Coordinator {
         
         navigationController.coordinator = self
         
+        navigationController.navigationBar.prefersLargeTitles = true
+//        navigationController.navigationBar.
+        navigationController.title = "Algo loco"
+        
         start()
     }
     
@@ -34,7 +38,7 @@ class PostsCoordinator: Coordinator {
         filmsVC.title = "Say Something!"
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonHandler))
         filmsVC.navigationItem.rightBarButtonItem = addButton
-        navigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 1)                
+        navigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 1)
         
         navigationController.viewControllers = [filmsVC]
     }

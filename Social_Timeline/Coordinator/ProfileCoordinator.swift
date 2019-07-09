@@ -30,8 +30,8 @@ class ProfileCoordinator: Coordinator{
         navigationController.viewControllers = [vc]
     }
     
-//    func didFinish(){
-//        parentCoordinator?.childDidFinish(self)
-//    }
+    func didFinish(){
+        parentCoordinator?.childDidFinish()
+    }
     
 }
