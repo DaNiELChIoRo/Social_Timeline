@@ -30,10 +30,10 @@ class ViewController: UITabBarController {
     
     override func viewDidAppear(_ animated: Bool) {
         coordinator?.tabBarCoordinator()
-        let view1 = coordinator!.childCoordinators[0].childCoordinators[0].navigationController
-        let view2 = coordinator!.childCoordinators[0].childCoordinators[1].navigationController
-        viewControllers = [view1, view2]
-//        viewControllers = [posts.navigationController, profile.navigationController]
+        let views = coordinator!.childCoordinators[0].childCoordinators
+        var vis:[UIViewController] = [UIViewController]()
+        views.forEach {  vis.append($0.navigationController as! UIViewController) }
+        viewControllers = vis
     }
     
     func setupView() {

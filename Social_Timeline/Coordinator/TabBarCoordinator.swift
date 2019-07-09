@@ -9,8 +9,6 @@ import UIKit
 
 class TabBarCoordinator: NSObject, Coordinator {
     
-    
-    
     var childCoordinators = [Coordinator]()
     weak var parentCoordinator: MainCoordinator?
     var navigationController: UINavigationController
