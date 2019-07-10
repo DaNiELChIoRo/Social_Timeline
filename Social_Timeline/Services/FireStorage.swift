@@ -24,8 +24,7 @@ class FireStorage {
                 callback(error.localizedDescription)
                 return
             }
-            //TODO realtimedatabase to save userImage file location!
-            RealtimeDatabase().saveUserImagePath(userImagePath: "\(storageRef)")
+            RealtimeDatabase().saveUserImagePath(userImagePath: "\(email)/\(filePath)")
         }
     }
     
