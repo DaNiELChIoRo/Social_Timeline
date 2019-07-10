@@ -11,6 +11,7 @@
 		1A55C7CA22D3AB9F001248F0 /* ThumbnailImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A55C7C922D3AB9F001248F0 /* ThumbnailImage.swift */; };
 		1A55C7CC22D3EF15001248F0 /* ReatimeDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A55C7CB22D3EF15001248F0 /* ReatimeDatabase.swift */; };
 		1A6F4B5D22D6272A00E0DFBA /* UIAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6F4B5C22D6272A00E0DFBA /* UIAlert.swift */; };
+		1A6F4B5F22D65D0B00E0DFBA /* UIImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6F4B5E22D65D0B00E0DFBA /* UIImagePicker.swift */; };
 		1A74F97622B94E8200F0C6F5 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A74F97522B94E8200F0C6F5 /* TableViewController.swift */; };
 		1A74F97922B9523E00F0C6F5 /* CellViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A74F97822B9523E00F0C6F5 /* CellViewController.swift */; };
 		1A74F97C22B9580800F0C6F5 /* NoPostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A74F97B22B9580800F0C6F5 /* NoPostsView.swift */; };
@@ -47,6 +48,7 @@
 		1A55C7C922D3AB9F001248F0 /* ThumbnailImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailImage.swift; sourceTree = "<group>"; };
 		1A55C7CB22D3EF15001248F0 /* ReatimeDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReatimeDatabase.swift; sourceTree = "<group>"; };
 		1A6F4B5C22D6272A00E0DFBA /* UIAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlert.swift; sourceTree = "<group>"; };
+		1A6F4B5E22D65D0B00E0DFBA /* UIImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImagePicker.swift; sourceTree = "<group>"; };
 		1A74F97522B94E8200F0C6F5 /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		1A74F97822B9523E00F0C6F5 /* CellViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellViewController.swift; sourceTree = "<group>"; };
 		1A74F97B22B9580800F0C6F5 /* NoPostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoPostsView.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 				1AE19EC422BADFBD00387D8B /* UITextView.swift */,
 				1A38336B22CA7F6A00F2AC9A /* UIImageView.swift */,
 				1A6F4B5C22D6272A00E0DFBA /* UIAlert.swift */,
+				1A6F4B5E22D65D0B00E0DFBA /* UIImagePicker.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -368,6 +371,7 @@
 				1AB09D9C22B9369500E3EC81 /* AppDelegate.swift in Sources */,
 				1AB09DB222B9388500E3EC81 /* UILabel.swift in Sources */,
 				1A97DCCA22D53AD3008A6DC8 /* PostsCoordinator.swift in Sources */,
+				1A6F4B5F22D65D0B00E0DFBA /* UIImagePicker.swift in Sources */,
 				1A74F97F22B95C4800F0C6F5 /* ProfileController.swift in Sources */,
 				1A38336C22CA7F6A00F2AC9A /* UIImageView.swift in Sources */,
 				1ACB245A22B9899700361106 /* Usuario.swift in Sources */,

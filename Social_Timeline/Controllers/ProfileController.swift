@@ -18,12 +18,14 @@ class ProfileController: UIViewController {
     var userEmail:UILabel? = UILabel().createDefaultLabel("user email", 24, .bold, .black, .center)
     var logOutButton: UIButton? = UIButton().createDefaultButton("LogOut", .red, 12, #selector(logOutHandler))
     var ressetPassButton: UIButton? = UIButton().createDefaultButton("Reset Password", .red, 12, #selector(logOutHandler))
-    var userImageThumbnailView:UIView? = ThumbnailImageView(image: UIImage(named: "avatar")!)
+    var userImageThumbnailView:UIView?
+    var imagePicker: ImagePicker!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        self.title = "Profile"        
+        self.title = "Profile"
+        self.imagePicker = ImagePicker(presentationController: self, delegate: self)
     }
     
     func receiveUserData(username: String, useremail: String) {
@@ -40,6 +42,8 @@ class ProfileController: UIViewController {
 
     func setupView() {
         view.backgroundColor = .white
+        
+        userImageThumbnailView = ThumbnailImageView(image: UIImage(named: "avatar")!, delegate: self as! userImageDelegate)
         
         view.addSubview(userImageThumbnailView!)
         userImageThumbnailView?.backgroundColor = .gray
@@ -76,4 +80,15 @@ class ProfileController: UIViewController {
         }
     }
     
+}
+
+extension ProfileController: ImagePickerDelegate, userImageDelegate {
+    func changeUserImage() {
+         self.imagePicker.present()
+    }
+
+    func didSelect(image: UIImage?) {
+//        self.imageView.image = image
+//        self.userImageThumbnailView = ThumbnailImageView(image: image!)
+    }
 }
