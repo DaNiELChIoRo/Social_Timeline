@@ -12,8 +12,16 @@ extension UIImageView {
     
     func defaultImageViewCreator(_ image: UIImage) -> UIImageView {
         let imageView = UIImageView()
-        let height = self.frame.height
         imageView.image = image
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }
+    
+    func thumbnailImageViewCreator(_ image: UIImage, cornerRadius: CGFloat) -> UIImageView {
+        let imageView = UIImageView()
+        imageView.image = image
+        imageView.layer.cornerRadius = cornerRadius
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView

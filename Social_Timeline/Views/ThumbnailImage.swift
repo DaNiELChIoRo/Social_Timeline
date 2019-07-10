@@ -14,7 +14,7 @@ protocol userImageDelegate {
 
 class ThumbnailImageView: UIView {
     
-    public var image: UIImage? = UIImage(named: "avatar")
+    var image: UIImage? = UIImage(named: "avatar")
     var userImage: UIImageView?
     var userImageDelegate: userImageDelegate!
     
@@ -33,23 +33,33 @@ class ThumbnailImageView: UIView {
         self.userImageDelegate = delegate
     }
     
+    override func layoutSubviews() {
+        let height = frame.size.height
+        print("user Thumbnail image height: \(height)")
+        userImage!.layer.cornerRadius = height / 2
+    }
+    
     func setupView(){
         
-         let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureHandler))
+        let height = frame.size.height
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureHandler))
         translatesAutoresizingMaskIntoConstraints = false
         
         backgroundColor = .lightGray
-        userImage = UIImageView().defaultImageViewCreator(self.image!)
-        userImage!.contentMode = .scaleAspectFit
+        userImage = UIImageView().thumbnailImageViewCreator(self.image!, cornerRadius: height/2)
+        userImage!.contentMode = .scaleAspectFill
+        userImage!.clipsToBounds = true
+        userImage!.backgroundColor = .red
+        
         addSubview(userImage!)
-        addConstraints(LayoutWithVisualFormat(visualFormat: "H:|-32-[v0]-32-|", alignment: .alignAllCenterX, view: ["v0": userImage!]))
-        addConstraints(LayoutWithVisualFormat(visualFormat: "V:|-32-[v0]-32-|", alignment: .alignAllCenterY, view: ["v0": userImage!]))
+        addConstraints(LayoutWithVisualFormat(visualFormat: "H:|-[v0]-|", alignment: .alignAllCenterX, view: ["v0": userImage!]))
+        addConstraints(LayoutWithVisualFormat(visualFormat: "V:|-[v0]-|", alignment: .alignAllCenterY, view: ["v0": userImage!]))
         isUserInteractionEnabled = true
         addGestureRecognizer(tap)
-    }
+    }
     
     public func changeUserImage(image: UIImage) {
-        self.image = image
+        userImage?.image = image
     }
     
     @objc func tapGestureHandler(){

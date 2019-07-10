@@ -18,7 +18,7 @@ class ProfileController: UIViewController {
     var userEmail:UILabel? = UILabel().createDefaultLabel("user email", 24, .bold, .black, .center)
     var logOutButton: UIButton? = UIButton().createDefaultButton("LogOut", .red, 12, #selector(logOutHandler))
     var ressetPassButton: UIButton? = UIButton().createDefaultButton("Reset Password", .red, 12, #selector(logOutHandler))
-    var userImageThumbnailView:UIView?
+    var userImageThumbnailView:ThumbnailImageView?
     var imagePicker: ImagePicker!
     
     override func viewDidLoad() {
@@ -88,7 +88,6 @@ extension ProfileController: ImagePickerDelegate, userImageDelegate {
     }
 
     func didSelect(image: UIImage?) {
-//        self.imageView.image = image
-//        self.userImageThumbnailView = ThumbnailImageView(image: image!)
+        userImageThumbnailView?.changeUserImage(image: image!)
     }
 }
