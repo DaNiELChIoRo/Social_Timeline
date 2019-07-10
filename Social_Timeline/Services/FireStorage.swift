@@ -24,7 +24,7 @@ class FireStorage {
                 callback(error.localizedDescription)
                 return
             }
-            RealtimeDatabase().saveUserImagePath(userImagePath: "\(email)/\(filePath)")
+            RealtimeDatabase().saveUserImagePath(userImagePath: "\(filePath)")
         }
     }
     
