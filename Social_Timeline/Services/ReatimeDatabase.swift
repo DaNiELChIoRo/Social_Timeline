@@ -22,7 +22,7 @@ class RealtimeDatabase {
     func saveUserImagePath(userImagePath: String){
         ref = Database.database().reference()
         let value = ["userimage": userImagePath]
-        ref.child("users").child(userid!).setValue(value)
+        ref.child("users").child(userid!).updateChildValues(value)
     }
     
     func fetchUserInfo(action: @escaping (_ username: String, _ email: String) -> Void, callback: @escaping (_ error:String) -> Void) {

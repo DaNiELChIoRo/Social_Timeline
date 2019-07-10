@@ -39,6 +39,10 @@ class ProfileController: UIViewController {
     func showErrorAlert(_ error: String) {
         self.createAlertDesctructive("Error", "Error al intentar obtener la información del usuario, Error: \(error)", .alert, "Entendido")
     }
+    
+    func showUploadErrorAlert(_ error: String) {
+        self.createAlertDesctructive("Error", "Error al intentar subir la imagen del usuario, Error: \(error)", .alert, "Pues... ¿Qué más puedo hacer?")
+    }
 
     func setupView() {
         view.backgroundColor = .white
@@ -46,11 +50,9 @@ class ProfileController: UIViewController {
         userImageThumbnailView = ThumbnailImageView(image: UIImage(named: "avatar")!, delegate: self as! userImageDelegate)
         
         view.addSubview(userImageThumbnailView!)
-        userImageThumbnailView?.backgroundColor = .gray
         userImageThumbnailView?.translatesAutoresizingMaskIntoConstraints = false
-        let estimatedWidth = (height * 0.18) - width
-        userImageThumbnailView?.layer.cornerRadius = (height * 0.18) / 2
-        view.autoAnchorsToTop(view: userImageThumbnailView!, topMargin: 50, horizontalPadding: estimatedWidth, heightPercentage: 0.18)
+        let estimatedWidth = (height * 0.19) - width        
+        view.autoAnchorsToTop(view: userImageThumbnailView!, topMargin: 50, horizontalPadding: estimatedWidth, heightPercentage: 0.19)
         
         view.addSubview(userName!)
         userName?.autoAnchorsXCenter(topView: userImageThumbnailView!, topMargin: 20, horizontalPadding: nil, heightPercentage: 0.05, widthPercentage: 0.7)
@@ -88,6 +90,9 @@ extension ProfileController: ImagePickerDelegate, userImageDelegate {
     }
 
     func didSelect(image: UIImage?) {
-        userImageThumbnailView?.changeUserImage(image: image!)
+        guard let image = image,
+            let imageData = image.jpegData(compressionQuality: 0.8) else { return }
+        userImageThumbnailView?.changeUserImage(image: image)
+        FireStorage().upload(filePath: "avatar\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpeg", file: imageData, callback: showUploadErrorAlert)
     }
 }

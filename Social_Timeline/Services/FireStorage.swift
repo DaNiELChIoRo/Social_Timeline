@@ -14,13 +14,14 @@ class FireStorage {
     let storage = Storage.storage()
     let userUID = Auth.auth().currentUser
 
-    func upload(filePath: String, file: URL, meta: StorageMetadata, callback: @escaping () -> Void){
-        let filePath = "\(userUID!)" + "\(filePath)"
+    func upload(filePath: String, file: Data, callback: @escaping (_ error: String) -> Void){
+        guard let email = userUID?.email else { return }
+        let filePath = "\(email)/" + "\(filePath)"
         let storageRef = self.storage.reference(withPath: filePath)
-            storageRef.putFile(from: file, metadata: meta) { (meta, error) in
+            storageRef.putData(file, metadata: StorageMetadata()) { (meta, error) in
             if let error = error {
                 print("Error while uploading userImage!, Error: \(error)")
-                callback()
+                callback(error.localizedDescription)
                 return
             }
             //TODO realtimedatabase to save userImage file location!

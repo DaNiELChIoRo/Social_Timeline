@@ -41,22 +41,20 @@ class ThumbnailImageView: UIView {
     
     func setupView(){
         
-        let height = frame.size.height
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapGestureHandler))
-        translatesAutoresizingMaskIntoConstraints = false
+        translatesAutoresizingMaskIntoConstraints = false        
         
-        backgroundColor = .lightGray
-        userImage = UIImageView().thumbnailImageViewCreator(self.image!, cornerRadius: height/2)
+        userImage = UIImageView().defaultImageViewCreator(self.image!)
         userImage!.contentMode = .scaleAspectFill
         userImage!.clipsToBounds = true
-        userImage!.backgroundColor = .red
+        userImage!.backgroundColor = .gray
         
         addSubview(userImage!)
-        addConstraints(LayoutWithVisualFormat(visualFormat: "H:|-[v0]-|", alignment: .alignAllCenterX, view: ["v0": userImage!]))
-        addConstraints(LayoutWithVisualFormat(visualFormat: "V:|-[v0]-|", alignment: .alignAllCenterY, view: ["v0": userImage!]))
+        addConstraints(LayoutWithVisualFormat(visualFormat: "H:|-0-[v0]-0-|", alignment: .alignAllCenterX, view: ["v0": userImage!]))
+        addConstraints(LayoutWithVisualFormat(visualFormat: "V:|-0-[v0]-0-|", alignment: .alignAllCenterY, view: ["v0": userImage!]))
         isUserInteractionEnabled = true
         addGestureRecognizer(tap)
-    }
+    }
     
     public func changeUserImage(image: UIImage) {
         userImage?.image = image
