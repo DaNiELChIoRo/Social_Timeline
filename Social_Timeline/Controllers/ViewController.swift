@@ -28,9 +28,14 @@ class ViewController: UITabBarController {
     override func viewDidAppear(_ animated: Bool) {
         coordinator?.tabBarCoordinator()
         let views = coordinator!.childCoordinators[0].childCoordinators
-        var vis:[UIViewController] = [UIViewController]()
-        views.forEach {  vis.append($0.navigationController as! UIViewController) }
-        viewControllers = vis
+        if views.count > 0 {
+            var vis:[UIViewController] = [UIViewController]()
+            views.forEach {  vis.append($0.navigationController as! UIViewController) }
+            viewControllers = vis
+        } else {
+            print("the main coordinator has no childs!")
+            return
+        }
     } 
 
 }

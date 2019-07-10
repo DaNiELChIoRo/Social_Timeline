@@ -22,6 +22,7 @@ class LoginController: UIViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        setupSubscriptions()
     }
     
     func setupView() {
@@ -31,6 +32,7 @@ class LoginController: UIViewController, UITextViewDelegate {
         view.autoAnchorsToTop(view: loginTitle!, topMargin: 50, horizontalPadding: 35, heightPercentage: 0.1)
         
         view.addSubview(emailInput!)
+        emailInput!.autocapitalizationType = .none
         emailInput!.autoAnchorsXCenter(topView: loginTitle!, topMargin: 20, horizontalPadding: nil, heightPercentage: 0.08, widthPercentage: 0.7)
         
         view.addSubview(passwordInput!)
@@ -63,7 +65,11 @@ class LoginController: UIViewController, UITextViewDelegate {
     
     @objc func loginButtonHandler() {
         print("the login button have been pressed!")
-        firebase.signIn(email: emailInput!.text!, password: passwordInput!.text!, callback: onError)
+        guard let emailText = emailInput!.text, let password = passwordInput!.text else {
+            self.createAlertDesctructive("Error al intentar ingresar", "Error al intentar accedere a su cuenta, usuario o contraseña vacios!", .alert, "Entendido")
+            return
+        }
+        firebase.signIn(email: emailText, password: password, callback: onError)
     }
     
     @objc func registerButtonHandler() {
@@ -84,7 +90,7 @@ extension LoginController: FirebaseUserCreated {
     
     func onUserLogged(user: Usuario) {
         let viewController = ViewController()
-        present(viewController, animated: true)
+        coordinator?.logOnUser()        
     }
 
 }

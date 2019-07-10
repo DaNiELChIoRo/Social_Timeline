@@ -31,7 +31,8 @@ class ProfileCoordinator: Coordinator{
     }
     
     func logOut(){
-        parentCoordinator?.childDidFinish()
+        parentCoordinator?.logOutUser()
+//        parentCoordinator?.childDidFinish()
     }
     
 }

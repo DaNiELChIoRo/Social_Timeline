@@ -45,12 +45,7 @@ class RegisterController: UIViewController {
     }
     
     func callback (_ error: String) { print("trantando de leer el error: \(error)")
-        let Alert = UIAlertController(title: "Error al registar usuario", message: "A ocurrido un error al intentar registrar el ususario, \nError: \(error)", preferredStyle: .alert)
-        let AlertAction = UIAlertAction(title: "Aceptar", style: .destructive) { (action) in
-            Alert.dismiss(animated: true, completion: nil)
-        }
-        Alert.addAction(AlertAction)
-        self.present(Alert, animated: true, completion: nil)
+        self.createAlertDesctructive("Error al registar usuario", "A ocurrido un error al intentar registrar el ususario, \nError: \(error)", .alert, "Aceptar")        
     }
     
     

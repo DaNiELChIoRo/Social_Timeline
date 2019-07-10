@@ -38,6 +38,12 @@ class MainCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
         navigationController.pushViewController(vc, animated: true)
     }
     
+    func logOnUser() {
+        let vc = ViewController()
+        vc.coordinator = self
+        navigationController.pushViewController(vc, animated: true)
+    }
+    
     func logOutUser() {
         let vc = LoginController()
         vc.coordinator = self
@@ -53,7 +59,7 @@ class MainCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
     
     func childDidFinish(_ child: Coordinator){
         for(index, coordinator) in childCoordinators.enumerated() {
-            if coordinator === child {
+            if coordinator === child {                 
                 childCoordinators.remove(at: index)
                 break
             }

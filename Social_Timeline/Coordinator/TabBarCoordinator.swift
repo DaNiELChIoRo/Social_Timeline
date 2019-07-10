@@ -41,13 +41,18 @@ class TabBarCoordinator: NSObject, Coordinator {
         navigationController.pushViewController(addPost, animated: true)
     }
     
+    func logOutUser() {
+        parentCoordinator?.logOutUser()
+        parentCoordinator?.childDidFinish(self)
+    }
+    
     func childDidFinish(){
         for(index, coordinator) in childCoordinators.enumerated() {
             if coordinator === ProfileController() || coordinator === PostsCoordinator() {
                 childCoordinators.remove(at: index)
             }
         }
-        
+        parentCoordinator?.logOnUser()
         parentCoordinator?.childDidFinish(self)
     }
 }
