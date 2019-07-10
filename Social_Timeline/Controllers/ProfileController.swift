@@ -32,7 +32,9 @@ class ProfileController: UIViewController {
         view.addSubview(userImageThumbnailView!)
         userImageThumbnailView?.backgroundColor = .gray
         userImageThumbnailView?.translatesAutoresizingMaskIntoConstraints = false
-        view.autoAnchorsToTop(view: userImageThumbnailView!, topMargin: 50, horizontalPadding: nil, heightPercentage: 0.18)
+        let estimatedWidth = (height * 0.18) - width
+        userImageThumbnailView?.layer.cornerRadius = (height * 0.18) / 2
+        view.autoAnchorsToTop(view: userImageThumbnailView!, topMargin: 50, horizontalPadding: estimatedWidth, heightPercentage: 0.18)
         
         view.addSubview(userName!)
         userName?.backgroundColor = .red
@@ -52,12 +54,14 @@ class ProfileController: UIViewController {
     }
     
     override func viewDidLayoutSubviews() {
-        userImageThumbnailView!.clipsToBounds = true
-        print(self.userImageThumbnailView!.frame.size)
-        let height = self.userImageThumbnailView!.frame.size.height
-        self.userImageThumbnailView!.frame.size.width = height
-        self.userImageThumbnailView!.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        self.userImageThumbnailView!.layer.cornerRadius = height/2
+//        userImageThumbnailView!.clipsToBounds = true
+       
+//        let height = self.userImageThumbnailView!.frame.size.height
+//        self.userImageThumbnailView!.frame.size.width = height
+//        self.userImageThumbnailView!.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        
+//        self.userImageThumbnailView!.layer.cornerRadius = height/2
+         print(self.userImageThumbnailView!.frame.size)
     }
     
     @objc func logOutHandler() {
