@@ -10,6 +10,9 @@ import UIKit
 
 class ProfileController: UIViewController {
     
+    let height = UIScreen.main.bounds.height
+    let width = UIScreen.main.bounds.width
+    
     weak var coordinator: ProfileCoordinator?
     var userName:UILabel? = UILabel().createDefaultLabel("UserName", 24, .bold, .black, .center)
     var userEmail:UILabel? = UILabel().createDefaultLabel("user email", 24, .bold, .black, .center)
@@ -23,9 +26,18 @@ class ProfileController: UIViewController {
         self.title = "Profile"        
     }
     
-    let height = UIScreen.main.bounds.height
-    let width = UIScreen.main.bounds.width
+    func receiveUserData(username: String, useremail: String) {
+        let font = UIFont.boldSystemFont(ofSize: 24)
+        let attributes = [NSAttributedString.Key.font: font]
+        let emailAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 20, weight: .regular)]
+        userName!.attributedText = NSAttributedString(string: username, attributes: attributes)
+        userEmail!.attributedText = NSAttributedString(string: useremail, attributes: emailAttributes)
+    }
     
+    func showErrorAlert(_ error: String) {
+        self.createAlertDesctructive("Error", "Error al intentar obtener la información del usuario, Error: \(error)", .alert, "Entendido")
+    }
+
     func setupView() {
         view.backgroundColor = .white
         
@@ -37,13 +49,10 @@ class ProfileController: UIViewController {
         view.autoAnchorsToTop(view: userImageThumbnailView!, topMargin: 50, horizontalPadding: estimatedWidth, heightPercentage: 0.18)
         
         view.addSubview(userName!)
-        userName?.backgroundColor = .red
-        userName?.autoAnchorsXCenter(topView: userImageThumbnailView!, topMargin: 12, horizontalPadding: nil, heightPercentage: 0.05, widthPercentage: 0.5)
-        
+        userName?.autoAnchorsXCenter(topView: userImageThumbnailView!, topMargin: 20, horizontalPadding: nil, heightPercentage: 0.05, widthPercentage: 0.7)
         
         view.addSubview(userEmail!)
-        userEmail?.backgroundColor = .green
-        userEmail?.autoAnchorsXCenter(topView: userName!, topMargin: 5, horizontalPadding: nil, heightPercentage: 0.05, widthPercentage: 0.4)
+        userEmail?.autoAnchorsXCenter(topView: userName!, topMargin: 5, horizontalPadding: nil, heightPercentage: 0.05, widthPercentage: 0.7)
         
         view.addSubview(logOutButton!)
         logOutButton!.autoAnchorsToBottom(bottomMargin: 30, horizontalPadding: 50, heightPercentage: 0.065)
@@ -51,16 +60,11 @@ class ProfileController: UIViewController {
         view.addSubview(ressetPassButton!)
         ressetPassButton?.autoAnchorsXCenter(bottomView: logOutButton!, bottomMargin: 12, horizontalPadding: nil, heightPercentage: 0.065, widthPercentage: 0.4)
         
+        RealtimeDatabase().fetchUserInfo(action: receiveUserData, callback: showErrorAlert)
+        
     }
     
     override func viewDidLayoutSubviews() {
-//        userImageThumbnailView!.clipsToBounds = true
-       
-//        let height = self.userImageThumbnailView!.frame.size.height
-//        self.userImageThumbnailView!.frame.size.width = height
-//        self.userImageThumbnailView!.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        
-//        self.userImageThumbnailView!.layer.cornerRadius = height/2
          print(self.userImageThumbnailView!.frame.size)
     }
     
