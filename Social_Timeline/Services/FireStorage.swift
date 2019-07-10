@@ -29,14 +29,19 @@ class FireStorage {
         }
     }
     
-    func download(_ storageRef: StorageReference, storagePath: String){
-        storageRef.downloadURL { (url, error) in
+    func download( fileURL: String, onsucess: @escaping (_ imagePath: String) -> Void, onError: @escaping (_ error: String) -> Void ) {
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let localURL = documentsURL.appendingPathComponent("userAvatar.jpeg")
+        let storageRef = Storage.storage().reference().child(fileURL)
+        storageRef.write(toFile: localURL) { (url, error) in
             if let error = error {
-                print("Error while trying to download file!, Error: \(error)")
-                return
+                print("error trying to download the file, Error: \(error.localizedDescription)")
+                onError(error.localizedDescription)
+            } else if let imagePath = url?.path {
+                onsucess(imagePath)
             }
-            
         }
+        
     }
     
 }

@@ -39,4 +39,17 @@ class RealtimeDatabase {
         }
     }
     
+    func fetchUserImageRef(onsucess: @escaping (_ imagePath: String) -> Void, onError: @escaping (_ error:String) -> Void) {
+        ref = Database.database().reference()
+        ref.child("users").child(userid!).observeSingleEvent(of: .value, with: { (snapshot) in
+            guard let value = snapshot.value as? NSDictionary else { return }
+            guard let userimageRef = value["userimage"] as? String else { return }
+            FireStorage().download( fileURL: userimageRef, onsucess: onsucess, onError: onError)
+            
+        }) { (error) in
+            print("Error while trying to access user info, Error: \(error)")
+            onError(error.localizedDescription)
+        }
+    }
+    
 }

@@ -43,6 +43,15 @@ class ProfileController: UIViewController {
     func showUploadErrorAlert(_ error: String) {
         self.createAlertDesctructive("Error", "Error al intentar subir la imagen del usuario, Error: \(error)", .alert, "Pues... ¿Qué más puedo hacer?")
     }
+    
+    func showDownloadErrorAlert(_ error: String) {
+        self.createAlertDesctructive("Error", "Error al intentar descargar la imagen del usuario, Error: \(error)", .alert, "Pues... ¿Qué más puedo hacer?")
+    }
+    
+    func changeUserThumbnailImage(imagePath: String) {
+        let image = UIImage(contentsOfFile: imagePath)
+        userImageThumbnailView?.changeUserImage(image: image!)
+    }
 
     func setupView() {
         view.backgroundColor = .white
@@ -67,7 +76,7 @@ class ProfileController: UIViewController {
         ressetPassButton?.autoAnchorsXCenter(bottomView: logOutButton!, bottomMargin: 12, horizontalPadding: nil, heightPercentage: 0.065, widthPercentage: 0.4)
         
         RealtimeDatabase().fetchUserInfo(action: receiveUserData, callback: showErrorAlert)
-        
+        RealtimeDatabase().fetchUserImageRef(onsucess: changeUserThumbnailImage, onError: showDownloadErrorAlert)
     }
     
     override func viewDidLayoutSubviews() {
