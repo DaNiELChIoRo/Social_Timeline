@@ -21,3 +21,32 @@ extension UILabel {
         return label
     }
 }
+
+class defaultLabel: UILabel {
+    
+    var title: String?
+    var fontSize: CGFloat?
+    var fontWeight: UIFont.Weight?
+    
+    override init(frame: CGRect){
+        super.init(frame: frame)
+    }
+    
+    init(title: String, fontSize: CGFloat, fontWeight: UIFont.Weight, textColor: UIColor, textAligment: NSTextAlignment) {
+        self.init()
+        self.title = title
+        self.fontSize = fontSize
+        self.fontWeight = fontWeight
+        
+        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: fontSize
+            , weight: fontWeight)]
+        
+        self.textColor = textColor
+        self.textAlignment = textAlignment
+        self.attributedText = NSAttributedString(string: title, attributes: attributes)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}

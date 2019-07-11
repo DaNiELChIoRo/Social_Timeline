@@ -24,19 +24,31 @@ class SubtitleTableViewCell: UITableViewCell {
         setupCell()
     }
     
+    let width = UIScreen.main.bounds.width
+    let height = UIScreen.main.bounds.height
+    
     func setupCell() {
         
-        addSubview(titleLabel!)
-        addSubview(starringLabel!)
-        addSubview(releaseYearTextLabel!)
+        let userInfoView = UIView()
+        userInfoView.translatesAutoresizingMaskIntoConstraints = false
+        userInfoView.backgroundColor = .blue
         
-        let h = UIScreen.main.bounds.height
-        self.heightAnchor.constraint(equalToConstant: h * 0.2)
-        addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]", alignment: .alignAllCenterX, view: ["v0" : titleLabel!]))
-        addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]", alignment: .alignAllCenterX, view: ["v0" : releaseYearTextLabel!]))
-        addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]", alignment: .alignAllCenterX, view: ["v0" : starringLabel!]))
+        userInfoView.addSubview(titleLabel!)
+        userInfoView.addSubview(starringLabel!)
+        userInfoView.addSubview(releaseYearTextLabel!)
         
-        addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-[v0]-10-[v1]-10-[v2]-|", alignment: .alignAllCenterX, view: [ "v0" : titleLabel!, "v1": releaseYearTextLabel!, "v2" : starringLabel!]))
+//        let h = UIScreen.main.bounds.height
+//        self.heightAnchor.constraint(equalToConstant: h * 0.2)
+        userInfoView.addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]", alignment: .alignAllCenterX, view: ["v0" : titleLabel!]))
+        userInfoView.addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]", alignment: .alignAllCenterX, view: ["v0" : releaseYearTextLabel!]))
+        userInfoView.addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]", alignment: .alignAllCenterX, view: ["v0" : starringLabel!]))
+        
+        userInfoView.addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-[v0]-10-[v1]-10-[v2]-|", alignment: .alignAllCenterX, view: [ "v0" : titleLabel!, "v1": releaseYearTextLabel!, "v2" : starringLabel!, "v3": userInfoView]))
+        
+        addSubview(userInfoView)
+        
+        addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]-|", alignment: .alignAllCenterX, view: ["v0" : userInfoView]))
+        addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-[v0(\(height*0.12))]-|", alignment: .alignAllCenterX, view: ["v0" : userInfoView]))
     }
 
 }
