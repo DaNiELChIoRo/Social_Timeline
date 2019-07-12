@@ -44,6 +44,7 @@
 		1ACB245A22B9899700361106 /* Usuario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACB245922B9899700361106 /* Usuario.swift */; };
 		1AE19EC322BAD66F00387D8B /* addPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE19EC222BAD66F00387D8B /* addPostView.swift */; };
 		1AE19EC522BADFBD00387D8B /* UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE19EC422BADFBD00387D8B /* UITextView.swift */; };
+		A011BC2822D9238400B131A7 /* PostContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A011BC2722D9238400B131A7 /* PostContentView.swift */; };
 		A76211AD180558FC93AF44FD /* Pods_Social_Timeline.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCF80998AD29F29A0EEADC99 /* Pods_Social_Timeline.framework */; };
 /* End PBXBuildFile section */
 
@@ -87,6 +88,7 @@
 		1ACB245922B9899700361106 /* Usuario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Usuario.swift; sourceTree = "<group>"; };
 		1AE19EC222BAD66F00387D8B /* addPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addPostView.swift; sourceTree = "<group>"; };
 		1AE19EC422BADFBD00387D8B /* UITextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextView.swift; sourceTree = "<group>"; };
+		A011BC2722D9238400B131A7 /* PostContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostContentView.swift; path = ../../../../../.Trash/PostContentView.swift; sourceTree = "<group>"; };
 		A90160347182DB1F74EC1CDD /* Pods-Social_Timeline.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Social_Timeline.debug.xcconfig"; path = "Target Support Files/Pods-Social_Timeline/Pods-Social_Timeline.debug.xcconfig"; sourceTree = "<group>"; };
 		CCF80998AD29F29A0EEADC99 /* Pods_Social_Timeline.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Social_Timeline.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F53F599E39F4978E994B5D6F /* Pods-Social_Timeline.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Social_Timeline.release.xcconfig"; path = "Target Support Files/Pods-Social_Timeline/Pods-Social_Timeline.release.xcconfig"; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 			children = (
 				1A74F97B22B9580800F0C6F5 /* NoPostsView.swift */,
 				1A55C7C922D3AB9F001248F0 /* ThumbnailImage.swift */,
+				A011BC2722D9238400B131A7 /* PostContentView.swift */,
 				1A23472B22D8DA31003123BA /* PostInfoView.swift */,
 			);
 			path = Views;
@@ -337,22 +340,11 @@
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Social_Timeline/Pods-Social_Timeline-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
-				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
-				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-Social_Timeline/Pods-Social_Timeline-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-Social_Timeline/Pods-Social_Timeline-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -388,6 +380,7 @@
 				1A74F97F22B95C4800F0C6F5 /* ProfileController.swift in Sources */,
 				1A38336C22CA7F6A00F2AC9A /* UIImageView.swift in Sources */,
 				1A23473222D8F470003123BA /* Post.swift in Sources */,
+				A011BC2822D9238400B131A7 /* PostContentView.swift in Sources */,
 				1ACB245A22B9899700361106 /* Usuario.swift in Sources */,
 				1A23473022D8F45B003123BA /* Films.swift in Sources */,
 				1A74F97C22B9580800F0C6F5 /* NoPostsView.swift in Sources */,

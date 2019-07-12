@@ -7,14 +7,21 @@
 //
 
 import UIKit
+import Foundation
 
 class PostsCoordinator: Coordinator {
-    let filmsVC = GenericTableViewController(items: Post.stubPosts, configure: { (cell: SubtitleTableViewCell, film) in
-        cell.titleLabel?.text = film.title
-        cell.releaseYearTextLabel?.text = "released year: \(film.releaseYear)"
-        cell.starringLabel?.text = film.starring
-    }) { (film) in
-        print(film.title)
+    let filmsVC = GenericTableViewController(items: Post.stubPosts, configure: { (cell: SubtitleTableViewCell, post) in
+        cell.titleLabel?.text = post.title
+        let date = Date(timeIntervalSince1970: Double(post.publishDate))
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = .current
+        dateFormatter.locale = Locale(identifier: "ES-mx")
+        dateFormatter.dateFormat = "EEE MMM dd HH:mm yyyy"
+        let stringDate = dateFormatter.string(from: date)
+        cell.releaseYearTextLabel?.text = "published: \(stringDate)"
+        cell.contentLabel?.text = post.content
+    }) { (post) in
+        print(post.title)
     }
     
     var childCoordinators = [Coordinator]()
@@ -28,10 +35,18 @@ class PostsCoordinator: Coordinator {
         navigationController.coordinator = self
         
         navigationController.navigationBar.prefersLargeTitles = true
-//        navigationController.navigationBar.
         navigationController.title = "Algo loco"
         
         start()
+    }
+    
+    func calculateDate(timestamp: Double) -> String {
+        let date = Date(timeIntervalSince1970: timestamp)
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = .current
+        dateFormatter.dateFormat = "ddd-MM-yyyy HH:mm"
+        let stringDate = dateFormatter.string(from: date)
+        return stringDate
     }
     
     func start() {

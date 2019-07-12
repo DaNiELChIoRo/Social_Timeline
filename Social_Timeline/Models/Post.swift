@@ -9,14 +9,14 @@
 import UIKit
 
 struct Post {
-    let username: String
+    let title: String
     let publishDate: Int
     let content: String
     
     static var stubPosts: [Post] {
         return [
-            Post(username: "DaNiEL", publishDate: 1562146200, content: "Algo locochon"),
-            Post(username: "Alex Mario", publishDate: 1562146310, content: "Feel app para saber tu estado de animo!")
+            Post(title: "DaNiEL", publishDate: 1562146200, content: "Algo locochon"),
+            Post(title: "Alex Mario", publishDate: 1562146310, content: "Feel app para saber tu estado de animo!")
         ]
     }
 }

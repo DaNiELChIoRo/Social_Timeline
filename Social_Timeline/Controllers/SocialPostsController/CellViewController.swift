@@ -10,10 +10,11 @@ import UIKit
 
 class SubtitleTableViewCell: UITableViewCell {
     
-    var starringLabel: UILabel? = UILabel()//.createDefaultLabel("", 24, .regular, .red, .left)
     var titleLabel: UILabel? = UILabel().createDefaultLabel("", 24, .regular, .black, .left)
     var releaseYearTextLabel: UILabel? = UILabel().createDefaultLabel("", 24, .regular, .black, .left)
+    var contentLabel: UILabel? = UILabel().createDefaultLabel("", 24, .regular, .black, .center)
     var postInfo:PostInfoView?
+    var postContent: PostContentView?
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -29,9 +30,13 @@ class SubtitleTableViewCell: UITableViewCell {
     func setupCell() {
         let imageSize = height*0.07
         self.postInfo =  PostInfoView(titleLabel: self.titleLabel , releaseYearText: self.releaseYearTextLabel, imageSize: imageSize)
+        self.postContent = PostContentView(content: contentLabel)
+        
         postInfo!.backgroundColor = .green
-        addSubview(postInfo!)
+        postContent!.backgroundColor = .magenta
+        addSubviews([postInfo!, postContent!])
         addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]-|", alignment: .alignAllCenterY, view: ["v0": postInfo!]))
-        addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-[v0(\(imageSize))]-|", alignment: .alignAllCenterX, view: ["v0": postInfo!]))
+        addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]-|", alignment: .alignAllCenterY, view: ["v0": postContent!]))
+        addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-[v0(\(imageSize))]-2-[v1(\(height*0.1))]-|", alignment: .alignAllCenterX, view: ["v0": postInfo!, "v1":postContent!]))
     }
 }
