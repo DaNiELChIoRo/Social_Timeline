@@ -10,19 +10,20 @@ import UIKit
 import Foundation
 
 class PostsCoordinator: Coordinator {
-    let filmsVC = GenericTableViewController(items: Post.stubPosts, configure: { (cell: SubtitleTableViewCell, post) in
-        cell.titleLabel?.text = post.title
-        let date = Date(timeIntervalSince1970: Double(post.publishDate))
-        let dateFormatter = DateFormatter()
-        dateFormatter.timeZone = .current
-        dateFormatter.locale = Locale(identifier: "ES-mx")
-        dateFormatter.dateFormat = "EEE MMM dd HH:mm yyyy"
-        let stringDate = dateFormatter.string(from: date)
-        cell.releaseYearTextLabel?.text = "published: \(stringDate)"
-        cell.contentLabel?.text = post.content
-    }) { (post) in
-        print(post.title)
-    }
+    let posts = [Post]()
+    let postsVC : GenericTableViewController<Post, UITableViewCell>?//(items: Post.stubPosts, configure: { (cell: SubtitleTableViewCell, post) in
+//        cell.titleLabel?.text = post.title
+//        let date = Date(timeIntervalSince1970: Double(post.publishDate))
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.timeZone = .current
+//        dateFormatter.locale = Locale(identifier: "ES-mx")
+//        dateFormatter.dateFormat = "EEE MMM dd HH:mm yyyy"
+//        let stringDate = dateFormatter.string(from: date)
+//        cell.releaseYearTextLabel?.text = "published: \(stringDate)"
+//        cell.contentLabel?.text = post.content
+//    }) { (post) in
+//        print(post.title)
+//    }
     
     var childCoordinators = [Coordinator]()
     weak var parentCoordinator: TabBarCoordinator?
@@ -40,21 +41,20 @@ class PostsCoordinator: Coordinator {
         start()
     }
     
-    func calculateDate(timestamp: Double) -> String {
-        let date = Date(timeIntervalSince1970: timestamp)
-        let dateFormatter = DateFormatter()
-        dateFormatter.timeZone = .current
-        dateFormatter.dateFormat = "ddd-MM-yyyy HH:mm"
-        let stringDate = dateFormatter.string(from: date)
-        return stringDate
+    func onAllPostsFetched(_ username: String, _ userimage: String, _ content:String, _ timestamp:Int) {
+        print("***** ALL POSTS CALLED: username: \(username), userimage: \(userimage), content: \(content), timestamp: \(timestamp)")
+    }
+    
+    func showErrorAlert(_ error: String){
+        print("Un Error ha ocurrido al intentar trear todos los posts, error: \(error)")
     }
     
     func start() {
-        filmsVC.title = "Say Something!"
+        postsVC.title = "Say Something!"
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonHandler))
-        filmsVC.navigationItem.rightBarButtonItem = addButton
+        postsVC.navigationItem.rightBarButtonItem = addButton
         navigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 1)
-        
+        RealtimeDatabase().fetchAllPosts(action: onAllPostsFetched, onError: showErrorAlert)
         navigationController.viewControllers = [filmsVC]
     }
     
