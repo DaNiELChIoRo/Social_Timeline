@@ -9,7 +9,7 @@
 import UIKit
 
 class PostsCoordinator: Coordinator {
-    let filmsVC = GenericTableViewController(items: Film.stubFilms, configure: { (cell: SubtitleTableViewCell, film) in
+    let filmsVC = GenericTableViewController(items: Post.stubPosts, configure: { (cell: SubtitleTableViewCell, film) in
         cell.titleLabel?.text = film.title
         cell.releaseYearTextLabel?.text = "released year: \(film.releaseYear)"
         cell.starringLabel?.text = film.starring

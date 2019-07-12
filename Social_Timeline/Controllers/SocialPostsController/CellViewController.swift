@@ -10,10 +10,10 @@ import UIKit
 
 class SubtitleTableViewCell: UITableViewCell {
     
-    var starringLabel: UILabel? = UILabel().createDefaultLabel("", 12, .regular, .red, .left)
-    var titleLabel: UILabel? = UILabel().createDefaultLabel("", 12, .regular, .black, .left)
-    var releaseYearTextLabel: UILabel? = UILabel().createDefaultLabel("", 12, .regular, .black, .left)
-//    let userImage = UIImageView()
+    var starringLabel: UILabel? = UILabel()//.createDefaultLabel("", 24, .regular, .red, .left)
+    var titleLabel: UILabel? = UILabel().createDefaultLabel("", 24, .regular, .black, .left)
+    var releaseYearTextLabel: UILabel? = UILabel().createDefaultLabel("", 24, .regular, .black, .left)
+    var postInfo:PostInfoView?
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -24,31 +24,14 @@ class SubtitleTableViewCell: UITableViewCell {
         setupCell()
     }
     
-    let width = UIScreen.main.bounds.width
     let height = UIScreen.main.bounds.height
     
     func setupCell() {
-        
-        let userInfoView = UIView()
-        userInfoView.translatesAutoresizingMaskIntoConstraints = false
-        userInfoView.backgroundColor = .blue
-        
-        userInfoView.addSubview(titleLabel!)
-        userInfoView.addSubview(starringLabel!)
-        userInfoView.addSubview(releaseYearTextLabel!)
-        
-//        let h = UIScreen.main.bounds.height
-//        self.heightAnchor.constraint(equalToConstant: h * 0.2)
-        userInfoView.addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]", alignment: .alignAllCenterX, view: ["v0" : titleLabel!]))
-        userInfoView.addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]", alignment: .alignAllCenterX, view: ["v0" : releaseYearTextLabel!]))
-        userInfoView.addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]", alignment: .alignAllCenterX, view: ["v0" : starringLabel!]))
-        
-        userInfoView.addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-[v0]-10-[v1]-10-[v2]-|", alignment: .alignAllCenterX, view: [ "v0" : titleLabel!, "v1": releaseYearTextLabel!, "v2" : starringLabel!, "v3": userInfoView]))
-        
-        addSubview(userInfoView)
-        
-        addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]-|", alignment: .alignAllCenterX, view: ["v0" : userInfoView]))
-        addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-[v0(\(height*0.12))]-|", alignment: .alignAllCenterX, view: ["v0" : userInfoView]))
+        let imageSize = height*0.07
+        self.postInfo =  PostInfoView(titleLabel: self.titleLabel , releaseYearText: self.releaseYearTextLabel, imageSize: imageSize)
+        postInfo!.backgroundColor = .green
+        addSubview(postInfo!)
+        addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]-|", alignment: .alignAllCenterY, view: ["v0": postInfo!]))
+        addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-[v0(\(imageSize))]-|", alignment: .alignAllCenterX, view: ["v0": postInfo!]))
     }
-
 }

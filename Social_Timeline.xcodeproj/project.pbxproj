@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A23472C22D8DA31003123BA /* PostInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A23472B22D8DA31003123BA /* PostInfoView.swift */; };
+		1A23472E22D8DD7E003123BA /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A23472D22D8DD7E003123BA /* Helpers.swift */; };
+		1A23473022D8F45B003123BA /* Films.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A23472F22D8F45B003123BA /* Films.swift */; };
+		1A23473222D8F470003123BA /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A23473122D8F470003123BA /* Post.swift */; };
 		1A38336C22CA7F6A00F2AC9A /* UIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A38336B22CA7F6A00F2AC9A /* UIImageView.swift */; };
 		1A55C7CA22D3AB9F001248F0 /* ThumbnailImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A55C7C922D3AB9F001248F0 /* ThumbnailImage.swift */; };
 		1A55C7CC22D3EF15001248F0 /* ReatimeDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A55C7CB22D3EF15001248F0 /* ReatimeDatabase.swift */; };
@@ -44,6 +48,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1A23472B22D8DA31003123BA /* PostInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostInfoView.swift; sourceTree = "<group>"; };
+		1A23472D22D8DD7E003123BA /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		1A23472F22D8F45B003123BA /* Films.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Films.swift; sourceTree = "<group>"; };
+		1A23473122D8F470003123BA /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		1A38336B22CA7F6A00F2AC9A /* UIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageView.swift; sourceTree = "<group>"; };
 		1A55C7C922D3AB9F001248F0 /* ThumbnailImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailImage.swift; sourceTree = "<group>"; };
 		1A55C7CB22D3EF15001248F0 /* ReatimeDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReatimeDatabase.swift; sourceTree = "<group>"; };
@@ -110,6 +118,7 @@
 			children = (
 				1A74F97B22B9580800F0C6F5 /* NoPostsView.swift */,
 				1A55C7C922D3AB9F001248F0 /* ThumbnailImage.swift */,
+				1A23472B22D8DA31003123BA /* PostInfoView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -189,6 +198,7 @@
 				1A38336B22CA7F6A00F2AC9A /* UIImageView.swift */,
 				1A6F4B5C22D6272A00E0DFBA /* UIAlert.swift */,
 				1A6F4B5E22D65D0B00E0DFBA /* UIImagePicker.swift */,
+				1A23472D22D8DD7E003123BA /* Helpers.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -207,6 +217,8 @@
 			isa = PBXGroup;
 			children = (
 				1ACB245922B9899700361106 /* Usuario.swift */,
+				1A23472F22D8F45B003123BA /* Films.swift */,
+				1A23473122D8F470003123BA /* Post.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -354,6 +366,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A23472C22D8DA31003123BA /* PostInfoView.swift in Sources */,
 				1A97DCCC22D53DEB008A6DC8 /* CoordinatedNavigationController.swift in Sources */,
 				1ACB245722B988CD00361106 /* Firebase.swift in Sources */,
 				1A74F97922B9523E00F0C6F5 /* CellViewController.swift in Sources */,
@@ -374,12 +387,15 @@
 				1A6F4B5F22D65D0B00E0DFBA /* UIImagePicker.swift in Sources */,
 				1A74F97F22B95C4800F0C6F5 /* ProfileController.swift in Sources */,
 				1A38336C22CA7F6A00F2AC9A /* UIImageView.swift in Sources */,
+				1A23473222D8F470003123BA /* Post.swift in Sources */,
 				1ACB245A22B9899700361106 /* Usuario.swift in Sources */,
+				1A23473022D8F45B003123BA /* Films.swift in Sources */,
 				1A74F97C22B9580800F0C6F5 /* NoPostsView.swift in Sources */,
 				1A97DCB222D4EEB0008A6DC8 /* CoordinatorProtocol.swift in Sources */,
 				1ACB245222B96FB500361106 /* UIInputText.swift in Sources */,
 				1AB09DB422B93C7A00E3EC81 /* AutoAnchors.swift in Sources */,
 				1A6F4B5D22D6272A00E0DFBA /* UIAlert.swift in Sources */,
+				1A23472E22D8DD7E003123BA /* Helpers.swift in Sources */,
 				1A55C7CC22D3EF15001248F0 /* ReatimeDatabase.swift in Sources */,
 				1ACB245022B96ABE00361106 /* UIButton.swift in Sources */,
 				1AB09DA422B9369500E3EC81 /* Social_Timeline.xcdatamodeld in Sources */,
