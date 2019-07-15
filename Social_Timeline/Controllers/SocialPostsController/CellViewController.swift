@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class SubtitleTableViewCell: UITableViewCell {
     
@@ -32,13 +33,25 @@ class SubtitleTableViewCell: UITableViewCell {
         let imageSize = height*0.07
         self.postInfo =  PostInfoView(titleLabel: self.titleLabel , releaseYearText: self.releaseYearTextLabel, imageSize: imageSize, image: userImage!)
         self.postContent = PostContentView(content: contentLabel)
-        
 //        postInfo!.backgroundColor = .green
-//        postContent!.backgroundColor = .magenta
+//        postContent!.backgroundColor = .blue
+        postContent!.sizeToFit()
         addSubviews([postInfo!, postContent!])
-        addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]-|", alignment: .alignAllCenterY, view: ["v0": postInfo!]))
-        addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]-|", alignment: .alignAllCenterY, view: ["v0": postContent!]))
-        addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-[v0(\(imageSize))]-2-[v1(\(height*0.1))]-|", alignment: .alignAllCenterX, view: ["v0": postInfo!, "v1":postContent!]))
+        postInfo!.snp.makeConstraints { (make) in
+            make.width.equalToSuperview().offset(-16)
+            make.centerX.equalToSuperview()
+            make.top.equalToSuperview().offset(8)
+            make.height.equalTo(imageSize)
+        }
+        
+        postContent!.snp.makeConstraints { (make) in
+            make.top.equalTo(postInfo!.snp.bottom)
+            make.centerX.equalToSuperview()
+            make.width.equalToSuperview().offset(-16)
+            make.height.equalTo((self.contentLabel?.snp.height)!)
+            make.bottom.equalToSuperview().offset(-8)
+        }
+        
     }
     
     func setImage(image: UIImage) {
