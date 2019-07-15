@@ -65,15 +65,19 @@ class PostsCoordinator: Coordinator {
         navigationController.viewControllers = [postsVC]
     }
     
+    func appendPost(post: Post){
+        RealtimeDatabase().setUserPost(timestamp: post.publishDate, content: post.content, multimedia: false)
+    }
+    
     @objc func addButtonHandler(){
         print("addButtonHandler!")
-        
-        let secondPost = Post(title: "Alex Mario", publishDate: 1562146310, content: "Feel app para saber tu estado de animo!", userimage:
-            UIImage(named:"avatar")!)
-        postsVC.appendItemToArray(item: secondPost)
-        print("TableView is going to append new post!!")
-//        let addPost = addPostView()
-//        navigationController.pushViewController(addPost, animated: true)
+//        let secondPost = Post(title: "Alex Mario", publishDate: 1562146310, content: "Feel app para saber tu estado de animo!", userimage:
+//            UIImage(named:"avatar")!)
+//        postsVC.appendItemToArray(item: secondPost)
+//        print("TableView is going to append new post!!")
+        let addPost = addPostView()
+        navigationController.navigationBar.prefersLargeTitles = false
+        navigationController.pushViewController(addPost, animated: true)
     }
     
 }

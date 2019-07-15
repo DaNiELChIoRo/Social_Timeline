@@ -29,7 +29,7 @@ class RealtimeDatabase {
     func setUserPost(timestamp: Int, content: String, multimedia: Bool){
         ref = Database.database().reference()
         ref.child("post").childByAutoId().setValue([
-            "author": userid,
+            "author": userid!,
             "content": content,
             "timestamp": timestamp,
             "multimedia": multimedia
@@ -85,9 +85,7 @@ class RealtimeDatabase {
     func fetchAllPosts(action: @escaping (_ username: String, _ userimage:String, _ content: String, _ timestamp: Int) -> Void, onError: @escaping (_ error: String) -> Void) {
         ref = Database.database().reference()    
         ref.child("post").observeSingleEvent(of: .value, with: { (snaptshot) in
-//            guard let values = snaptshot.value as? NSDictionary else { return }
             for child in snaptshot.children {
-//                guard let snap = child as? DataSnapshot else { return }
                 let snap = snaptshot.childSnapshot(forPath: (child as AnyObject).key)
 
                 print("children: \(snap.key)")
