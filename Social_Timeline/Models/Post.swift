@@ -12,11 +12,12 @@ struct Post {
     let title: String
     let publishDate: Int
     let content: String
+    let userimage: UIImage
     
-    static var stubPosts: [Post] {
-        return [
-            Post(title: "DaNiEL", publishDate: 1562146200, content: "Algo locochon"),
-            Post(title: "Alex Mario", publishDate: 1562146310, content: "Feel app para saber tu estado de animo!")
-        ]
-    }
+//    static var stubPosts: [Post] {
+//        return [
+//            Post(title: "DaNiEL", publishDate: 1562146200, content: "Algo locochon", userimage: "avatar"),
+//            Post(title: "Alex Mario", publishDate: 1562146310, content: "Feel app para saber tu estado de animo!", userimage: "avatar")
+//        ]
+//    }
 }

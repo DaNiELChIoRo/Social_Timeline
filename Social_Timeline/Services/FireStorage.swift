@@ -40,7 +40,6 @@ class FireStorage {
                 onsucess(imagePath)
             }
         }
-        
     }
     
 }

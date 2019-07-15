@@ -36,6 +36,7 @@ class PostsCoordinator: Coordinator {
                     let stringDate = dateFormatter.string(from: date)
                     cell.releaseYearTextLabel?.text = "published: \(stringDate)"
                     cell.contentLabel?.text = post.content
+                    cell.setImage(image: post.userimage)
                 }) { (post) in
                     print(post.title)
                 }
@@ -43,21 +44,10 @@ class PostsCoordinator: Coordinator {
         start()
     }
     
-    func fillPostsCells() {
-        let firstPost = Post(title: "DaNiEL", publishDate: 1562146200, content: "Algo locochon")
-        posts.append(firstPost)
-        let indexPath = IndexPath(row: posts.count-1, section: 0)
-        postsVC.tableView.insertRows(at: [indexPath], with: .automatic)
-        let secondPost = Post(title: "Alex Mario", publishDate: 1562146310, content: "Feel app para saber tu estado de animo!")
-        posts.append(secondPost)
-        let indexPath1 = IndexPath(row: posts.count-1, section: 0)
-        postsVC.tableView.insertRows(at: [indexPath1], with: .automatic)
-        print("Elements in posts array: \(posts)")
-    }
-    
     func onAllPostsFetched(_ username: String, _ userimage: String, _ content:String, _ timestamp:Int) {
         print("***** ALL POSTS CALLED: username: \(username), userimage: \(userimage), content: \(content), timestamp: \(timestamp)")
-        let fetchPost = Post(title: username, publishDate: timestamp, content: content)
+        let userImage = UIImage(contentsOfFile: userimage)!
+        let fetchPost = Post(title: username, publishDate: timestamp, content: content, userimage: userImage)
         postsVC.appendItemToArray(item: fetchPost)
     }
     
@@ -72,14 +62,14 @@ class PostsCoordinator: Coordinator {
         postsVC.navigationItem.rightBarButtonItem = addButton
         navigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 1)
         RealtimeDatabase().fetchAllPosts(action: onAllPostsFetched, onError: showErrorAlert)
-//        fillPostsCells()        
         navigationController.viewControllers = [postsVC]
     }
     
     @objc func addButtonHandler(){
         print("addButtonHandler!")
         
-        let secondPost = Post(title: "Alex Mario", publishDate: 1562146310, content: "Feel app para saber tu estado de animo!")
+        let secondPost = Post(title: "Alex Mario", publishDate: 1562146310, content: "Feel app para saber tu estado de animo!", userimage:
+            UIImage(named:"avatar")!)
         postsVC.appendItemToArray(item: secondPost)
         print("TableView is going to append new post!!")
 //        let addPost = addPostView()

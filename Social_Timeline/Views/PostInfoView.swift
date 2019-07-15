@@ -16,16 +16,18 @@ class PostInfoView: UIView {
     var userInfo: UIView? = UIView()
     var userImage:ThumbnailImageView?
     var imageSize: CGFloat!
+    var image: UIImage?
     
     override init(frame: CGRect){
         super.init(frame: frame)
     }
     
-    convenience init(titleLabel: UILabel?, releaseYearText: UILabel?, imageSize: CGFloat?){
+    convenience init(titleLabel: UILabel?, releaseYearText: UILabel?, imageSize: CGFloat?, image: UIImage?){
         self.init()
         self.titleLabel = titleLabel!
         self.releaseYearTextLabel = releaseYearText!
         self.imageSize = imageSize!
+        self.image = image!
         setupView()
     }
     
@@ -40,8 +42,7 @@ class PostInfoView: UIView {
         
         translatesAutoresizingMaskIntoConstraints = false
         
-        userImage = ThumbnailImageView(image: UIImage(named: "avatar")!, delegate: self)
-        userImage!.backgroundColor = .red
+        userImage = ThumbnailImageView(image: self.image!)
         
         userInfo!.translatesAutoresizingMaskIntoConstraints = false
         userInfo!.backgroundColor = .lightGray
@@ -56,14 +57,14 @@ class PostInfoView: UIView {
         
         userInfo!.addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-6-[v0]-2-[v1]-6-|", alignment: .alignAllCenterX, view: [ "v0" : titleLabel!, "v1": releaseYearTextLabel!]))
         self.addSubviews([userInfo!, userImage!])
-        addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0(\(imageSize-16))]-20-[v1]-|", alignment: .alignAllCenterY, view: ["v0": userImage!, "v1": userInfo!]))
+        addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0(\(imageSize-16))]-10-[v1]-|", alignment: .alignAllCenterY, view: ["v0": userImage!, "v1": userInfo!]))
         addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-[v0]-|", alignment: .alignAllCenterX, view: ["v0": userImage!]))
         addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-[v0]-|", alignment: .alignAllCenterX, view: ["v0": userInfo!]))
         
     }
     
 }
-
-extension PostInfoView: userImageDelegate {
-    func changeUserImage() { }
-}
+//
+//extension PostInfoView: userImageDelegate {
+//    func changeUserImage() { }
+//}

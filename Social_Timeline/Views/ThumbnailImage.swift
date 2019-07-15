@@ -14,13 +14,12 @@ protocol userImageDelegate {
 
 class ThumbnailImageView: UIView {
     
-    var image: UIImage? = UIImage(named: "avatar")
+    var image: UIImage? //= nil ?? UIImage(named: "avatar")
     var userImage: UIImageView?
     var userImageDelegate: userImageDelegate!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupView()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -31,6 +30,13 @@ class ThumbnailImageView: UIView {
         self.init()
         self.image = image
         self.userImageDelegate = delegate
+        setupView()
+    }
+    
+    convenience init(image:UIImage){
+        self.init()
+        self.image = image
+        setupView()
     }
     
     override func layoutSubviews() {
