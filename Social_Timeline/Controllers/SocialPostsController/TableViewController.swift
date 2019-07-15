@@ -56,6 +56,12 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
         let item = items[indexPath.row]
         selectHandler(item)
     }
+    
+    func appendItemToArray(item: T){
+        items.append(item)
+        let indexPath = IndexPath(row: items.count-1, section: 0)
+        tableView.insertRows(at: [indexPath], with: .automatic)
+    }
 
 }
 
