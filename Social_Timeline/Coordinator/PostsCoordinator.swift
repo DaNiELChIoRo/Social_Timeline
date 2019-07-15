@@ -42,6 +42,7 @@ class PostsCoordinator: Coordinator {
                 }
         
         start()
+        RealtimeDatabase().fetchAllPosts(action: onAllPostsFetched, onError: showErrorAlert)
     }
     
     func onAllPostsFetched(_ username: String, _ userimage: String, _ content:String, _ timestamp:Int) {
@@ -61,7 +62,6 @@ class PostsCoordinator: Coordinator {
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonHandler))
         postsVC.navigationItem.rightBarButtonItem = addButton
         navigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 1)
-        RealtimeDatabase().fetchAllPosts(action: onAllPostsFetched, onError: showErrorAlert)
         navigationController.viewControllers = [postsVC]
     }
     

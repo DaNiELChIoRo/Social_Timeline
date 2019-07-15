@@ -25,6 +25,17 @@ class RealtimeDatabase {
         ref.child("users").child(userid!).updateChildValues(value)
     }
     
+    //MARK:- WHEN USER CREATE POST
+    func setUserPost(timestamp: Int, content: String, multimedia: Bool){
+        ref = Database.database().reference()
+        ref.child("post").childByAutoId().setValue([
+            "author": userid,
+            "content": content,
+            "timestamp": timestamp,
+            "multimedia": multimedia
+            ])
+    }
+    
     func fetchUserInfo(action: @escaping (_ username: String, _ email: String) -> Void, callback: @escaping (_ error:String) -> Void) {
         ref = Database.database().reference()
         ref.child("users").child(userid!).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -72,24 +83,28 @@ class RealtimeDatabase {
     }
     
     func fetchAllPosts(action: @escaping (_ username: String, _ userimage:String, _ content: String, _ timestamp: Int) -> Void, onError: @escaping (_ error: String) -> Void) {
-        ref = Database.database().reference()
+        ref = Database.database().reference()    
         ref.child("post").observeSingleEvent(of: .value, with: { (snaptshot) in
 //            guard let values = snaptshot.value as? NSDictionary else { return }
             for child in snaptshot.children {
-                guard let snap = child as? DataSnapshot else { return }
+//                guard let snap = child as? DataSnapshot else { return }
+                let snap = snaptshot.childSnapshot(forPath: (child as AnyObject).key)
+
+                print("children: \(snap.key)")
                 guard let value = snap.value as? NSDictionary else { return }
                 guard let author = value["author"] as? String,
                 let content = value["content"] as? String,
                 let timpestamp = value["timestamp"] as? Int else { return }
                 func _action(_ username: String, _ userImage: String) {
-                    
+
                     action(username, userImage, content, timpestamp)
                 }
                 self.fetchAuthorInfo(authorID: author, action: _action, onError: onError)
             }
-            
-            
-        }) { (error) in
+
+
+        })
+        { (error) in
             print("An error ocurred while trying to fetch the Posts, error: \(error)")
             onError(error.localizedDescription)
         }

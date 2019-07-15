@@ -45,7 +45,7 @@ class PostInfoView: UIView {
         userImage = ThumbnailImageView(image: self.image!)
         
         userInfo!.translatesAutoresizingMaskIntoConstraints = false
-        userInfo!.backgroundColor = .lightGray
+//        userInfo!.backgroundColor = .lightGray
         
         titleLabel!.font = UIFont.boldSystemFont(ofSize: 11)
         releaseYearTextLabel!.font = UIFont.systemFont(ofSize: 10)
@@ -57,14 +57,10 @@ class PostInfoView: UIView {
         
         userInfo!.addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-6-[v0]-2-[v1]-6-|", alignment: .alignAllCenterX, view: [ "v0" : titleLabel!, "v1": releaseYearTextLabel!]))
         self.addSubviews([userInfo!, userImage!])
-        addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0(\(imageSize-16))]-10-[v1]-|", alignment: .alignAllCenterY, view: ["v0": userImage!, "v1": userInfo!]))
+        addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0(\(imageSize-16))]-2-[v1]-|", alignment: .alignAllCenterY, view: ["v0": userImage!, "v1": userInfo!]))
         addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-[v0]-|", alignment: .alignAllCenterX, view: ["v0": userImage!]))
         addConstraints(self.LayoutWithVisualFormat(visualFormat: "V:|-[v0]-|", alignment: .alignAllCenterX, view: ["v0": userInfo!]))
         
     }
     
 }
-//
-//extension PostInfoView: userImageDelegate {
-//    func changeUserImage() { }
-//}

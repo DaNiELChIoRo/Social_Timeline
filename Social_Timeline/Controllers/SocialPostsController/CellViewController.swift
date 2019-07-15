@@ -33,8 +33,8 @@ class SubtitleTableViewCell: UITableViewCell {
         self.postInfo =  PostInfoView(titleLabel: self.titleLabel , releaseYearText: self.releaseYearTextLabel, imageSize: imageSize, image: userImage!)
         self.postContent = PostContentView(content: contentLabel)
         
-        postInfo!.backgroundColor = .green
-        postContent!.backgroundColor = .magenta
+//        postInfo!.backgroundColor = .green
+//        postContent!.backgroundColor = .magenta
         addSubviews([postInfo!, postContent!])
         addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]-|", alignment: .alignAllCenterY, view: ["v0": postInfo!]))
         addConstraints(self.LayoutWithVisualFormat(visualFormat: "H:|-[v0]-|", alignment: .alignAllCenterY, view: ["v0": postContent!]))
