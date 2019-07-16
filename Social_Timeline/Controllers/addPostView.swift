@@ -32,12 +32,20 @@ class addPostView: UIViewController {
     func configureLayOut() {
         view.backgroundColor = .white
         view.addSubviews([postInput!, postButton!])
-        postInput!.backgroundColor = .red
-        postInput!.returnKeyType = .done
+        
+//        postInput!.backgroundColor = .red
+        postInput!.textAlignment = .left
         let textViewDelegate = self
+        
         guard let tabBarHeight = navigationController?.tabBarController?.tabBar.frame.height else { return }
         postInput!.delegate = textViewDelegate
-        view.autoAnchorsToTop(view: postInput!, topMargin: 20, horizontalPadding: 5, heightPercentage: 0.2)
+//        view.autoAnchorsToTop(view: postInput!, topMargin: 20, horizontalPadding: 5, heightPercentage: 0.2)
+        postInput!.snp.makeConstraints { (make) in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(16)
+            make.width.equalToSuperview().offset(-width*0.1)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(height*0.4)
+        }
         postButton!.autoAnchorsToBottom(bottomMargin: tabBarHeight, horizontalPadding: width*0.1, heightPercentage: 0.07)
     }
     

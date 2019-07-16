@@ -42,6 +42,15 @@ class PostsCoordinator: Coordinator {
                 }
         
         start()
+        startFecthingAllPosts()
+        postsVC.refreshControl!.isRefreshing ? postsVC.refreshControl!.endRefreshing() : nil
+    }
+    
+    func startFecthingAllPosts(){
+        posts = [Post]()
+        DispatchQueue.main.async {
+            self.postsVC!.tableView.reloadData()
+        }
         RealtimeDatabase().fetchAllPosts(action: onAllPostsFetched, onError: showErrorAlert)
     }
     
@@ -50,6 +59,10 @@ class PostsCoordinator: Coordinator {
         let userImage = UIImage(contentsOfFile: userimage)!
         let fetchPost = Post(title: username, publishDate: timestamp, content: content, userimage: userImage)
         postsVC.appendItemToArray(item: fetchPost)
+        DispatchQueue.main.async {
+            self.postsVC.tableView.reloadData()
+        }
+//        postsArraySorter()
     }
     
     func showErrorAlert(_ error: String){
@@ -65,16 +78,35 @@ class PostsCoordinator: Coordinator {
         navigationController.viewControllers = [postsVC]
     }
     
+    func postsArraySorter(){
+        var memory:Post?
+        var sortedArray = [Post]()
+        for post in posts {
+            if memory != nil {
+                if (memory!.publishDate < post.publishDate) {
+                    sortedArray.append(post)
+                    memory = post
+                } else {
+                    if let index = sortedArray.firstIndex(where: { $0.publishDate > post.publishDate }) {
+                        let _memory = sortedArray[index]
+                        sortedArray.insert(post, at: index)
+                        sortedArray.append(_memory)
+                    }
+                }
+            } else if memory == nil {
+                sortedArray.append(post)
+                memory = post
+            }
+        }
+        posts = sortedArray
+    }
+    
     func appendPost(post: Post){
-//        RealtimeDatabase().setUserPost(timestamp: post.publishDate, content: post.content, multimedia: false)
+        
     }
     
     @objc func addButtonHandler(){
         print("addButtonHandler!")
-//        let secondPost = Post(title: "Alex Mario", publishDate: 1562146310, content: "Feel app para saber tu estado de animo!", userimage:
-//            UIImage(named:"avatar")!)
-//        postsVC.appendItemToArray(item: secondPost)
-//        print("TableView is going to append new post!!")
         let addPost = addPostView()
         navigationController.navigationBar.prefersLargeTitles = false
         navigationController.pushViewController(addPost, animated: true)

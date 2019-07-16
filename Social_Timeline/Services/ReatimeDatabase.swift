@@ -83,8 +83,12 @@ class RealtimeDatabase {
     }
     
     func fetchAllPosts(action: @escaping (_ username: String, _ userimage:String, _ content: String, _ timestamp: Double) -> Void, onError: @escaping (_ error: String) -> Void) {
-        ref = Database.database().reference()    
-        ref.child("post").observeSingleEvent(of: .value, with: { (snaptshot) in
+        ref = Database.database().reference()
+        let orderedChildren = (ref.child("post").queryOrdered(byChild: "timestamp"))
+//        let orderedChildren = (ref.child("post").queryOrderedByKey())
+//        ref.child("post")
+            orderedChildren
+                .observeSingleEvent(of: .value, with: { (snaptshot) in
             for child in snaptshot.children {
                 let snap = snaptshot.childSnapshot(forPath: (child as AnyObject).key)
 
@@ -92,14 +96,37 @@ class RealtimeDatabase {
                 guard let value = snap.value as? NSDictionary else { return }
                 guard let author = value["author"] as? String,
                 let content = value["content"] as? String,
-                let timpestamp = value["timestamp"] as? Double else { return }
-                func _action(_ username: String, _ userImage: String) {
-
-                    action(username, userImage, content, timpestamp)
+                let timestamp = value["timestamp"] as? Double else { return }
+                
+                self.ref.child("users").child(author).observeSingleEvent(of: .value, with: { (snapshot) in
+                    guard let value = snapshot.value as? NSDictionary else { return }
+                    guard let username = value["username"] as? String,
+                        let userimage = value["userimage"] as? String else { return }
+                    
+                    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                    let localURL = documentsURL.appendingPathComponent("\(username)_avatar.jpeg")
+                    let storageRef = Storage.storage().reference().child(userimage)
+                    storageRef.write(toFile: localURL) { (url, error) in
+                        if let error = error {
+                            print("error trying to download the file, Error: \(error.localizedDescription)")
+                            onError(error.localizedDescription)
+                        } else if let imagePath = url?.path {
+                            
+                            action(username, imagePath, content, timestamp)
+                        }
+                    }
+                    
+                })  { (error) in
+                        print("Error while trying to access user info, Error: \(error)")
+                        onError(error.localizedDescription)
                 }
-                self.fetchAuthorInfo(authorID: author, action: _action, onError: onError)
+                
+//                func _action(_ username: String, _ userImage: String) {
+//
+//                    action(username, userImage, content, timpestamp)
+//                }
+//                self.fetchAuthorInfo(authorID: author, action: _action, onError: onError)
             }
-
 
         })
         { (error) in
