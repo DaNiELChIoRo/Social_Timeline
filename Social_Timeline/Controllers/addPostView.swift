@@ -11,37 +11,34 @@ import SnapKit
 
 class addPostView: UIViewController {
     
-    var postInput: UITextView? = UITextView().createEditableTextView(placeholder: "Just say anything!", textSize: 24, keyboard: .alphabet)
+    var postInput: UITextView?
     var postButton: UIButton?
     
-    let tapGesture = UIGestureRecognizer(target: self, action: #selector(tapGestureHandler))
     let height = UIScreen.main.bounds.height
     let width = UIScreen.main.bounds.width
+    let placeholder = "Just say anything!"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        configureLayOut()
     }
     
     func setupView() {
-        
         postButton = UIButton().createDefaultButton("Postear", .red, 10, #selector(postButtonHandler))
-        
-        guard let tabBarHeight = navigationController?.tabBarController?.tabBar.frame.height else { return }
+        postInput = UITextView().createEditableTextView(placeholder: placeholder, textSize: 24, keyboard: .alphabet)
+    }
+    
+    func configureLayOut() {
         view.backgroundColor = .white
-//        view.addGestureRecognizer(tapGesture)
         view.addSubviews([postInput!, postButton!])
         postInput!.backgroundColor = .red
+        postInput!.returnKeyType = .done
         let textViewDelegate = self
+        guard let tabBarHeight = navigationController?.tabBarController?.tabBar.frame.height else { return }
         postInput!.delegate = textViewDelegate
         view.autoAnchorsToTop(view: postInput!, topMargin: 20, horizontalPadding: 5, heightPercentage: 0.2)
-        postButton!.autoAnchorsToBottom(bottomMargin: tabBarHeight, horizontalPadding: 50, heightPercentage: 0.07)
-//        postButton!.snp.makeConstraints { (make) in
-//            make.bottom.equalToSuperview().offset(-(tabBarHeight + 16))
-//            make.height.equalTo(height*0.07)
-//            make.width.equalTo(width*0.6)
-//            make.centerX.equalToSuperview()
-//        }
+        postButton!.autoAnchorsToBottom(bottomMargin: tabBarHeight, horizontalPadding: width*0.1, heightPercentage: 0.07)
     }
     
     @objc func postButtonHandler() {
@@ -51,13 +48,11 @@ class addPostView: UIViewController {
         RealtimeDatabase().setUserPost(timestamp: timestamp, content: content, multimedia: false)
     }
     
-    @objc func tapGestureHandler(){
-        print("tapGestureHandler")
-        isEditing = false
+    deinit {
+        print("destroying the addPostView!")
+        postButton = nil
     }
-    
-    
-    
+
 }
 
 extension addPostView: UITextViewDelegate{
@@ -69,12 +64,20 @@ extension addPostView: UITextViewDelegate{
         }
     }
     
-    
-    
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
-            textView.text = "Placeholder"
+            textView.text = placeholder
             textView.textColor = UIColor.lightGray
         }
+    }
+    
+    //Since the TextView does not implement the UITextFieldDelegate Protocol!!
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if text == "\n" {
+            print("return Key pressed!!")
+            textView.resignFirstResponder()
+            return false
+        }
+        return true
     }
 }

@@ -13,9 +13,22 @@ extension UITextView {
     func createEditableTextView(placeholder: String, textSize:CGFloat, keyboard: UIKeyboardType) -> UITextView {
         let textView = UITextView()
 //        let textViewDelegate:UITextViewDelegate = defaultTextViewDelegate()
-//        textView.delegate = textViewDelegate
         textView.keyboardType = keyboard
         textView.returnKeyType = .done
+        textView.textColor = .lightGray
+        textView.font = UIFont.systemFont(ofSize: textSize)
+        textView.text = placeholder
+        textView.isEditable = true
+        textView.textAlignment = .center
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        return textView
+    }
+    
+    func createEditableTextViewWithDelegate(placeholder: String, textSize:CGFloat, keyboard: UIKeyboardType, delegate: UITextFieldDelegate) -> UITextView {
+        let textView = UITextView()
+        textView.keyboardType = keyboard
+        textView.returnKeyType = .done
+        textView.enablesReturnKeyAutomatically = true
         textView.textColor = .lightGray
         textView.font = UIFont.systemFont(ofSize: textSize)
         textView.text = placeholder
