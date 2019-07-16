@@ -10,7 +10,7 @@ import UIKit
 
 struct Post {
     let title: String
-    let publishDate: Int
+    let publishDate: Double
     let content: String
     let userimage: UIImage
     

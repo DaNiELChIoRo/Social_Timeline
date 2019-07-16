@@ -26,7 +26,7 @@ class RealtimeDatabase {
     }
     
     //MARK:- WHEN USER CREATE POST
-    func setUserPost(timestamp: Int, content: String, multimedia: Bool){
+    func setUserPost(timestamp: Double, content: String, multimedia: Bool){
         ref = Database.database().reference()
         ref.child("post").childByAutoId().setValue([
             "author": userid!,
@@ -82,7 +82,7 @@ class RealtimeDatabase {
         }
     }
     
-    func fetchAllPosts(action: @escaping (_ username: String, _ userimage:String, _ content: String, _ timestamp: Int) -> Void, onError: @escaping (_ error: String) -> Void) {
+    func fetchAllPosts(action: @escaping (_ username: String, _ userimage:String, _ content: String, _ timestamp: Double) -> Void, onError: @escaping (_ error: String) -> Void) {
         ref = Database.database().reference()    
         ref.child("post").observeSingleEvent(of: .value, with: { (snaptshot) in
             for child in snaptshot.children {
@@ -92,7 +92,7 @@ class RealtimeDatabase {
                 guard let value = snap.value as? NSDictionary else { return }
                 guard let author = value["author"] as? String,
                 let content = value["content"] as? String,
-                let timpestamp = value["timestamp"] as? Int else { return }
+                let timpestamp = value["timestamp"] as? Double else { return }
                 func _action(_ username: String, _ userImage: String) {
 
                     action(username, userImage, content, timpestamp)

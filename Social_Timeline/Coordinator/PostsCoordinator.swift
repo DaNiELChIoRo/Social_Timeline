@@ -45,7 +45,7 @@ class PostsCoordinator: Coordinator {
         RealtimeDatabase().fetchAllPosts(action: onAllPostsFetched, onError: showErrorAlert)
     }
     
-    func onAllPostsFetched(_ username: String, _ userimage: String, _ content:String, _ timestamp:Int) {
+    func onAllPostsFetched(_ username: String, _ userimage: String, _ content:String, _ timestamp:Double) {
         print("***** ALL POSTS CALLED: username: \(username), userimage: \(userimage), content: \(content), timestamp: \(timestamp)")
         let userImage = UIImage(contentsOfFile: userimage)!
         let fetchPost = Post(title: username, publishDate: timestamp, content: content, userimage: userImage)
@@ -66,7 +66,7 @@ class PostsCoordinator: Coordinator {
     }
     
     func appendPost(post: Post){
-        RealtimeDatabase().setUserPost(timestamp: post.publishDate, content: post.content, multimedia: false)
+//        RealtimeDatabase().setUserPost(timestamp: post.publishDate, content: post.content, multimedia: false)
     }
     
     @objc func addButtonHandler(){
