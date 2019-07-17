@@ -24,16 +24,15 @@ class ProfileController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
-        configureLayout()
-       
     }
     
     convenience init(username: String, useremail: String){
         self.init()
         self.userName = UILabel().createDefaultLabel(username, 24, .bold, .black, .center)
         self.userEmail = UILabel().createDefaultLabel(useremail, 24, .bold, .black, .center)
-         self.title = username
+        self.title = username
+        setupView()
+        configureLayout()
     }
     
     func receiveUserData(username: String, useremail: String) {
