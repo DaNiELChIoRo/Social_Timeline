@@ -92,6 +92,7 @@ class ProfileController: UIViewController {
         switch sender {
         case eliminateAcountButton:
             print("elminateAccountButtonHandler")
+            coordinator?.eliminateAccount()
         case ressetPassButton:
             print("ressetPasswordButtonHandler")
         case logOutButton:

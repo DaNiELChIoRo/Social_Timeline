@@ -8,25 +8,32 @@
 
 import Firebase
 
-protocol FirebaseUserCreated {
-    func onUserCreated(user:Usuario)
-    func onUserLogged(user:Usuario)
+
+protocol userDelegate {
+    func onError(error: String)
+    func createUser(user: Usuario)
+    func logInUser(user: Usuario)    
+    func elimateUser()
+}
+
+enum AuthError: Error {
+    case LoginError
+    case gettingUserError
 }
 
 class FirebaseService {
     
     var userDelegate: userDelegate!
-    var firebaseUserCreatedDelegate: FirebaseUserCreated!
     
     let Auth = Firebase.Auth.self
     
     init() { }
     
-    init(delegateFirebaseUser: FirebaseUserCreated){
-        self.firebaseUserCreatedDelegate = delegateFirebaseUser
+    init(userDelegate: userDelegate){
+        self.userDelegate = userDelegate
     }
     
-    func getUser() -> Usuario? {
+    func getUser() throws -> Usuario? {
         var usuario = Usuario()
         let user = Auth.auth().currentUser
         if let user = user {
@@ -35,33 +42,35 @@ class FirebaseService {
             usuario.username = user.displayName
             return usuario
         } else {
-            return nil
+            throw AuthError.gettingUserError
         }
     }
     
-    func registerUser(username: String, email: String, password:String, callback: @escaping (_ error:String) -> Void) {
+    func registerUser(username: String, email: String, password:String) {
         Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
             guard let user = result?.user else {
-                let errorMessage = error!.localizedDescription
-                callback(errorMessage)
+                if let error = error {
+                    print("Somethign went wrong while trying to create new user, error: \(error)")
+                    self.userDelegate.onError(error: "Algo ha ocurrido al intentar crear el usuario, error code: " + error.localizedDescription)
+                }
                 return
             }
             let usuario = Usuario(uid: user.uid, username: username, email: user.email)
-            self.firebaseUserCreatedDelegate.onUserCreated(user: usuario)
+            self.userDelegate.createUser(user: usuario)
         }
     }
     
-    func signIn(email:String, password:String, callback: @escaping (_ error:String) -> Void) {
+    func signIn(email:String, password:String) {
         Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
             guard let user = result?.user else {
                 if let error = error {
                     print("Somethign went wrong while singin with the user, error: \(error)")
-                    callback(error.localizedDescription)
+                    self.userDelegate.onError(error: "Algo ha ocurrido al intentar entrar con el email \(email), error code: " + error.localizedDescription)
                 }
                 return
             }
             let usuario = Usuario(uid: user.uid, username: user.email)
-            self.firebaseUserCreatedDelegate.onUserLogged(user: usuario)
+            self.userDelegate.logInUser(user: usuario)
         }
     }
     
@@ -72,11 +81,20 @@ class FirebaseService {
             handler()
         } catch let error as NSError {
             print("An error ocurred while trying to singOut, error: \(error)")
+            self.userDelegate?.onError(error: "Error al intentar deslogear el usuario, error code: " + error.localizedDescription)
         }
     }
     
-}
-
-protocol userDelegate {
-    func createUser()
+    func eliminateAccount() {
+        guard let user =  Auth.auth().currentUser else { return }
+        user.delete { (error) in
+            if let error = error {
+                print("Error ocurred while trying to eliminate user account!, Error: ", error.localizedDescription)
+                self.userDelegate.onError(error: error.localizedDescription)
+            } else {
+                self.userDelegate.elimateUser()
+            }
+        }
+    }
+    
 }
