@@ -32,6 +32,7 @@ class RegisterController: UIViewController {
         userNameInput!.autoAnchorsXCenter(topView: registerTitle!, topMargin: 20, horizontalPadding: nil, heightPercentage: 0.08, widthPercentage: 0.7)
         
         view.addSubview(emailInput!)
+        emailInput!.autocapitalizationType = .none
         emailInput!.autoAnchorsXCenter(topView: userNameInput!, topMargin: 20, horizontalPadding: nil, heightPercentage: 0.08, widthPercentage: 0.7)
         
         view.addSubview(passwordInput!)
