@@ -20,4 +20,17 @@ extension UIButton {
         return button
     }
     
+    func createBorderButton (_ title:String, _ color:UIColor, _ borderRadius:CGFloat, _ action:Selector, _ borderWitdh:CGFloat?, _ borderColor: UIColor) -> UIButton {
+        let button = UIButton()
+        button.setTitle(title, for: .normal)
+        button.setTitleColor(borderColor, for: .normal)
+        button.layer.cornerRadius = borderRadius
+        button.layer.borderWidth = borderWitdh ?? 1
+        button.layer.borderColor = borderColor.cgColor
+        button.addTarget(self, action: action, for: .touchDown)
+        button.backgroundColor = color
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }
+    
 }

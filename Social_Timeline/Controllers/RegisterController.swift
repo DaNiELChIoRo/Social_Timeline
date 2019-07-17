@@ -63,9 +63,7 @@ extension RegisterController: FirebaseUserCreated {
     func onUserLogged(user: Usuario) { }
     
     func onUserCreated(user: Usuario) {
-        RealtimeDatabase().writeUser(user: user)
-        
-        let viewController = ViewController()
-        present(viewController, animated: true)
+        RealtimeDatabase().writeUser(user: user)                
+        coordinator?.logOnUser()
     }
 }

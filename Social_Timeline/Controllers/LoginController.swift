@@ -88,8 +88,7 @@ class LoginController: UIViewController, UITextViewDelegate {
 extension LoginController: FirebaseUserCreated {
     func onUserCreated(user: Usuario) { }
     
-    func onUserLogged(user: Usuario) {
-        let viewController = ViewController()
+    func onUserLogged(user: Usuario) {        
         coordinator?.logOnUser()        
     }
 

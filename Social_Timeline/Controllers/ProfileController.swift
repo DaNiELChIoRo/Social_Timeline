@@ -16,16 +16,19 @@ class ProfileController: UIViewController {
     weak var coordinator: ProfileCoordinator?
     var userName:UILabel? = UILabel().createDefaultLabel("UserName", 24, .bold, .black, .center)
     var userEmail:UILabel? = UILabel().createDefaultLabel("user email", 24, .bold, .black, .center)
-    var logOutButton: UIButton? = UIButton().createDefaultButton("LogOut", .red, 12, #selector(logOutHandler))
-    var ressetPassButton: UIButton? = UIButton().createDefaultButton("Reset Password", .red, 12, #selector(logOutHandler))
+    var logOutButton: UIButton?
+    var ressetPassButton: UIButton?
+    var eliminateAcountButton:UIButton?
     var userImageThumbnailView:ThumbnailImageView?
     var imagePicker: ImagePicker!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        configureLayout()
+        getUserInfo()
         self.title = "Profile"
-        self.imagePicker = ImagePicker(presentationController: self, delegate: self)
+        
     }
     
     func receiveUserData(username: String, useremail: String) {
@@ -56,39 +59,54 @@ class ProfileController: UIViewController {
     func setupView() {
         view.backgroundColor = .white
         
+        logOutButton = UIButton().createDefaultButton("LogOut", .red, 12, #selector(buttonHandler))
+        ressetPassButton = UIButton().createDefaultButton("Reset Password", .red, 12, #selector(buttonHandler))
         userImageThumbnailView = ThumbnailImageView(image: UIImage(named: "avatar")!, delegate: self as! userImageDelegate)
+        eliminateAcountButton = UIButton().createBorderButton("Borrar Cuenta", .white, 12, #selector(buttonHandler), nil, .red)
+        self.imagePicker = ImagePicker(presentationController: self, delegate: self)
+    }
+    
+    func configureLayout() {
+        view.addSubviews([userImageThumbnailView!, userName!, userEmail!, logOutButton!, ressetPassButton!, eliminateAcountButton!])
         
-        view.addSubview(userImageThumbnailView!)
-        userImageThumbnailView?.translatesAutoresizingMaskIntoConstraints = false
-        let estimatedWidth = (height * 0.19) - width        
+        let estimatedWidth = (height * 0.19) - width
         view.autoAnchorsToTop(view: userImageThumbnailView!, topMargin: 50, horizontalPadding: estimatedWidth, heightPercentage: 0.19)
         
-        view.addSubview(userName!)
         userName?.autoAnchorsXCenter(topView: userImageThumbnailView!, topMargin: 20, horizontalPadding: nil, heightPercentage: 0.05, widthPercentage: 0.7)
         
-        view.addSubview(userEmail!)
         userEmail?.autoAnchorsXCenter(topView: userName!, topMargin: 5, horizontalPadding: nil, heightPercentage: 0.05, widthPercentage: 0.7)
         
-        view.addSubview(logOutButton!)
         logOutButton!.autoAnchorsToBottom(bottomMargin: 30, horizontalPadding: 50, heightPercentage: 0.065)
         
-        view.addSubview(ressetPassButton!)
         ressetPassButton?.autoAnchorsXCenter(bottomView: logOutButton!, bottomMargin: 12, horizontalPadding: nil, heightPercentage: 0.065, widthPercentage: 0.4)
         
+        eliminateAcountButton?.autoAnchorsXCenter(bottomView: ressetPassButton!, bottomMargin: 12, horizontalPadding: nil, heightPercentage: 0.065, widthPercentage: 0.4)
+    }
+    
+    func getUserInfo() {
         RealtimeDatabase().fetchUserInfo(action: receiveUserData, callback: showErrorAlert)
         RealtimeDatabase().fetchUserImageRef(onsucess: changeUserThumbnailImage, onError: showDownloadErrorAlert)
     }
     
-    override func viewDidLayoutSubviews() {
-         print(self.userImageThumbnailView!.frame.size)
+    @objc func buttonHandler(_ sender: UIButton){
+        switch sender {
+        case eliminateAcountButton:
+            print("elminateAccountButtonHandler")
+        case ressetPassButton:
+            print("ressetPasswordButtonHandler")
+        case logOutButton:
+            print("logOutButtonHandler")
+            FirebaseService().signOut {
+                print("logout successfully")
+                coordinator?.logOut()
+            }
+        default:
+            return
+        }
     }
     
-    @objc func logOutHandler() {
-        print("Logout Handler!")
-        FirebaseService().signOut {
-            print("logout successfully")
-            coordinator?.logOut()
-        }
+    override func viewDidLayoutSubviews() {
+         print(self.userImageThumbnailView!.frame.size)
     }
     
 }
