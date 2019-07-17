@@ -109,7 +109,15 @@ extension MainCoordinator: userDelegate {
 }
 
 extension MainCoordinator: realtimeDelegate {
-    func userCreated() {
+    func onUserInfoFetched(_ username: String, _ useremail: String) { }
+    
+    func onUserImageFetched(_ imagePath: String) { }
+    
+    func onError(_ error: String) {
+        navigationController.createAlertDesctructive("Error", error, .alert, "Entendido")
+    }
+    
+    func onSuccess() {
         let vc = ViewController()
         vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)

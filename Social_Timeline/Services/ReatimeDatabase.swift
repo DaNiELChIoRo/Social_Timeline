@@ -10,7 +10,10 @@ import Foundation
 import Firebase
 
 protocol realtimeDelegate {
-    func userCreated()
+    func onUserInfoFetched(_ username: String, _ useremail: String)
+    func onUserImageFetched(_ imagePath: String)
+    func onSuccess()
+    func onError(_ error: String)
 }
 
 class RealtimeDatabase {
@@ -30,7 +33,7 @@ class RealtimeDatabase {
     
     func writeUser(user:Usuario) {
         ref.child("users").child(user.uid!).setValue(["username": user.username, "useremail": user.email, "userimage": "null"])
-        delegate?.userCreated()
+        delegate?.onSuccess()
     }
     
     func eraseUser(){
@@ -52,28 +55,30 @@ class RealtimeDatabase {
             ])
     }
     
-    func fetchUserInfo(action: @escaping (_ username: String, _ email: String) -> Void, callback: @escaping (_ error:String) -> Void) {
+    func fetchUserInfo() {
         ref.child("users").child(userid!).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let value = snapshot.value as? NSDictionary else { return }
             guard let username = value["username"] as? String,
                     let useremail = value["useremail"] as? String else { return }
-            action(username, useremail)
-            
+            self.delegate?.onUserInfoFetched(username, useremail)
         }) { (error) in
             print("Error while trying to access user info, Error: \(error)")
-            callback(error.localizedDescription)
+            self.delegate?.onError("Error al intentar de extrear la información del usuario, error code: " + error.localizedDescription)
         }
     }
     
-    func fetchUserImageRef(onsucess: @escaping (_ imagePath: String) -> Void, onError: @escaping (_ error:String) -> Void) {
+    func fetchUserImageRef() {
         ref.child("users").child(userid!).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let value = snapshot.value as? NSDictionary else { return }
             guard let userimageRef = value["userimage"] as? String else { return }
-            FireStorage().download( fileURL: userimageRef, onsucess: onsucess, onError: onError)
-            
+            if userimageRef != "null"{
+                FireStorage().download( fileURL: userimageRef, onsucess: self.delegate!.onUserImageFetched, onError: self.delegate!.onError)
+            } else {
+                print("El usuario no tiene imagen!")
+            }
         }) { (error) in
             print("Error while trying to access user info, Error: \(error)")
-            onError(error.localizedDescription)
+            self.delegate?.onError(error.localizedDescription)
         }
     }
     

@@ -8,11 +8,13 @@
 
 import UIKit
 
-class ProfileCoordinator: Coordinator{
+class ProfileCoordinator: Coordinator {
     
     var childCoordinators = [Coordinator]()
     var navigationController: UINavigationController
     var fireAuth: FirebaseService?
+    var realtimeDB: RealtimeDatabase?
+    var vc: ProfileController?
     
     weak var parentCoordinator: TabBarCoordinator?
     
@@ -26,10 +28,17 @@ class ProfileCoordinator: Coordinator{
     
     func start() {
         fireAuth = FirebaseService(userDelegate: self)
-        let vc = ProfileController()
-        navigationController.tabBarItem =  UITabBarItem(tabBarSystemItem: .contacts, tag: 0)
-        vc.coordinator = self
-        navigationController.viewControllers = [vc]
+        realtimeDB = RealtimeDatabase(delegate: self)
+        
+        realtimeDB?.fetchUserInfo()
+        realtimeDB?.fetchUserImageRef()
+//        RealtimeDatabase().fetchUserImageRef()
+        
+    }
+    
+    func uploadUserImage(image: UIImage, imageData: Data){
+        vc?.userImageThumbnailView?.changeUserImage(image: image)
+        FireStorage().upload(filePath: "avatar\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpeg", file: imageData, callback: showError)
     }
     
     func logOut(){
@@ -38,6 +47,10 @@ class ProfileCoordinator: Coordinator{
     
     func eliminateAccount() {
         fireAuth?.eliminateAccount()
+    }
+    
+    func showError(_ error: String) {
+        navigationController.createAlertDesctructive("Error", error, .alert, "Entendido")
     }
     
 }
@@ -57,4 +70,26 @@ extension ProfileCoordinator: userDelegate {
     }
     
     func createUser() { }
+}
+
+extension ProfileCoordinator: realtimeDelegate {
+    
+    func onUserImageFetched(_ imagePath: String) {
+        let image = UIImage(contentsOfFile: imagePath)
+        vc?.userImageThumbnailView?.changeUserImage(image: image!)
+    }
+
+    func onUserInfoFetched(_ username: String, _ useremail: String) {
+        vc = ProfileController(username: username, useremail: useremail)
+        navigationController.tabBarItem =  UITabBarItem(tabBarSystemItem: .contacts, tag: 0)
+        vc?.coordinator = self
+        navigationController.viewControllers = [vc!]
+    }
+    
+    func onSuccess() { }
+    
+    func onError(_ error: String) {
+        navigationController.createAlertDesctructive("Error", error, .alert, "Entendido")
+    }
+
 }

@@ -14,8 +14,8 @@ class ProfileController: UIViewController {
     let width = UIScreen.main.bounds.width
     
     weak var coordinator: ProfileCoordinator?
-    var userName:UILabel? = UILabel().createDefaultLabel("UserName", 24, .bold, .black, .center)
-    var userEmail:UILabel? = UILabel().createDefaultLabel("user email", 24, .bold, .black, .center)
+    var userName:UILabel?
+    var userEmail:UILabel?
     var logOutButton: UIButton?
     var ressetPassButton: UIButton?
     var eliminateAcountButton:UIButton?
@@ -26,9 +26,14 @@ class ProfileController: UIViewController {
         super.viewDidLoad()
         setupView()
         configureLayout()
-        getUserInfo()
-        self.title = "Profile"
-        
+       
+    }
+    
+    convenience init(username: String, useremail: String){
+        self.init()
+        self.userName = UILabel().createDefaultLabel(username, 24, .bold, .black, .center)
+        self.userEmail = UILabel().createDefaultLabel(useremail, 24, .bold, .black, .center)
+         self.title = username
     }
     
     func receiveUserData(username: String, useremail: String) {
@@ -39,26 +44,9 @@ class ProfileController: UIViewController {
         userEmail!.attributedText = NSAttributedString(string: useremail, attributes: emailAttributes)
     }
     
-    func showErrorAlert(_ error: String) {
-        self.createAlertDesctructive("Error", "Error al intentar obtener la información del usuario, Error: \(error)", .alert, "Entendido")
-    }
-    
-    func showUploadErrorAlert(_ error: String) {
-        self.createAlertDesctructive("Error", "Error al intentar subir la imagen del usuario, Error: \(error)", .alert, "Pues... ¿Qué más puedo hacer?")
-    }
-    
-    func showDownloadErrorAlert(_ error: String) {
-        self.createAlertDesctructive("Error", "Error al intentar descargar la imagen del usuario, Error: \(error)", .alert, "Pues... ¿Qué más puedo hacer?")
-    }
-    
-    func changeUserThumbnailImage(imagePath: String) {
-        let image = UIImage(contentsOfFile: imagePath)
-        userImageThumbnailView?.changeUserImage(image: image!)
-    }
-
     func setupView() {
         view.backgroundColor = .white
-        
+
         logOutButton = UIButton().createDefaultButton("LogOut", .red, 12, #selector(buttonHandler))
         ressetPassButton = UIButton().createDefaultButton("Reset Password", .red, 12, #selector(buttonHandler))
         userImageThumbnailView = ThumbnailImageView(image: UIImage(named: "avatar")!, delegate: self as! userImageDelegate)
@@ -76,11 +64,6 @@ class ProfileController: UIViewController {
         logOutButton!.autoAnchorsToBottom(bottomMargin: 30, horizontalPadding: 50, heightPercentage: 0.065)
         ressetPassButton?.autoAnchorsXCenter(bottomView: logOutButton!, bottomMargin: 12, horizontalPadding: nil, heightPercentage: 0.065, widthPercentage: 0.4)
         eliminateAcountButton?.autoAnchorsXCenter(bottomView: ressetPassButton!, bottomMargin: 12, horizontalPadding: nil, heightPercentage: 0.065, widthPercentage: 0.4)
-    }
-    
-    func getUserInfo() {
-        RealtimeDatabase().fetchUserInfo(action: receiveUserData, callback: showErrorAlert)
-        RealtimeDatabase().fetchUserImageRef(onsucess: changeUserThumbnailImage, onError: showDownloadErrorAlert)
     }
     
     @objc func buttonHandler(_ sender: UIButton){
@@ -115,7 +98,6 @@ extension ProfileController: ImagePickerDelegate, userImageDelegate {
     func didSelect(image: UIImage?) {
         guard let image = image,
             let imageData = image.jpegData(compressionQuality: 0.8) else { return }
-        userImageThumbnailView?.changeUserImage(image: image)
-        FireStorage().upload(filePath: "avatar\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpeg", file: imageData, callback: showUploadErrorAlert)
+        coordinator?.uploadUserImage(image: image, imageData: imageData)
     }
 }
