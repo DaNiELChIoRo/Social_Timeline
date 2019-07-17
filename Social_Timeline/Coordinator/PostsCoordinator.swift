@@ -107,6 +107,7 @@ class PostsCoordinator: NSObject, Coordinator {
     }
     
     func appendPost(timestamp: Double, content: String, multimedia: Bool, view: UIViewController) {
+        posts = [Post]()
         navigationController.popViewController(animated: true)
         RealtimeDatabase().setUserPost(timestamp: timestamp, content: content, multimedia: false)        
     }

@@ -16,7 +16,7 @@ class RealtimeDatabase {
     
     func writeUser(user:Usuario){
         ref = Database.database().reference()
-        ref.child("users").child(user.uid!).setValue(["username": user.username])
+        ref.child("users").child(user.uid!).setValue(["username": user.username, "useremail": user.email, "userimage": "null"])
     }
     
     func saveUserImagePath(userImagePath: String){
@@ -88,7 +88,7 @@ class RealtimeDatabase {
 //        let orderedChildren = (ref.child("post").queryOrderedByKey())
 //        ref.child("post")
             orderedChildren
-                .observeSingleEvent(of: .value, with: { (snaptshot) in
+                .observe(.value, with: { (snaptshot) in
             for child in snaptshot.children {
                 let snap = snaptshot.childSnapshot(forPath: (child as AnyObject).key)
 
