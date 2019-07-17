@@ -19,27 +19,31 @@ class RealtimeDatabase {
     let userid = Auth.auth().currentUser?.uid
     var delegate: realtimeDelegate?
     
-    init() { }
+    init() {
+        ref = Database.database().reference()
+    }
     
     init(delegate: realtimeDelegate) {
         self.delegate = delegate
+        ref = Database.database().reference()
     }
     
     func writeUser(user:Usuario) {
-        ref = Database.database().reference()
         ref.child("users").child(user.uid!).setValue(["username": user.username, "useremail": user.email, "userimage": "null"])
         delegate?.userCreated()
     }
     
+    func eraseUser(){
+        ref.child("users").child(userid!).removeValue()
+    }
+    
     func saveUserImagePath(userImagePath: String){
-        ref = Database.database().reference()
         let value = ["userimage": userImagePath]
         ref.child("users").child(userid!).updateChildValues(value)
     }
     
     //MARK:- WHEN USER CREATE POST
     func setUserPost(timestamp: Double, content: String, multimedia: Bool){
-        ref = Database.database().reference()
         ref.child("post").childByAutoId().setValue([
             "author": userid!,
             "content": content,
@@ -49,7 +53,6 @@ class RealtimeDatabase {
     }
     
     func fetchUserInfo(action: @escaping (_ username: String, _ email: String) -> Void, callback: @escaping (_ error:String) -> Void) {
-        ref = Database.database().reference()
         ref.child("users").child(userid!).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let value = snapshot.value as? NSDictionary else { return }
             guard let username = value["username"] as? String,
@@ -63,7 +66,6 @@ class RealtimeDatabase {
     }
     
     func fetchUserImageRef(onsucess: @escaping (_ imagePath: String) -> Void, onError: @escaping (_ error:String) -> Void) {
-        ref = Database.database().reference()
         ref.child("users").child(userid!).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let value = snapshot.value as? NSDictionary else { return }
             guard let userimageRef = value["userimage"] as? String else { return }
@@ -76,7 +78,6 @@ class RealtimeDatabase {
     }
     
     func fetchAuthorInfo(authorID: String?, action: @escaping (_ username: String, _ userimage: String) -> Void, onError: @escaping (_ error:String) -> Void) {
-        ref = Database.database().reference()
         ref.child("users").child(authorID!).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let value = snapshot.value as? NSDictionary else { return }
             guard let username = value["username"] as? String,
@@ -95,7 +96,6 @@ class RealtimeDatabase {
     }
     
     func fetchAllPosts(action: @escaping (_ username: String, _ userimage:String, _ content: String, _ timestamp: Double) -> Void, onError: @escaping (_ error: String) -> Void) {
-        ref = Database.database().reference()
         let orderedChildren = (ref.child("post").queryOrdered(byChild: "timestamp"))
 //        let orderedChildren = (ref.child("post").queryOrderedByKey())
 //        ref.child("post")

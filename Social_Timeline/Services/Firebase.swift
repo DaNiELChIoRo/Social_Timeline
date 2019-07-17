@@ -12,7 +12,7 @@ import Firebase
 protocol userDelegate {
     func onError(error: String)
     func createUser(user: Usuario)
-    func logInUser(user: Usuario)    
+    func logInUser(user: Usuario)
     func elimateUser()
 }
 
@@ -92,6 +92,7 @@ class FirebaseService {
                 print("Error ocurred while trying to eliminate user account!, Error: ", error.localizedDescription)
                 self.userDelegate.onError(error: error.localizedDescription)
             } else {
+                RealtimeDatabase().eraseUser()
                 self.userDelegate.elimateUser()
             }
         }
