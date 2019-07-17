@@ -13,6 +13,7 @@ class MainCoordinator: NSObject, Coordinator {
     var childCoordinators = [Coordinator]()
     var navigationController: UINavigationController
     var fireAuth: FirebaseService?
+    var realtimeDB: RealtimeDatabase?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -22,6 +23,7 @@ class MainCoordinator: NSObject, Coordinator {
         navigationController.setNavigationBarHidden(true, animated: false)
         navigationController.delegate = self
         fireAuth = FirebaseService(userDelegate: self)
+        realtimeDB = RealtimeDatabase(delegate: self)
         if Firebase.Auth.auth().currentUser != nil {
             let vc = ViewController()
             vc.coordinator = self
@@ -94,9 +96,7 @@ extension MainCoordinator: userDelegate {
     }
     
     func createUser(user: Usuario) {
-        let vc = RegisterController()
-        vc.coordinator = self
-        navigationController.pushViewController(vc, animated: true)
+        realtimeDB?.writeUser(user: user)
     }
     
     func logInUser(user: Usuario) {
@@ -106,4 +106,12 @@ extension MainCoordinator: userDelegate {
     }
     
     func elimateUser() { }
+}
+
+extension MainCoordinator: realtimeDelegate {
+    func userCreated() {
+        let vc = ViewController()
+        vc.coordinator = self
+        navigationController.pushViewController(vc, animated: true)
+    }
 }

@@ -9,14 +9,26 @@
 import Foundation
 import Firebase
 
+protocol realtimeDelegate {
+    func userCreated()
+}
+
 class RealtimeDatabase {
     
     var ref: DatabaseReference!
     let userid = Auth.auth().currentUser?.uid
+    var delegate: realtimeDelegate?
     
-    func writeUser(user:Usuario){
+    init() { }
+    
+    init(delegate: realtimeDelegate) {
+        self.delegate = delegate
+    }
+    
+    func writeUser(user:Usuario) {
         ref = Database.database().reference()
         ref.child("users").child(user.uid!).setValue(["username": user.username, "useremail": user.email, "userimage": "null"])
+        delegate?.userCreated()
     }
     
     func saveUserImagePath(userImagePath: String){
