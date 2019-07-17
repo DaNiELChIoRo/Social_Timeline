@@ -9,7 +9,7 @@
 import UIKit
 import Foundation
 
-class PostsCoordinator: Coordinator {
+class PostsCoordinator: NSObject, Coordinator {
     var posts = [Post]()
     var postsVC : GenericTableViewController<Post, SubtitleTableViewCell>!
     
@@ -19,11 +19,14 @@ class PostsCoordinator: Coordinator {
     var navigationController: UINavigationController
     
     init(navigationController: CoordinatedNavigationController = CoordinatedNavigationController()) {
+        
         self.navigationController = navigationController
+        super.init()
         
         navigationController.coordinator = self
         
         navigationController.navigationBar.prefersLargeTitles = true
+        navigationController.navigationItem.largeTitleDisplayMode = .never
         navigationController.title = "Algo loco"
         
         postsVC = GenericTableViewController(items: posts, configure: { (cell: SubtitleTableViewCell, post) in
@@ -41,8 +44,8 @@ class PostsCoordinator: Coordinator {
                     print(post.title)
                 }
         
-        start()
-        startFecthingAllPosts()
+        self.start()
+        self.startFecthingAllPosts()
         postsVC.refreshControl!.isRefreshing ? postsVC.refreshControl!.endRefreshing() : nil
     }
     
@@ -72,6 +75,8 @@ class PostsCoordinator: Coordinator {
     
     func start() {
         postsVC.title = "Say Something!"
+        navigationController.delegate = self
+//        navigationController.navigationItem.largeTitleDisplayMode = .never
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonHandler))
         postsVC.navigationItem.rightBarButtonItem = addButton
         navigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 1)
@@ -101,15 +106,48 @@ class PostsCoordinator: Coordinator {
         posts = sortedArray
     }
     
-    func appendPost(post: Post){
-        
+    func appendPost(timestamp: Double, content: String, multimedia: Bool, view: UIViewController) {
+        navigationController.popViewController(animated: true)
+        RealtimeDatabase().setUserPost(timestamp: timestamp, content: content, multimedia: false)        
     }
     
     @objc func addButtonHandler(){
         print("addButtonHandler!")
         let addPost = addPostView()
-        navigationController.navigationBar.prefersLargeTitles = false
+        addPost.coordinator = self
         navigationController.pushViewController(addPost, animated: true)
+    }
+    
+    //MARK:- Removing view from Coordinator
+    func childDidFinish(_ child: Coordinator){
+        for(index, coordinator) in childCoordinators.enumerated() {
+            if coordinator === child {
+                childCoordinators.remove(at: index)
+                break
+            }
+        }
+    }
+    
+}
+
+
+
+extension PostsCoordinator: UINavigationControllerDelegate {
+    
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        
+        guard let fromViewController = navigationController.transitionCoordinator?.viewController(forKey: .from) else {
+            return
+        }
+        
+        if navigationController.viewControllers.contains(fromViewController){
+            return
+        }
+        
+        if let _addPostView = fromViewController as? addPostView {
+            childDidFinish(_addPostView.coordinator!)
+        }
+        
     }
     
 }

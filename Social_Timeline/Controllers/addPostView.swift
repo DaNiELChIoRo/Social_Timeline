@@ -18,6 +18,8 @@ class addPostView: UIViewController {
     let width = UIScreen.main.bounds.width
     let placeholder = "Just say anything!"
     
+    weak var coordinator: PostsCoordinator?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -25,8 +27,9 @@ class addPostView: UIViewController {
     }
     
     func setupView() {
-        postButton = UIButton().createDefaultButton("Postear", .red, 10, #selector(postButtonHandler))
+        postButton = UIButton().createDefaultButton("Postear", .red, 12, #selector(postButtonHandler))
         postInput = UITextView().createEditableTextView(placeholder: placeholder, textSize: 24, keyboard: .alphabet)
+        navigationItem.largeTitleDisplayMode = .never
     }
     
     func configureLayOut() {
@@ -39,26 +42,28 @@ class addPostView: UIViewController {
         
         guard let tabBarHeight = navigationController?.tabBarController?.tabBar.frame.height else { return }
         postInput!.delegate = textViewDelegate
-//        view.autoAnchorsToTop(view: postInput!, topMargin: 20, horizontalPadding: 5, heightPercentage: 0.2)
         postInput!.snp.makeConstraints { (make) in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(16)
             make.width.equalToSuperview().offset(-width*0.1)
             make.centerX.equalToSuperview()
-            make.height.equalTo(height*0.4)
+            make.height.equalTo(height*0.6)
         }
         postButton!.autoAnchorsToBottom(bottomMargin: tabBarHeight, horizontalPadding: width*0.1, heightPercentage: 0.07)
     }
     
     @objc func postButtonHandler() {
         print("postButtonHandler action")
-        guard let content = postInput!.text else { return }
-        let timestamp = Date().timeIntervalSince1970        
-        RealtimeDatabase().setUserPost(timestamp: timestamp, content: content, multimedia: false)
+        guard let content = postInput!.text,
+         content != placeholder else { return }
+        let timestamp = Date().timeIntervalSince1970
+        coordinator?.appendPost(timestamp: timestamp, content: content, multimedia: false, view: self)
     }
     
     deinit {
         print("destroying the addPostView!")
         postButton = nil
+        postInput = nil
+        coordinator = nil
     }
 
 }
