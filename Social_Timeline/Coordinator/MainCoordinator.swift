@@ -12,7 +12,7 @@ import Firebase
 class MainCoordinator: NSObject, Coordinator {
     var childCoordinators = [Coordinator]()
     var navigationController: UINavigationController
-    var fireAuth: FirebaseService?
+    var fireAuth: FireAuth?
     var realtimeDB: RealtimeDatabase?
     
     init(navigationController: UINavigationController) {
@@ -22,7 +22,7 @@ class MainCoordinator: NSObject, Coordinator {
     func start() {
         navigationController.setNavigationBarHidden(true, animated: false)
         navigationController.delegate = self
-        fireAuth = FirebaseService(userDelegate: self)
+        fireAuth = FireAuth(userDelegate: self)
         realtimeDB = RealtimeDatabase(delegate: self)
         if Firebase.Auth.auth().currentUser != nil {
             let vc = ViewController()

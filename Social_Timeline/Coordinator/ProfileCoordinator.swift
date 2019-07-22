@@ -12,7 +12,7 @@ class ProfileCoordinator: Coordinator {
     
     var childCoordinators = [Coordinator]()
     var navigationController: UINavigationController
-    var fireAuth: FirebaseService?
+    var fireAuth: FireAuth?
     var realtimeDB: RealtimeDatabase?
     var vc: ProfileController?
     
@@ -27,7 +27,7 @@ class ProfileCoordinator: Coordinator {
     }
     
     func start() {
-        fireAuth = FirebaseService(userDelegate: self)
+        fireAuth = FireAuth(userDelegate: self)
         realtimeDB = RealtimeDatabase(delegate: self)
         
         realtimeDB?.fetchUserInfo()

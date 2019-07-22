@@ -40,7 +40,7 @@
 		1ACB245022B96ABE00361106 /* UIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACB244F22B96ABE00361106 /* UIButton.swift */; };
 		1ACB245222B96FB500361106 /* UIInputText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACB245122B96FB500361106 /* UIInputText.swift */; };
 		1ACB245422B9861800361106 /* RegisterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACB245322B9861800361106 /* RegisterController.swift */; };
-		1ACB245722B988CD00361106 /* Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACB245622B988CD00361106 /* Firebase.swift */; };
+		1ACB245722B988CD00361106 /* FireAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACB245622B988CD00361106 /* FireAuth.swift */; };
 		1ACB245A22B9899700361106 /* Usuario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACB245922B9899700361106 /* Usuario.swift */; };
 		1AE19EC322BAD66F00387D8B /* addPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE19EC222BAD66F00387D8B /* addPostView.swift */; };
 		1AE19EC522BADFBD00387D8B /* UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE19EC422BADFBD00387D8B /* UITextView.swift */; };
@@ -84,7 +84,7 @@
 		1ACB244F22B96ABE00361106 /* UIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButton.swift; sourceTree = "<group>"; };
 		1ACB245122B96FB500361106 /* UIInputText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIInputText.swift; sourceTree = "<group>"; };
 		1ACB245322B9861800361106 /* RegisterController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterController.swift; sourceTree = "<group>"; };
-		1ACB245622B988CD00361106 /* Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firebase.swift; sourceTree = "<group>"; };
+		1ACB245622B988CD00361106 /* FireAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireAuth.swift; sourceTree = "<group>"; };
 		1ACB245922B9899700361106 /* Usuario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Usuario.swift; sourceTree = "<group>"; };
 		1AE19EC222BAD66F00387D8B /* addPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addPostView.swift; sourceTree = "<group>"; };
 		1AE19EC422BADFBD00387D8B /* UITextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextView.swift; sourceTree = "<group>"; };
@@ -210,7 +210,7 @@
 			isa = PBXGroup;
 			children = (
 				1A97DCB922D50F33008A6DC8 /* FireStorage.swift */,
-				1ACB245622B988CD00361106 /* Firebase.swift */,
+				1ACB245622B988CD00361106 /* FireAuth.swift */,
 				1A55C7CB22D3EF15001248F0 /* ReatimeDatabase.swift */,
 			);
 			path = Services;
@@ -360,7 +360,7 @@
 			files = (
 				1A23472C22D8DA31003123BA /* PostInfoView.swift in Sources */,
 				1A97DCCC22D53DEB008A6DC8 /* CoordinatedNavigationController.swift in Sources */,
-				1ACB245722B988CD00361106 /* Firebase.swift in Sources */,
+				1ACB245722B988CD00361106 /* FireAuth.swift in Sources */,
 				1A74F97922B9523E00F0C6F5 /* CellViewController.swift in Sources */,
 				1A97DCB822D50542008A6DC8 /* ProfileCoordinator.swift in Sources */,
 				1A97DCB422D4EFAB008A6DC8 /* StoryboardProtocol.swift in Sources */,

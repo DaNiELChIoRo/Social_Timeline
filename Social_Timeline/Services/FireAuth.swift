@@ -14,28 +14,31 @@ protocol userDelegate {
     func createUser(user: Usuario)
     func logInUser(user: Usuario)
     func elimateUser()
+    func ressetPass()
 }
 
 enum AuthError: Error {
     case LoginError
     case gettingUserError
+    case userIsNotLogOn
 }
 
-class FirebaseService {
+class FireAuth {
     
     var userDelegate: userDelegate!
     
-    let Auth = Firebase.Auth.self
-    
-    init() { }
+    var _Auth: Auth!
     
     init(userDelegate: userDelegate){
+        let Auth = Firebase.Auth.self
+        self._Auth = Auth.auth()
+        _Auth?.useAppLanguage()
         self.userDelegate = userDelegate
     }
     
     func getUser() throws -> Usuario? {
         var usuario = Usuario()
-        let user = Auth.auth().currentUser
+        let user = _Auth.currentUser
         if let user = user {
             usuario.uid = user.uid
             usuario.email = user.email
@@ -47,7 +50,7 @@ class FirebaseService {
     }
     
     func registerUser(username: String, email: String, password:String) {
-        Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
+        _Auth.createUser(withEmail: email, password: password) { (result, error) in
             guard let user = result?.user else {
                 if let error = error {
                     print("Somethign went wrong while trying to create new user, error: \(error)")
@@ -61,7 +64,7 @@ class FirebaseService {
     }
     
     func signIn(email:String, password:String) {
-        Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
+        _Auth.signIn(withEmail: email, password: password) { (result, error) in
             guard let user = result?.user else {
                 if let error = error {
                     print("Somethign went wrong while singin with the user, error: \(error)")
@@ -75,9 +78,9 @@ class FirebaseService {
     }
     
     func signOut(handler: () -> Void) {
-        let firebaseAuth = Auth.auth()
+        let firebaseAuth = _Auth
         do{
-            try firebaseAuth.signOut()
+            try firebaseAuth!.signOut()
             handler()
         } catch let error as NSError {
             print("An error ocurred while trying to singOut, error: \(error)")
@@ -86,7 +89,7 @@ class FirebaseService {
     }
     
     func eliminateAccount() {
-        guard let user =  Auth.auth().currentUser else { return }
+        guard let user =  _Auth.currentUser else { return }
         user.delete { (error) in
             if let error = error {
                 print("Error ocurred while trying to eliminate user account!, Error: ", error.localizedDescription)
@@ -95,6 +98,19 @@ class FirebaseService {
                 RealtimeDatabase().eraseUser()
                 self.userDelegate.elimateUser()
             }
+        }
+    }
+    
+    func resetPassword() throws {
+        if let useremail = _Auth.currentUser?.email {
+            _Auth.sendPasswordReset(withEmail: useremail) { (error) in
+                if let error = error {
+                    self.userDelegate?.onError(error: "Algo ha ocurrido al intentar reestablecer la contraseña del usuario, error code: " + error.localizedDescription)
+                }
+                self.userDelegate?.ressetPass()
+            }
+        } else {
+            throw AuthError.userIsNotLogOn
         }
     }
     
