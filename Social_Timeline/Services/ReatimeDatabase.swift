@@ -66,9 +66,12 @@ class RealtimeDatabase {
     }
     
     //MARK:- WHEN USER CREATE POST
-    func setUserPost(timestamp: Double, content: String, multimedia: Bool) {
+    func setUserPost(timestamp: Double, content: String, multimedia: Bool) throws {
+        guard let userid = userid  else {
+            throw RealtimeDBError.emptyUserID
+        }
         ref.child("post").childByAutoId().setValue([
-            "author": userid!,
+            "author": userid,
             "content": content,
             "timestamp": timestamp,
             "multimedia": multimedia

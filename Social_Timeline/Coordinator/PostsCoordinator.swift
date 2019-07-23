@@ -109,7 +109,11 @@ class PostsCoordinator: NSObject, Coordinator {
     func appendPost(timestamp: Double, content: String, multimedia: Bool, view: UIViewController) {
         posts = [Post]()
         navigationController.popViewController(animated: true)
-        RealtimeDatabase().setUserPost(timestamp: timestamp, content: content, multimedia: false)        
+        do {
+            try RealtimeDatabase().setUserPost(timestamp: timestamp, content: content, multimedia: false)
+        } catch {
+            navigationController.createAlertDesctructive("Error", "Lo sentimos ha ocurrido un error al intentar publicar su post", .alert, "Ya qué.....?")
+        }
     }
     
     @objc func addButtonHandler(){
