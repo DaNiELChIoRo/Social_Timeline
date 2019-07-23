@@ -30,6 +30,15 @@ class PostsCoordinator: NSObject, Coordinator {
         navigationController.title = "Algo loco"
         
         postsVC = GenericTableViewController(items: posts, coordinator: self, configure: { (cell: SubtitleTableViewCell, post) in
+            
+                    self.postsVC.items.forEach { (_item) in
+                        let _post = _item as? Post
+                        var flag:Bool = false
+                        if(_post?.publishDate == post.publishDate)  {
+                            flag ? nil : flag = true
+                        }
+                    }
+            
                     cell.titleLabel?.text = post.title
                     let date = Date(timeIntervalSince1970: Double(post.publishDate))
                     let dateFormatter = DateFormatter()
@@ -75,7 +84,6 @@ class PostsCoordinator: NSObject, Coordinator {
     
     func start() {
         postsVC.title = "Say Something!"
-//        navigationController.navigationItem.largeTitleDisplayMode = .never
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonHandler))
         postsVC.navigationItem.rightBarButtonItem = addButton
         navigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 1)
@@ -113,11 +121,6 @@ class PostsCoordinator: NSObject, Coordinator {
         } catch {
             navigationController.createAlertDesctructive("Error", "Lo sentimos ha ocurrido un error al intentar publicar su post", .alert, "Ya qué.....?")
         }
-    }
-    
-    func eliminatePost(row: Int){
-        let indexPath = IndexPath(row: 1, section: 0)
-        postsVC.tableView.deleteRows(at: [indexPath], with: .automatic)
     }
     
     @objc func addButtonHandler(){

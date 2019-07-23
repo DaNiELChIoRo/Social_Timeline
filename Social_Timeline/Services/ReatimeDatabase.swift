@@ -146,7 +146,7 @@ class RealtimeDatabase {
                 let content = value["content"] as? String,
                 let timestamp = value["timestamp"] as? Double else { return }
                 
-                self.ref.child("users").child(author).observeSingleEvent(of: .value, with: { (snapshot) in
+                self.ref.child("users").child(author).observe( .childAdded, with: { (snapshot) in
                     guard let value = snapshot.value as? NSDictionary else { return }
                     guard let username = value["username"] as? String,
                         let userimage = value["userimage"] as? String else { return }

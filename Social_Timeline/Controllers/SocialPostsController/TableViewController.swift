@@ -39,7 +39,6 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
         
         refreshControl!.attributedTitle = NSAttributedString(string: "Fetching Data.... ")
         eliminateAllRows()
-        
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -60,8 +59,8 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let remove = UITableViewRowAction(style: .destructive, title: "Remove") { (action, index) in
-            print("remove button tapped of the cell in the positio \(index.row)")
-            self.coordinator?.eliminatePost(row: index.row)
+            print("remove button tapped of the cell in the positio \(index.row), tableview count: \(self.tableView.numberOfRows(inSection: 0))")
+//            self.coordinator?.eliminatePost(row: index.row)
             print("the cell is wanted to be remove!")
         }
         
@@ -74,17 +73,27 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
         selectHandler(item)
     }
     
+    func eliminateItemFromArray(index: Int){
+        items.remove(at: index)
+        let indexPath = IndexPath(row: index, section: 0)
+        self.tableView.deleteRows(at: [indexPath], with: .automatic)
+    }
+    
     func appendItemToArray(item: T){
-        items.append(item)
+        let post = item as? Post
+        items.forEach { (_item) in
+            let _post = _item as? Post
+            if(_post?.publishDate != post?.publishDate)  {
+                items.append(item)
+            }
+        }
         let indexPath = IndexPath(row: items.count-1, section: 0)
         tableView.insertRows(at: [indexPath], with: .automatic)
     }
     
     func eliminateAllRows() {
-        let rowCount = PostsCoordinator().posts.count
-        let indexPath = IndexPath(row: 4, section: 0)
-        tableView.deleteRows(at: [indexPath], with: .automatic)
-        PostsCoordinator().posts.remove(at: rowCount-1)
+        self.items = [T]()
+        tableView.reloadData()
         refreshControl!.endRefreshing()
     }
 
