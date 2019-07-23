@@ -81,7 +81,9 @@ class ProfileController: UIViewController {
             }
         case logOutButton:
             print("logOutButtonHandler")
-            fireAuth?.eliminateAccount()
+            fireAuth?.signOut(handler: {
+                self.coordinator?.logOut()
+            })
         default:
             return
         }

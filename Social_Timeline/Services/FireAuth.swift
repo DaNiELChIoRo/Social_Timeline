@@ -26,6 +26,7 @@ enum AuthError: Error {
 class FireAuth {
     
     var userDelegate: userDelegate!
+    var realtimeDB: RealtimeDatabase!
     
     var _Auth: Auth!
     
@@ -34,6 +35,11 @@ class FireAuth {
         self._Auth = Auth.auth()
         _Auth?.useAppLanguage()
         self.userDelegate = userDelegate
+        if let userid = _Auth.currentUser?.uid {
+            self.realtimeDB = RealtimeDatabase(userid: userid)
+        } else {
+            self.realtimeDB = RealtimeDatabase()
+        }
     }
     
     func getUser() throws -> Usuario? {
@@ -78,9 +84,8 @@ class FireAuth {
     }
     
     func signOut(handler: () -> Void) {
-        let firebaseAuth = _Auth
         do{
-            try firebaseAuth!.signOut()
+            try _Auth.signOut()
             handler()
         } catch let error as NSError {
             print("An error ocurred while trying to singOut, error: \(error)")
@@ -95,8 +100,14 @@ class FireAuth {
                 print("Error ocurred while trying to eliminate user account!, Error: ", error.localizedDescription)
                 self.userDelegate.onError(error: error.localizedDescription)
             } else {
-                RealtimeDatabase().eraseUser()
-                self.userDelegate.elimateUser()
+                do {
+                    try self.realtimeDB.eraseUser()
+                    self.userDelegate.elimateUser()
+                } catch RealtimeDBError.emptyUserID {
+                    self.userDelegate.onError(error: "No se puede acceder al ID del usuario para su borrado en la DB")
+                } catch {
+                    self.userDelegate.onError(error: "unkwon error!")
+                }
             }
         }
     }

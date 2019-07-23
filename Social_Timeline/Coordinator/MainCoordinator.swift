@@ -91,6 +91,8 @@ extension MainCoordinator: UINavigationControllerDelegate {
 }
 
 extension MainCoordinator: userDelegate {
+    func ressetPass() { }
+    
     func onError(error: String) {
         navigationController.createAlertDesctructive("Error!", error, .alert, "Entendido")
     }

@@ -29,11 +29,12 @@ class ProfileCoordinator: Coordinator {
     func start() {
         fireAuth = FireAuth(userDelegate: self)
         realtimeDB = RealtimeDatabase(delegate: self)
-        
-        realtimeDB?.fetchUserInfo()
-        realtimeDB?.fetchUserImageRef()
-//        RealtimeDatabase().fetchUserImageRef()
-        
+        do {
+            try realtimeDB?.fetchUserInfo()
+            try realtimeDB?.fetchUserImageRef()
+        } catch {
+            print("Error while trying to fetch user info!, error message: \(Error.self)")
+        }        
     }
     
     func uploadUserImage(image: UIImage, imageData: Data){
@@ -57,6 +58,8 @@ class ProfileCoordinator: Coordinator {
 
 //MARK:- userDelegate
 extension ProfileCoordinator: userDelegate {
+    func ressetPass() { }
+    
     func onError(error: String) {
         navigationController.createAlertDesctructive("Error", error, .alert, "Entendido")
     }
