@@ -31,8 +31,7 @@ class ProfileController: UIViewController {
         self.init()
         self.userName = UILabel().createDefaultLabel(username, 24, .bold, .black, .center)
         self.userEmail = UILabel().createDefaultLabel(useremail, 24, .bold, .black, .center)
-        self.title = username
-        self.fireAuth = FireAuth(userDelegate: self)
+        self.title = username        
         setupView()
         configureLayout()
     }
@@ -74,16 +73,10 @@ class ProfileController: UIViewController {
             coordinator?.eliminateAccount()
         case ressetPassButton:
             print("ressetPasswordButtonHandler")
-            do {
-                try fireAuth?.resetPassword()
-            } catch {
-                self.createAlertDesctructive("Error", "\(Error.self)", .alert, "Entendido")
-            }
+            coordinator?.ressetUserPassword()
         case logOutButton:
             print("logOutButtonHandler")
-            fireAuth?.signOut(handler: {
-                self.coordinator?.logOut()
-            })
+            coordinator?.logOut()
         default:
             return
         }
@@ -105,25 +98,4 @@ extension ProfileController: ImagePickerDelegate, userImageDelegate {
             let imageData = image.jpegData(compressionQuality: 0.8) else { return }
         coordinator?.uploadUserImage(image: image, imageData: imageData)
     }
-}
-
-extension ProfileController: userDelegate {
-    func onError(error: String) {
-        self.createAlertDesctructive("Error", error, .alert, "Arrggggg.... !!")
-    }
-    
-    func createUser(user: Usuario) { }
-    
-    func logInUser(user: Usuario) { }
-    
-    func elimateUser() {
-        print("logout successfully")
-        coordinator?.logOut()
-    }
-    
-    func ressetPass() {
-        self.createAlertDesctructive("Contraseña reestaurada", "Se ha enviado un correo con las indicaciones para reestablecer su contaseña. Siga las instrucciones", .alert, "Entendido")
-    }
-    
-    
 }

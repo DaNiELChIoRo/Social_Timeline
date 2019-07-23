@@ -43,7 +43,17 @@ class ProfileCoordinator: Coordinator {
     }
     
     func logOut(){
-        parentCoordinator?.logOutUser()
+        fireAuth?.signOut(handler: {
+            parentCoordinator?.logOutUser()
+        })
+    }
+    
+    func ressetUserPassword() {
+        do {
+            try fireAuth?.resetPassword()
+        } catch {
+            navigationController.createAlertDesctructive("Error", "\(Error.self)", .alert, "Entendido")
+        }
     }
     
     func eliminateAccount() {
@@ -61,7 +71,7 @@ extension ProfileCoordinator: userDelegate {
     func ressetPass() { }
     
     func onError(error: String) {
-        navigationController.createAlertDesctructive("Error", error, .alert, "Entendido")
+        navigationController.createAlertDesctructive("Error", error, .alert, "Arrggggg.... !!")
     }
     
     func createUser(user: Usuario) { }
