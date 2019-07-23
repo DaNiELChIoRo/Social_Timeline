@@ -18,13 +18,15 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
     var items: [T]
     var configure: (Cell, T) -> Void
     var selectHandler: (T) -> Void
+    var coordinator: PostsCoordinator?
     
     private let _refreshControl = UIRefreshControl()
     
-    init(items: [T], configure: @escaping (Cell, T) -> Void, selectHandler: @escaping (T) -> Void) {
+    init(items: [T], coordinator: PostsCoordinator, configure: @escaping (Cell, T) -> Void, selectHandler: @escaping (T) -> Void) {
         self.items = items
         self.configure = configure
         self.selectHandler = selectHandler
+        self.coordinator = coordinator
         super.init(style: .plain)
         self.tableView.register(Cell.self, forCellReuseIdentifier: "Cell")
         refreshControl = UIRefreshControl()
@@ -59,7 +61,7 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let remove = UITableViewRowAction(style: .destructive, title: "Remove") { (action, index) in
             print("remove button tapped of the cell in the positio \(index.row)")
-            tableView.deleteRows(at: [indexPath], with: .automatic)
+            self.coordinator?.eliminatePost(row: index.row)
             print("the cell is wanted to be remove!")
         }
         

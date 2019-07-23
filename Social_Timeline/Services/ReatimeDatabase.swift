@@ -28,7 +28,9 @@ class RealtimeDatabase {
     
     init(){
         ref = Database.database().reference()
-//        self.userid = Auth.auth().currentUser!.uid
+        if let userid = Auth.auth().currentUser?.uid {
+            self.userid = userid
+        }
     }
     
     init(userid: String) {
@@ -62,7 +64,7 @@ class RealtimeDatabase {
         guard let userid = userid  else {
             throw RealtimeDBError.emptyUserID
         }
-        ref.child("users").child(userid).updateChildValues(value)        
+        ref.child("users").child(userid).updateChildValues(value)
     }
     
     //MARK:- WHEN USER CREATE POST
