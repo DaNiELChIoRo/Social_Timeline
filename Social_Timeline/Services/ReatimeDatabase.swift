@@ -57,13 +57,16 @@ class RealtimeDatabase {
         }
     }
     
-    func saveUserImagePath(userImagePath: String){
+    func saveUserImagePath(userImagePath: String) throws {
         let value = ["userimage": userImagePath]
-        ref.child("users").child(userid!).updateChildValues(value)
+        guard let userid = userid  else {
+            throw RealtimeDBError.emptyUserID
+        }
+        ref.child("users").child(userid).updateChildValues(value)        
     }
     
     //MARK:- WHEN USER CREATE POST
-    func setUserPost(timestamp: Double, content: String, multimedia: Bool){
+    func setUserPost(timestamp: Double, content: String, multimedia: Bool) {
         ref.child("post").childByAutoId().setValue([
             "author": userid!,
             "content": content,

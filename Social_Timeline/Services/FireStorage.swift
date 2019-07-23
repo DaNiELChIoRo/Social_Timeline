@@ -24,7 +24,11 @@ class FireStorage {
                 callback(error.localizedDescription)
                 return
             }
-            RealtimeDatabase().saveUserImagePath(userImagePath: "\(filePath)")
+                do {
+                    try RealtimeDatabase(userid: self.userUID!.uid).saveUserImagePath(userImagePath: "\(filePath)")
+                } catch {
+                    print("Error al intantar guardar la referencia del usuario en la base de datos RealtimeDatabase")
+                }
         }
     }
     
