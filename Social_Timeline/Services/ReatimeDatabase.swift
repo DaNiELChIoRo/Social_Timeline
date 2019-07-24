@@ -113,18 +113,12 @@ class RealtimeDatabase {
         }
     }
     
-    func fetchAuthorInfo(authorID: String?, action: @escaping (_ username: String, _ userimage: String) -> Void, onError: @escaping (_ error:String) -> Void) {
+    func fetchAuthorInfo(authorID: String?, action: @escaping (_ username: String, _ imagePath: String) -> Void, onError: @escaping (_ error:String) -> Void) {
         ref.child("users").child(authorID!).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let value = snapshot.value as? NSDictionary else { return }
             guard let username = value["username"] as? String,
                 let userimage = value["userimage"] as? String else { return }
-            
-            func _getUserImagePath(_ imagePath: String) {
-                action(username, imagePath)
-            }
-            
-            FireStorage().download(fileURL: userimage, onsucess: _getUserImagePath, onError: onError)
-            
+                action(username, userimage)
         }) { (error) in
             print("Error has ocurred while trying to fetch the post's author, Error: \(error)")
             onError(error.localizedDescription)

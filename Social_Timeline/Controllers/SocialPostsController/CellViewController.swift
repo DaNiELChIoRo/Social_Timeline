@@ -54,8 +54,8 @@ class SubtitleTableViewCell: UITableViewCell {
         
     }
     
-    func setImage(image: UIImage) {
-        postInfo?.userImage?.changeUserImage(image: image)
+    func setImage(imageURL: String) {
+        postInfo?.userImage?.userImage?.downloadImageFromFireStorage(imageURL: imageURL)
     }
 }
 

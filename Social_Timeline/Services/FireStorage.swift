@@ -36,11 +36,17 @@ class FireStorage {
         let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let localURL = documentsURL.appendingPathComponent("userAvatar.jpeg")
         let storageRef = Storage.storage().reference().child(fileURL)
+//        if let _imagePath = imageCache.object(forKey: NSString(string: fileURL)) {
+//            onsucess(String(_imagePath))
+//            return
+//        }
         storageRef.write(toFile: localURL) { (url, error) in
             if let error = error {
                 print("error trying to download the file, Error: \(error.localizedDescription)")
                 onError(error.localizedDescription)
             } else if let imagePath = url?.path {
+                print("file is going to be on url: " + imagePath)
+//                imageCache.setObject(NSString(string: imagePath), forKey: NSString(string: fileURL))
                 onsucess(imagePath)
             }
         }

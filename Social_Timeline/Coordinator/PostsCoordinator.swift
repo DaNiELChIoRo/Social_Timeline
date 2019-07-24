@@ -33,8 +33,7 @@ class PostsCoordinator: NSObject, Coordinator {
             
             RealtimeDatabase().fetchAuthorInfo(authorID: post.title, action: { (username, userimage) in
                 cell.titleLabel?.text = username
-                guard let userimage = UIImage(contentsOfFile: userimage) else { return }
-                cell.setImage(image: userimage)
+                cell.setImage(imageURL: userimage)
             }, onError: { (error) in
                 print("error" + error)
                 navigationController.createAlertDesctructive("Error", "Erro al intentar conseguir las imagenes del post, error message: "+error, .alert, "Entendido")
