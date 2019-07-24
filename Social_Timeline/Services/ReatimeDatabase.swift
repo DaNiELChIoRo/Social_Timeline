@@ -146,34 +146,7 @@ class RealtimeDatabase {
                 let content = value["content"] as? String,
                 let timestamp = value["timestamp"] as? Double else { return }
                 
-                self.ref.child("users").child(author).observe( .childAdded, with: { (snapshot) in
-                    guard let value = snapshot.value as? NSDictionary else { return }
-                    guard let username = value["username"] as? String,
-                        let userimage = value["userimage"] as? String else { return }
-                    
-                    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                    let localURL = documentsURL.appendingPathComponent("\(username)_avatar.jpeg")
-                    let storageRef = Storage.storage().reference().child(userimage)
-                    storageRef.write(toFile: localURL) { (url, error) in
-                        if let error = error {
-                            print("error trying to download the file, Error: \(error.localizedDescription)")
-                            onError(error.localizedDescription)
-                        } else if let imagePath = url?.path {
-                            
-                            action(username, imagePath, content, timestamp)
-                        }
-                    }
-                    
-                })  { (error) in
-                        print("Error while trying to access user info, Error: \(error)")
-                        onError(error.localizedDescription)
-                }
-                
-//                func _action(_ username: String, _ userImage: String) {
-//
-//                    action(username, userImage, content, timpestamp)
-//                }
-//                self.fetchAuthorInfo(authorID: author, action: _action, onError: onError)
+                action(author, "avatar", content, timestamp)
             }
 
         })

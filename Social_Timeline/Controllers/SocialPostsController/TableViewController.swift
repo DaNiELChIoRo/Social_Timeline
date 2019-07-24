@@ -80,13 +80,7 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
     }
     
     func appendItemToArray(item: T){
-        let post = item as? Post
-        items.forEach { (_item) in
-            let _post = _item as? Post
-            if(_post?.publishDate != post?.publishDate)  {
-                items.append(item)
-            }
-        }
+        items.append(item)
         let indexPath = IndexPath(row: items.count-1, section: 0)
         tableView.insertRows(at: [indexPath], with: .automatic)
     }

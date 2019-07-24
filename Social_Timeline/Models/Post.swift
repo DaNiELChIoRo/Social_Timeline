@@ -9,10 +9,10 @@
 import UIKit
 
 struct Post {
-    let title: String
+    var title: String
     let publishDate: Double
     let content: String
-    let userimage: UIImage
+    var userimage: UIImage
     
 //    static var stubPosts: [Post] {
 //        return [

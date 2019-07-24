@@ -31,15 +31,15 @@ class PostsCoordinator: NSObject, Coordinator {
         
         postsVC = GenericTableViewController(items: posts, coordinator: self, configure: { (cell: SubtitleTableViewCell, post) in
             
-                    self.postsVC.items.forEach { (_item) in
-                        let _post = _item as? Post
-                        var flag:Bool = false
-                        if(_post?.publishDate == post.publishDate)  {
-                            flag ? nil : flag = true
-                        }
-                    }
+            RealtimeDatabase().fetchAuthorInfo(authorID: post.title, action: { (username, userimage) in
+                cell.titleLabel?.text = username
+                guard let userimage = UIImage(contentsOfFile: userimage) else { return }
+                cell.setImage(image: userimage)
+            }, onError: { (error) in
+                print("error" + error)
+                navigationController.createAlertDesctructive("Error", "Erro al intentar conseguir las imagenes del post, error message: "+error, .alert, "Entendido")
+            })
             
-                    cell.titleLabel?.text = post.title
                     let date = Date(timeIntervalSince1970: Double(post.publishDate))
                     let dateFormatter = DateFormatter()
                     dateFormatter.timeZone = .current
@@ -48,7 +48,7 @@ class PostsCoordinator: NSObject, Coordinator {
                     let stringDate = dateFormatter.string(from: date)
                     cell.releaseYearTextLabel?.text = "published: \(stringDate)"
                     cell.contentLabel?.text = post.content
-                    cell.setImage(image: post.userimage)
+            
                 }) { (post) in
                     print(post.title)
                 }
@@ -68,8 +68,8 @@ class PostsCoordinator: NSObject, Coordinator {
     
     func onAllPostsFetched(_ username: String, _ userimage: String, _ content:String, _ timestamp:Double) {
         print("***** ALL POSTS CALLED: username: \(username), userimage: \(userimage), content: \(content), timestamp: \(timestamp)")
-        let userImage = UIImage(contentsOfFile: userimage)!
-        let fetchPost = Post(title: username, publishDate: timestamp, content: content, userimage: userImage)
+        let userImage = UIImage(contentsOfFile: userimage) ?? UIImage(named: "avatar" )
+        let fetchPost = Post(title: username, publishDate: timestamp, content: content, userimage: userImage!)
         postsVC.appendItemToArray(item: fetchPost)
         DispatchQueue.main.async {
             self.postsVC.tableView.reloadData()
@@ -90,31 +90,7 @@ class PostsCoordinator: NSObject, Coordinator {
         navigationController.viewControllers = [postsVC]
     }
     
-    func postsArraySorter(){
-        var memory:Post?
-        var sortedArray = [Post]()
-        for post in posts {
-            if memory != nil {
-                if (memory!.publishDate < post.publishDate) {
-                    sortedArray.append(post)
-                    memory = post
-                } else {
-                    if let index = sortedArray.firstIndex(where: { $0.publishDate > post.publishDate }) {
-                        let _memory = sortedArray[index]
-                        sortedArray.insert(post, at: index)
-                        sortedArray.append(_memory)
-                    }
-                }
-            } else if memory == nil {
-                sortedArray.append(post)
-                memory = post
-            }
-        }
-        posts = sortedArray
-    }
-    
     func appendPost(timestamp: Double, content: String, multimedia: Bool, view: UIViewController) {
-        posts = [Post]()
         navigationController.popViewController(animated: true)
         do {
             try RealtimeDatabase().setUserPost(timestamp: timestamp, content: content, multimedia: false)
