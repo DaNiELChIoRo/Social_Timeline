@@ -81,8 +81,11 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
     
     func appendItemToArray(item: T){
         items.append(item)
-        let indexPath = IndexPath(row: items.count-1, section: 0)
-        tableView.insertRows(at: [indexPath], with: .automatic)
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+//        let indexPath = IndexPath(row: items.count-1, section: 0)
+//        tableView.insertRows(at: [indexPath], with: .automatic)
     }
     
     func eliminateAllRows() {

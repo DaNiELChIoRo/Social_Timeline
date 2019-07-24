@@ -111,6 +111,8 @@ extension MainCoordinator: userDelegate {
 }
 
 extension MainCoordinator: realtimeDelegate {
+    func onPostAdded(_ username: String, _ userimage: String, _ content: String, _ timestamp: Double) { }
+    
     func onUserInfoFetched(_ username: String, _ useremail: String) { }
     
     func onUserImageFetched(_ imagePath: String) { }

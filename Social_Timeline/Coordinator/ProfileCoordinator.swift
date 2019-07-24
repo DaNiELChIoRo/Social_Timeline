@@ -86,6 +86,8 @@ extension ProfileCoordinator: userDelegate {
 }
 
 extension ProfileCoordinator: realtimeDelegate {
+    func onPostAdded(_ username: String, _ userimage: String, _ content: String, _ timestamp: Double) { }
+    
     
     func onUserImageFetched(_ imagePath: String) {
         let image = UIImage(contentsOfFile: imagePath)

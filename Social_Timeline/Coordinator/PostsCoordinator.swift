@@ -15,6 +15,7 @@ class PostsCoordinator: NSObject, Coordinator {
     
     var childCoordinators = [Coordinator]()
     weak var parentCoordinator: TabBarCoordinator?
+    var realtimeDB: RealtimeDatabase!
     
     var navigationController: UINavigationController
     
@@ -24,6 +25,7 @@ class PostsCoordinator: NSObject, Coordinator {
         super.init()
         
         navigationController.coordinator = self
+        self.realtimeDB = RealtimeDatabase(delegate: self)
         
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationItem.largeTitleDisplayMode = .never
@@ -31,7 +33,7 @@ class PostsCoordinator: NSObject, Coordinator {
         
         postsVC = GenericTableViewController(items: posts, coordinator: self, configure: { (cell: SubtitleTableViewCell, post) in
             
-            RealtimeDatabase().fetchAuthorInfo(authorID: post.title, action: { (username, userimage) in
+            self.realtimeDB.fetchAuthorInfo(authorID: post.title, action: { (username, userimage) in
                 cell.titleLabel?.text = username
                 cell.setImage(imageURL: userimage)
             }, onError: { (error) in
@@ -62,7 +64,7 @@ class PostsCoordinator: NSObject, Coordinator {
         DispatchQueue.main.async {
             self.postsVC!.tableView.reloadData()
         }
-        RealtimeDatabase().fetchAllPosts(action: onAllPostsFetched, onError: showErrorAlert)
+        realtimeDB.fetchAllPosts(action: onAllPostsFetched, onError: showErrorAlert)
     }
     
     func onAllPostsFetched(_ username: String, _ userimage: String, _ content:String, _ timestamp:Double) {
@@ -70,10 +72,6 @@ class PostsCoordinator: NSObject, Coordinator {
         let userImage = UIImage(contentsOfFile: userimage) ?? UIImage(named: "avatar" )
         let fetchPost = Post(title: username, publishDate: timestamp, content: content, userimage: userImage!)
         postsVC.appendItemToArray(item: fetchPost)
-        DispatchQueue.main.async {
-            self.postsVC.tableView.reloadData()
-        }
-//        postsArraySorter()
     }
     
     func showErrorAlert(_ error: String){
@@ -92,7 +90,7 @@ class PostsCoordinator: NSObject, Coordinator {
     func appendPost(timestamp: Double, content: String, multimedia: Bool, view: UIViewController) {
         navigationController.popViewController(animated: true)
         do {
-            try RealtimeDatabase().setUserPost(timestamp: timestamp, content: content, multimedia: false)
+            try realtimeDB.setUserPost(timestamp: timestamp, content: content, multimedia: false)
         } catch {
             navigationController.createAlertDesctructive("Error", "Lo sentimos ha ocurrido un error al intentar publicar su post", .alert, "Ya qué.....?")
         }
@@ -117,7 +115,20 @@ class PostsCoordinator: NSObject, Coordinator {
     
 }
 
-
+extension PostsCoordinator: realtimeDelegate {
+    func onUserInfoFetched(_ username: String, _ useremail: String) { }
+    
+    func onUserImageFetched(_ imagePath: String) { }
+    
+    func onSuccess() {
+        postsVC.eliminateAllRows()
+    }
+    
+    func onError(_ error: String) {
+        navigationController.createAlertDesctructive("Error", error, .alert, "Entendido")
+    }
+    
+}
 
 extension PostsCoordinator: UINavigationControllerDelegate {
     
