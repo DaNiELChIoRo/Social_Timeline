@@ -19,6 +19,7 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
     var configure: (Cell, T) -> Void
     var selectHandler: (T) -> Void
     var coordinator: PostsCoordinator?
+    var counter:Int
     
     private let _refreshControl = UIRefreshControl()
     
@@ -27,18 +28,12 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
         self.configure = configure
         self.selectHandler = selectHandler
         self.coordinator = coordinator
+        self.counter = 7
         super.init(style: .plain)
         self.tableView.register(Cell.self, forCellReuseIdentifier: "Cell")
         refreshControl = UIRefreshControl()
         refreshControl!.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl!.addTarget(self, action: #selector(refreshHandler), for: UIControl.Event.valueChanged)
-    }
-    
-    @objc func refreshHandler() {
-        print("refresHandler")
-        
-        refreshControl!.attributedTitle = NSAttributedString(string: "Fetching Data.... ")
-        eliminateAllRows()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -73,6 +68,14 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
         selectHandler(item)
     }
     
+    @objc func refreshHandler() {
+        print("refresHandler")
+        
+        refreshControl!.attributedTitle = NSAttributedString(string: "Fetching Data.... ")
+        eliminateAllRows()
+        fetchOldPosts()
+    }
+    
     func eliminateItemFromArray(index: Int){
         items.remove(at: index)
         let indexPath = IndexPath(row: index, section: 0)
@@ -84,14 +87,18 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
-//        let indexPath = IndexPath(row: items.count-1, section: 0)
-//        tableView.insertRows(at: [indexPath], with: .automatic)
     }
     
     func eliminateAllRows() {
         self.items = [T]()
         tableView.reloadData()
         refreshControl!.endRefreshing()
+    }
+    
+    func fetchOldPosts() {
+        counter += 7
+        let noPost = UInt(bitPattern: counter)
+       coordinator?.getMorePosts(noPosts: noPost)
     }
 
 }

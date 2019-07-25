@@ -31,7 +31,7 @@ class MainCoordinator: NSObject, Coordinator {
         } else {
             let vc = LoginController()
             vc.coordinator = self
-            navigationController.pushViewController(vc, animated: false)
+            navigationController.pushViewController(vc, animated: true)
         }
     }
     
@@ -111,6 +111,8 @@ extension MainCoordinator: userDelegate {
 }
 
 extension MainCoordinator: realtimeDelegate {
+    func onPostFetched(_ username: String, _ userimage: String, _ content: String, _ timestamp: Double) { }
+    
     func onPostAdded(_ username: String, _ userimage: String, _ content: String, _ timestamp: Double) { }
     
     func onUserInfoFetched(_ username: String, _ useremail: String) { }

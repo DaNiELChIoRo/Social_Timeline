@@ -64,7 +64,7 @@ class PostsCoordinator: NSObject, Coordinator {
         DispatchQueue.main.async {
             self.postsVC!.tableView.reloadData()
         }
-        realtimeDB.fetchAllPosts(action: onAllPostsFetched, onError: showErrorAlert)
+        realtimeDB.fetchAllPosts(action: onAllPostsFetched)
     }
     
     func onAllPostsFetched(_ username: String, _ userimage: String, _ content:String, _ timestamp:Double) {
@@ -72,11 +72,6 @@ class PostsCoordinator: NSObject, Coordinator {
         let userImage = UIImage(contentsOfFile: userimage) ?? UIImage(named: "avatar" )
         let fetchPost = Post(title: username, publishDate: timestamp, content: content, userimage: userImage!)
         postsVC.appendItemToArray(item: fetchPost)
-    }
-    
-    func showErrorAlert(_ error: String){
-        print("Un Error ha ocurrido al intentar trear todos los posts, error: \(error)")
-        postsVC.createAlertDesctructive("Error", "Ha ocurrido un error al intentar obtener las notificaciones de la DB, error: \(error)", .alert, "Entiendido")
     }
     
     func start() {
@@ -94,6 +89,10 @@ class PostsCoordinator: NSObject, Coordinator {
         } catch {
             navigationController.createAlertDesctructive("Error", "Lo sentimos ha ocurrido un error al intentar publicar su post", .alert, "Ya qué.....?")
         }
+    }
+    
+    func getMorePosts(noPosts: UInt) {
+        realtimeDB.fetchMorePosts(noPosts: noPosts)
     }
     
     @objc func addButtonHandler(){
@@ -122,6 +121,13 @@ extension PostsCoordinator: realtimeDelegate {
     
     func onSuccess() {
         postsVC.eliminateAllRows()
+    }
+    
+    func onPostFetched(_ username: String, _ userimage: String, _ content: String, _ timestamp: Double) {
+        print("***** ALL POSTS CALLED: username: \(username), userimage: \(userimage), content: \(content), timestamp: \(timestamp)")
+        let userImage = UIImage(contentsOfFile: userimage) ?? UIImage(named: "avatar" )
+        let fetchPost = Post(title: username, publishDate: timestamp, content: content, userimage: userImage!)
+        postsVC.appendItemToArray(item: fetchPost)
     }
     
     func onError(_ error: String) {

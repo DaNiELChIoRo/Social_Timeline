@@ -13,7 +13,8 @@ protocol realtimeDelegate {
     func onUserInfoFetched(_ username: String, _ useremail: String)
     func onUserImageFetched(_ imagePath: String)
     func onSuccess()
-    func onError(_ error: String)    
+    func onError(_ error: String)
+    func onPostFetched(_ username: String, _ userimage:String, _ content: String, _ timestamp: Double)
 }
 
 enum RealtimeDBError: Error {
@@ -125,7 +126,7 @@ class RealtimeDatabase {
         }
     }
     
-    func fetchAllPosts(action: @escaping (_ username: String, _ userimage:String, _ content: String, _ timestamp: Double) -> Void, onError: @escaping (_ error: String) -> Void) {
+    func fetchAllPosts(action: @escaping (_ username: String, _ userimage:String, _ content: String, _ timestamp: Double) -> Void) {
         let orderedChildren = (ref.child("post").queryOrdered(byChild: "timestamp").queryLimited(toLast: 7))
             orderedChildren
                 .observe(.childAdded, with: { (snaptshot) in
@@ -138,7 +139,23 @@ class RealtimeDatabase {
         })
         { (error) in
             print("An error ocurred while trying to fetch the Posts, error: \(error)")
-            onError(error.localizedDescription)
+            self.delegate?.onError(error.localizedDescription)
+        }
+    }
+    
+    func fetchMorePosts(noPosts: UInt) {
+        let orderedChildren = (ref.child("post").queryOrdered(byChild: "timestamp").queryLimited(toLast: noPosts))
+        orderedChildren
+            .observe(.childAdded, with: { (snaptshot) in
+                guard let value = snaptshot.value as? NSDictionary else { return }
+                guard let author = value["author"] as? String,
+                    let content = value["content"] as? String,
+                    let timestamp = value["timestamp"] as? Double else { return }
+                
+                self.delegate?.onPostFetched(author, "avatar", content, timestamp)
+        })
+            {(error) in
+                
         }
     }
     
