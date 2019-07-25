@@ -11,7 +11,7 @@ import Firebase
 
 protocol realtimeDelegate {
     func onSuccess()
-    func onError(_ error: String)
+    func onDBError(_ error: String)
     func onPostFetched(_ username: String, _ userimage:String, _ content: String, _ timestamp: Double)
     func onUserInfoFetched(_ username: String, _ useremail: String, _ userimage:String)
 }
@@ -73,7 +73,7 @@ class RealtimeDatabase {
     }
     
     //MARK:- WHEN USER CREATE POST
-    func setUserPost(timestamp: Double, content: String, multimedia: Bool) throws {
+    func setUserPost(timestamp: Double, content: String, multimedia: AnyObject) throws {
         guard let userid = userid  else {
             throw RealtimeDBError.emptyUserID
         }
@@ -97,7 +97,7 @@ class RealtimeDatabase {
             self.delegate?.onUserInfoFetched(username, useremail, userimage)
         }) { (error) in
             print("Error while trying to access user info, Error: \(error)")
-            self.delegate?.onError("Error al intentar de extrear la información del usuario, error code: " + error.localizedDescription)
+            self.delegate?.onDBError("Error al intentar de extrear la información del usuario, error code: " + error.localizedDescription)
         }
     }
     
@@ -121,14 +121,15 @@ class RealtimeDatabase {
                 guard let author = value["author"] as? String,
                 let content = value["content"] as? String,
                 let timestamp = value["timestamp"] as? Double else { return }
-                if let multimedia = value["multimedia"] as? AnyObject {
-                    action(author, "avatar", content, timestamp, multimedia)
+                if let multimedia = value["multimedia"] as? Bool {
+                    action(author, "avatar", content, timestamp, nil)
+                } else if let multimedia = value["multimedia"] as? NSDictionary {
+                    action(author, "avatar", content, timestamp, nil)
                 }
-                action(author, "avatar", content, timestamp, nil)
         })
         { (error) in
             print("An error ocurred while trying to fetch the Posts, error: \(error)")
-            self.delegate?.onError(error.localizedDescription)
+            self.delegate?.onDBError(error.localizedDescription)
         }
     }
     

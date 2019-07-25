@@ -43,4 +43,18 @@ extension UIButton {
         return button
     }
     
+    func createButtonWithImage (_ image:UIImage, _ color:UIColor, _ borderRadius:CGFloat, _ action:Selector, _ borderWitdh:CGFloat?, _ borderColor: UIColor) -> UIButton {
+        let button = UIButton()
+        button.setImage(image, for: .normal)
+        button.layer.cornerRadius = borderRadius
+        button.imageView?.contentMode = .scaleAspectFit
+        button.imageView?.tintColor = .blue
+        button.layer.borderWidth = borderWitdh ?? 1
+        button.layer.borderColor = borderColor.cgColor
+        button.addTarget(self, action: action, for: .touchDown)
+        button.backgroundColor = color
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }
+    
 }

@@ -16,6 +16,10 @@ class PostsCoordinator: NSObject, Coordinator {
     var childCoordinators = [Coordinator]()
     weak var parentCoordinator: TabBarCoordinator?
     var realtimeDB: RealtimeDatabase!
+    var fireStorage: FireStorage!
+    
+    var timestamp: Double?
+    var content: String?
     
     var navigationController: UINavigationController
     
@@ -26,6 +30,7 @@ class PostsCoordinator: NSObject, Coordinator {
         
         navigationController.coordinator = self
         self.realtimeDB = RealtimeDatabase(delegate: self)
+        self.fireStorage = FireStorage(delegate: self)
         
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationItem.largeTitleDisplayMode = .never
@@ -89,10 +94,17 @@ class PostsCoordinator: NSObject, Coordinator {
         navigationController.viewControllers = [postsVC]
     }
     
-    func appendPost(timestamp: Double, content: String, multimedia: Bool, view: UIViewController) {
+    func appendPost(timestamp: Double, content: String, multimedia: UIImage?) {
+        self.timestamp = timestamp
+        self.content = content
         navigationController.popViewController(animated: true)
         do {
-            try realtimeDB.setUserPost(timestamp: timestamp, content: content, multimedia: false)
+            if let multimedia = multimedia {
+                guard let multimediaData =  multimedia.jpegData(compressionQuality: 0.8) else { return }
+                try fireStorage.upload(filePath: "userposts/\(timestamp)", file: multimediaData)
+                return
+            }
+            try realtimeDB.setUserPost(timestamp: timestamp, content: content, multimedia: false as AnyObject)
         } catch {
             navigationController.createAlertDesctructive("Error", "Lo sentimos ha ocurrido un error al intentar publicar su post", .alert, "Ya qué.....?")
         }
@@ -121,7 +133,25 @@ class PostsCoordinator: NSObject, Coordinator {
     
 }
 
-extension PostsCoordinator: realtimeDelegate {    
+extension PostsCoordinator: FireStorageDelegate {
+    
+    func onFileUploaded(_ filePath: String) {
+        guard let timestamp = self.timestamp,
+            let content = self.content else { return }
+        let multimediaStuff:NSDictionary = ["type": "iamge", "location": filePath]
+        do {
+            try realtimeDB.setUserPost(timestamp: timestamp, content: content, multimedia: multimediaStuff)
+        } catch {
+            print("Error while trying to saving the post on DB")
+        }
+    }
+    
+    func onDBError(_ error: String) {
+        print("Some error trying to upload a file via FireStorageService")
+    }
+}
+
+extension PostsCoordinator: realtimeDelegate {
     
     func onSuccess() {
         postsVC.eliminateAllRows()

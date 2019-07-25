@@ -119,7 +119,7 @@ extension MainCoordinator: realtimeDelegate {
     
     func onUserImageFetched(_ imagePath: String) { }
     
-    func onError(_ error: String) {
+    func onDBError(_ error: String) {
         navigationController.createAlertDesctructive("Error", error, .alert, "Entendido")
     }
     

@@ -14,6 +14,7 @@ class ProfileCoordinator: Coordinator {
     var navigationController: UINavigationController
     var fireAuth: FireAuth?
     var realtimeDB: RealtimeDatabase?
+    var fireStorage: FireStorage!
     var vc: ProfileController?
     
     weak var parentCoordinator: TabBarCoordinator?
@@ -27,11 +28,11 @@ class ProfileCoordinator: Coordinator {
     }
     
     func start() {
+        fireStorage = FireStorage(delegate: self)
         fireAuth = FireAuth(userDelegate: self)
         realtimeDB = RealtimeDatabase(delegate: self)
         do {
             try realtimeDB?.fetchUserInfo()
-//            try realtimeDB?.fetchUserImageRef()
         } catch {
             print("Error while trying to fetch user info!, error message: \(Error.self)")
         }        
@@ -39,7 +40,7 @@ class ProfileCoordinator: Coordinator {
     
     func uploadUserImage(image: UIImage, imageData: Data){
         vc?.userImageThumbnailView?.changeUserImage(image: image)
-        FireStorage().upload(filePath: "avatar\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpeg", file: imageData, callback: showError)
+        fireStorage.upload(filePath: "avatar\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpeg", file: imageData)
     }
     
     func logOut(){
@@ -60,10 +61,12 @@ class ProfileCoordinator: Coordinator {
         fireAuth?.eliminateAccount()
     }
     
-    func showError(_ error: String) {
+}
+
+extension ProfileCoordinator: FireStorageDelegate {
+    func onDBError(_ error: String) {
         navigationController.createAlertDesctructive("Error", error, .alert, "Entendido")
     }
-    
 }
 
 //MARK:- userDelegate
@@ -85,9 +88,7 @@ extension ProfileCoordinator: userDelegate {
     func createUser() { }
 }
 
-extension ProfileCoordinator: realtimeDelegate {    
-    
-    func onPostAdded(_ username: String, _ userimage: String, _ content: String, _ timestamp: Double) { }
+extension ProfileCoordinator: realtimeDelegate {
 
     func onUserInfoFetched(_ username: String, _ useremail: String, _ userimageURL: String) {
         vc = ProfileController(username: username, useremail: useremail)
