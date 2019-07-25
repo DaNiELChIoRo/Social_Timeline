@@ -10,6 +10,16 @@ import UIKit
 
 extension UIButton {
     
+    func createDefaultButton(_ title:String, _ color:UIColor, _ borderRadius:CGFloat, _ action:Selector, _ translate: Bool) -> UIButton {
+        let button = UIButton()
+        button.setTitle(title, for: .normal)
+        button.layer.cornerRadius = borderRadius
+        button.addTarget(self, action: action, for: .touchDown)
+        button.backgroundColor = color
+        button.translatesAutoresizingMaskIntoConstraints = true
+        return button
+    }
+    
     func createDefaultButton(_ title:String, _ color:UIColor, _ borderRadius:CGFloat, _ action:Selector) -> UIButton {
         let button = UIButton()
         button.setTitle(title, for: .normal)

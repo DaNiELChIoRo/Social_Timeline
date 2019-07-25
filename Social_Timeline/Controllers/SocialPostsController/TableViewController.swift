@@ -16,14 +16,15 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
     }
     
     var items: [T]
-    var configure: (Cell, T) -> Void
+    var configure: ([Cell], T) -> Void
     var selectHandler: (T) -> Void
     var coordinator: PostsCoordinator?
     var counter:Int
+    var newestButton: UIButton?
     
     private let _refreshControl = UIRefreshControl()
     
-    init(items: [T], coordinator: PostsCoordinator, configure: @escaping (Cell, T) -> Void, selectHandler: @escaping (T) -> Void) {
+    init(items: [T], coordinator: PostsCoordinator, configure: @escaping ([Cell], T) -> Void, selectHandler: @escaping (T) -> Void) {
         self.items = items
         self.configure = configure
         self.selectHandler = selectHandler
@@ -44,7 +45,7 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! Cell
         let item = items[indexPath.row]
-        configure(cell, item)
+        configure([cell], item)
         return cell
     }
     
@@ -98,7 +99,25 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
     func fetchOldPosts() {
         counter += 7
         let noPost = UInt(bitPattern: counter)
-       coordinator?.getMorePosts(noPosts: noPost)
+        coordinator?.getMorePosts(noPosts: noPost)
+        createNewestButton()
+    }
+    
+    func createNewestButton() {
+        let absoluteWidth = UIScreen.main.bounds.width
+        let absoluteHeight = UIScreen.main.bounds.height
+        let width = absoluteWidth * 0.55
+        let height = absoluteHeight * 0.07
+        newestButton = UIButton().createDefaultButton("Ver posts más nuevos", .blue, 12, #selector(scrollToLastest), true)
+        newestButton!.frame = CGRect(x: (absoluteWidth-width)/2, y: 10, width: width, height: height)
+        self.view.addSubview(newestButton!)
+    }
+    
+    @objc func scrollToLastest() {
+        DispatchQueue.main.async {
+            let indexPath = IndexPath(row: self.items.count-1, section: 0)
+            self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+        }
     }
 
 }

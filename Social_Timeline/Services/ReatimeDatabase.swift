@@ -10,11 +10,15 @@ import Foundation
 import Firebase
 
 protocol realtimeDelegate {
-    func onUserInfoFetched(_ username: String, _ useremail: String)
-    func onUserImageFetched(_ imagePath: String)
     func onSuccess()
     func onError(_ error: String)
     func onPostFetched(_ username: String, _ userimage:String, _ content: String, _ timestamp: Double)
+    func onUserInfoFetched(_ username: String, _ useremail: String, _ userimage:String)
+}
+
+extension realtimeDelegate {
+    func onUserInfoFetched(_ username: String, _ useremail: String, _ userimage:String) {}
+    func onPostFetched(_ username: String, _ userimage:String, _ content: String, _ timestamp: Double) {}
 }
 
 enum RealtimeDBError: Error {
@@ -88,29 +92,12 @@ class RealtimeDatabase {
         ref.child("users").child(userid).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let value = snapshot.value as? NSDictionary else { return }
             guard let username = value["username"] as? String,
+                let userimage = value["userimage"] as? String,
                 let useremail = value["useremail"] as? String else { return }
-            self.delegate?.onUserInfoFetched(username, useremail)
+            self.delegate?.onUserInfoFetched(username, useremail, userimage)
         }) { (error) in
             print("Error while trying to access user info, Error: \(error)")
             self.delegate?.onError("Error al intentar de extrear la información del usuario, error code: " + error.localizedDescription)
-        }
-    }
-    
-    func fetchUserImageRef() throws {
-        guard let userid = userid else {
-            throw RealtimeDBError.emptyUserID
-        }
-        ref.child("users").child(userid).observeSingleEvent(of: .value, with: { (snapshot) in
-            guard let value = snapshot.value as? NSDictionary else { return }
-            guard let userimageRef = value["userimage"] as? String else { return }
-            if userimageRef != "null"{
-                FireStorage().download( fileURL: userimageRef, onsucess: self.delegate!.onUserImageFetched, onError: self.delegate!.onError)
-            } else {
-                print("El usuario no tiene imagen!")
-            }
-        }) { (error) in
-            print("Error while trying to access user info, Error: \(error)")
-            self.delegate?.onError(error.localizedDescription)
         }
     }
     
@@ -126,16 +113,18 @@ class RealtimeDatabase {
         }
     }
     
-    func fetchAllPosts(action: @escaping (_ username: String, _ userimage:String, _ content: String, _ timestamp: Double) -> Void) {
-        let orderedChildren = (ref.child("post").queryOrdered(byChild: "timestamp").queryLimited(toLast: 7))
+    func fetchPosts(action: @escaping (_ username: String, _ userimage:String, _ content: String, _ timestamp: Double, _ multimedia: AnyObject?) -> Void) {
+        let orderedChildren = (ref.child("post").queryOrdered(byChild: "timestamp").queryLimited(toLast: 6))
             orderedChildren
                 .observe(.childAdded, with: { (snaptshot) in
                 guard let value = snaptshot.value as? NSDictionary else { return }
                 guard let author = value["author"] as? String,
                 let content = value["content"] as? String,
                 let timestamp = value["timestamp"] as? Double else { return }
-                
-                action(author, "avatar", content, timestamp)
+                if let multimedia = value["multimedia"] as? AnyObject {
+                    action(author, "avatar", content, timestamp, multimedia)
+                }
+                action(author, "avatar", content, timestamp, nil)
         })
         { (error) in
             print("An error ocurred while trying to fetch the Posts, error: \(error)")

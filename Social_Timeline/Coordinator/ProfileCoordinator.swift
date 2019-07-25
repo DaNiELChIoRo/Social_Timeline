@@ -31,7 +31,7 @@ class ProfileCoordinator: Coordinator {
         realtimeDB = RealtimeDatabase(delegate: self)
         do {
             try realtimeDB?.fetchUserInfo()
-            try realtimeDB?.fetchUserImageRef()
+//            try realtimeDB?.fetchUserImageRef()
         } catch {
             print("Error while trying to fetch user info!, error message: \(Error.self)")
         }        
@@ -85,22 +85,16 @@ extension ProfileCoordinator: userDelegate {
     func createUser() { }
 }
 
-extension ProfileCoordinator: realtimeDelegate {
-    func onPostFetched(_ username: String, _ userimage: String, _ content: String, _ timestamp: Double) { }
+extension ProfileCoordinator: realtimeDelegate {    
     
     func onPostAdded(_ username: String, _ userimage: String, _ content: String, _ timestamp: Double) { }
-    
-    
-    func onUserImageFetched(_ imagePath: String) {
-        let image = UIImage(contentsOfFile: imagePath)
-        vc?.userImageThumbnailView?.changeUserImage(image: image!)
-    }
 
-    func onUserInfoFetched(_ username: String, _ useremail: String) {
+    func onUserInfoFetched(_ username: String, _ useremail: String, _ userimageURL: String) {
         vc = ProfileController(username: username, useremail: useremail)
         navigationController.tabBarItem =  UITabBarItem(tabBarSystemItem: .contacts, tag: 0)
         vc?.coordinator = self
         navigationController.viewControllers = [vc!]
+        vc?.userImageThumbnailView?.userImage?.downloadImageFromFireStorage(imageURL: userimageURL)
     }
     
     func onSuccess() { }

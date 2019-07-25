@@ -31,26 +31,30 @@ class PostsCoordinator: NSObject, Coordinator {
         navigationController.navigationItem.largeTitleDisplayMode = .never
         navigationController.title = "Algo loco"
         
-        postsVC = GenericTableViewController(items: posts, coordinator: self, configure: { (cell: SubtitleTableViewCell, post) in
-            
-            self.realtimeDB.fetchAuthorInfo(authorID: post.title, action: { (username, userimage) in
-                cell.titleLabel?.text = username
-                cell.setImage(imageURL: userimage)
-            }, onError: { (error) in
+        postsVC = GenericTableViewController(items: posts, coordinator: self, configure: { (cell: [ SubtitleTableViewCell ], post) in
+             if !post.multimedia {
+                self.realtimeDB.fetchAuthorInfo(authorID: post.title, action: { (username, userimage) in
+                cell[0].titleLabel?.text = username
+                cell[0].setImage(imageURL: userimage)
+                }, onError: { (error) in
                 print("error" + error)
                 navigationController.createAlertDesctructive("Error", "Erro al intentar conseguir las imagenes del post, error message: "+error, .alert, "Entendido")
-            })
-            
-                    let date = Date(timeIntervalSince1970: Double(post.publishDate))
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.timeZone = .current
-                    dateFormatter.locale = Locale(identifier: "ES-mx")
-                    dateFormatter.dateFormat = "EEE MMM dd HH:mm yyyy"
-                    let stringDate = dateFormatter.string(from: date)
-                    cell.releaseYearTextLabel?.text = "published: \(stringDate)"
-                    cell.contentLabel?.text = post.content
-            
-                }) { (post) in
+                })
+                
+                let date = Date(timeIntervalSince1970: Double(post.publishDate))
+                let dateFormatter = DateFormatter()
+                dateFormatter.timeZone = .current
+                dateFormatter.locale = Locale(identifier: "ES-mx")
+                dateFormatter.dateFormat = "EEE MMM dd HH:mm yyyy"
+                let stringDate = dateFormatter.string(from: date)
+                cell[0].releaseYearTextLabel?.text = "published: \(stringDate)"
+                cell[0].contentLabel?.text = post.content
+                
+                } else {
+                
+                }
+            }
+            ) { (post) in
                     print(post.title)
                 }
         
@@ -64,13 +68,16 @@ class PostsCoordinator: NSObject, Coordinator {
         DispatchQueue.main.async {
             self.postsVC!.tableView.reloadData()
         }
-        realtimeDB.fetchAllPosts(action: onAllPostsFetched)
+        realtimeDB.fetchPosts(action: onAllPostsFetched)
     }
     
-    func onAllPostsFetched(_ username: String, _ userimage: String, _ content:String, _ timestamp:Double) {
+    func onAllPostsFetched(_ username: String, _ userimage: String, _ content:String, _ timestamp:Double, _ multimedia: AnyObject?) {
         print("***** ALL POSTS CALLED: username: \(username), userimage: \(userimage), content: \(content), timestamp: \(timestamp)")
         let userImage = UIImage(contentsOfFile: userimage) ?? UIImage(named: "avatar" )
-        let fetchPost = Post(title: username, publishDate: timestamp, content: content, userimage: userImage!)
+        if let multimedia = multimedia {
+            
+        }
+        let fetchPost = Post(title: username, publishDate: timestamp, content: content, multimedia: false, userimage: userImage!)
         postsVC.appendItemToArray(item: fetchPost)
     }
     
@@ -114,10 +121,7 @@ class PostsCoordinator: NSObject, Coordinator {
     
 }
 
-extension PostsCoordinator: realtimeDelegate {
-    func onUserInfoFetched(_ username: String, _ useremail: String) { }
-    
-    func onUserImageFetched(_ imagePath: String) { }
+extension PostsCoordinator: realtimeDelegate {    
     
     func onSuccess() {
         postsVC.eliminateAllRows()
@@ -126,7 +130,7 @@ extension PostsCoordinator: realtimeDelegate {
     func onPostFetched(_ username: String, _ userimage: String, _ content: String, _ timestamp: Double) {
         print("***** ALL POSTS CALLED: username: \(username), userimage: \(userimage), content: \(content), timestamp: \(timestamp)")
         let userImage = UIImage(contentsOfFile: userimage) ?? UIImage(named: "avatar" )
-        let fetchPost = Post(title: username, publishDate: timestamp, content: content, userimage: userImage!)
+        let fetchPost = Post(title: username, publishDate: timestamp, content: content, multimedia: false, userimage: userImage!)
         postsVC.appendItemToArray(item: fetchPost)
     }
     

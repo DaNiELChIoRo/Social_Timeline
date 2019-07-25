@@ -12,6 +12,7 @@ struct Post {
     var title: String
     let publishDate: Double
     let content: String
+    let multimedia: Bool
     var userimage: UIImage
     
 //    static var stubPosts: [Post] {
