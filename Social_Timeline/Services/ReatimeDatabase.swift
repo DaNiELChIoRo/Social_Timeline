@@ -124,7 +124,7 @@ class RealtimeDatabase {
                 if let multimedia = value["multimedia"] as? Bool {
                     action(author, "avatar", content, timestamp, nil)
                 } else if let multimedia = value["multimedia"] as? NSDictionary {
-                    action(author, "avatar", content, timestamp, nil)
+                    action(author, "avatar", content, timestamp, multimedia)
                 }
         })
         { (error) in

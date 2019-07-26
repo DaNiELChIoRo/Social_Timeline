@@ -11,7 +11,7 @@ import Foundation
 
 class PostsCoordinator: NSObject, Coordinator {
     var posts = [Post]()
-    var postsVC : GenericTableViewController<Post, SubtitleTableViewCell>!
+    var postsVC : GenericTableViewController<Post, FlatMultimediaTableViewCell>!
     
     var childCoordinators = [Coordinator]()
     weak var parentCoordinator: TabBarCoordinator?
@@ -34,34 +34,39 @@ class PostsCoordinator: NSObject, Coordinator {
         
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationItem.largeTitleDisplayMode = .never
-        navigationController.title = "Algo loco"
+        let tableViewCell = UITableViewCell()
         
-        postsVC = GenericTableViewController(items: posts, coordinator: self, configure: { (cell: [ SubtitleTableViewCell ], post) in
-             if !post.multimedia {
-                self.realtimeDB.fetchAuthorInfo(authorID: post.title, action: { (username, userimage) in
+        let configure = { (_ cell: [UITableViewCell], post:Post)  -> Void in
+            if let cellMultimedia = cel
+            if let multimedia = post.multimedia as? NSDictionary {
+                cell[0].postHasMultimedia = true
+            } else {
+                cell[0].postHasMultimedia = false
+            }
+            
+            self.realtimeDB.fetchAuthorInfo(authorID: post.title, action: { (username, userimage) in
                 cell[0].titleLabel?.text = username
                 cell[0].setImage(imageURL: userimage)
-                }, onError: { (error) in
+            }, onError: { (error) in
                 print("error" + error)
                 navigationController.createAlertDesctructive("Error", "Erro al intentar conseguir las imagenes del post, error message: "+error, .alert, "Entendido")
-                })
-                
-                let date = Date(timeIntervalSince1970: Double(post.publishDate))
-                let dateFormatter = DateFormatter()
-                dateFormatter.timeZone = .current
-                dateFormatter.locale = Locale(identifier: "ES-mx")
-                dateFormatter.dateFormat = "EEE MMM dd HH:mm yyyy"
-                let stringDate = dateFormatter.string(from: date)
-                cell[0].releaseYearTextLabel?.text = "published: \(stringDate)"
-                cell[0].contentLabel?.text = post.content
-                
-                } else {
-                
-                }
+            })
+            
+            let date = Date(timeIntervalSince1970: Double(post.publishDate))
+            let dateFormatter = DateFormatter()
+            dateFormatter.timeZone = .current
+            dateFormatter.locale = Locale(identifier: "ES-mx")
+            dateFormatter.dateFormat = "EEE MMM dd HH:mm yyyy"
+            let stringDate = dateFormatter.string(from: date)
+            cell[0].releaseYearTextLabel?.text = "published: \(stringDate)"
+            cell[0].contentLabel?.text = post.content
             }
-            ) { (post) in
-                    print(post.title)
-                }
+        GenericTableViewController(items: <#T##[_]#>, coordinator: <#T##PostsCoordinator#>, configure: <#T##([UITableViewCell], _) -> Void#>, selectHandler: <#T##(_) -> Void#>)
+        postsVC = GenericTableViewController(items: posts, coordinator: self, configure: configure)
+        //SelectHandler
+        { (post) in
+                print(post.title)
+            }
         
         self.start()
         self.startFecthingAllPosts()
@@ -76,11 +81,14 @@ class PostsCoordinator: NSObject, Coordinator {
         realtimeDB.fetchPosts(action: onAllPostsFetched)
     }
     
-    func onAllPostsFetched(_ username: String, _ userimage: String, _ content:String, _ timestamp:Double, _ multimedia: AnyObject?) {
+    func onAllPostsFetched(_ username: String, _ userimage: String, _ content:String, _ timestamp:Double, _ multimedia: Any?) {
         print("***** ALL POSTS CALLED: username: \(username), userimage: \(userimage), content: \(content), timestamp: \(timestamp)")
         let userImage = UIImage(contentsOfFile: userimage) ?? UIImage(named: "avatar" )
-        if let multimedia = multimedia {
-            
+        if let multimedia = multimedia as? NSDictionary {
+            print(multimedia)
+            let fetchPost = Post(title: username, publishDate: timestamp, content: content, multimedia: multimedia, userimage: userImage!)
+             postsVC.appendItemToArray(item: fetchPost)
+            return
         }
         let fetchPost = Post(title: username, publishDate: timestamp, content: content, multimedia: false, userimage: userImage!)
         postsVC.appendItemToArray(item: fetchPost)
@@ -101,7 +109,7 @@ class PostsCoordinator: NSObject, Coordinator {
         do {
             if let multimedia = multimedia {
                 guard let multimediaData =  multimedia.jpegData(compressionQuality: 0.8) else { return }
-                try fireStorage.upload(filePath: "userposts/\(timestamp)", file: multimediaData)
+                fireStorage.upload(filePath: "userposts/\(timestamp).jpeg", file: multimediaData)
                 return
             }
             try realtimeDB.setUserPost(timestamp: timestamp, content: content, multimedia: false as AnyObject)

@@ -40,7 +40,7 @@ class ProfileCoordinator: Coordinator {
     
     func uploadUserImage(image: UIImage, imageData: Data){
         vc?.userImageThumbnailView?.changeUserImage(image: image)
-        fireStorage.upload(filePath: "avatar\(Int(Date.timeIntervalSinceReferenceDate * 1000)).jpeg", file: imageData)
+        fireStorage.upload(filePath: "avatar.jpeg", file: imageData)
     }
     
     func logOut(){

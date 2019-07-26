@@ -88,7 +88,7 @@ class addPostView: UIViewController {
                 }
                 coordinator?.appendPost(timestamp: timestamp, content: content, multimedia: nil)
             case postMultimedia:
-                print("addMultimedia Button press!")
+                print("addMultimedia Button press!")                
                 self.imagePicker.present()
             default:
                 return
