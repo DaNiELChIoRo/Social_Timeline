@@ -9,14 +9,14 @@
 import Foundation
 import UIKit
 
-class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewController {
+class GenericTableViewController<T, Cell: BaseCell>: UITableViewController {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     var items: [T]
-    var configure: ([Cell], T) -> Void
+    var configure: ([Cell], T) -> UITableViewCell?
     var selectHandler: (T) -> Void
     var coordinator: PostsCoordinator?
     var counter:Int
@@ -24,14 +24,15 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
     
     private let _refreshControl = UIRefreshControl()
     
-    init(items: [T], coordinator: PostsCoordinator, configure: @escaping ([Cell], T) -> Void, selectHandler: @escaping (T) -> Void) {
+    init(items: [T], coordinator: PostsCoordinator, configure: @escaping (_ Cells: [Cell], T) -> UITableViewCell?, selectHandler: @escaping (T) -> Void) {
         self.items = items
         self.configure = configure
         self.selectHandler = selectHandler
         self.coordinator = coordinator
         self.counter = 7
         super.init(style: .plain)
-        self.tableView.register(Cell.self, forCellReuseIdentifier: "Cell")
+        self.tableView.register(Cell.self, forCellReuseIdentifier: "FlatCell")
+        self.tableView.register(Cell.self, forCellReuseIdentifier: "MultimediaCell")
         refreshControl = UIRefreshControl()
         refreshControl!.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl!.addTarget(self, action: #selector(refreshHandler), for: UIControl.Event.valueChanged)
@@ -43,10 +44,10 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
     
     //MARK:- ROW USER ACTIONS
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! Cell
+        let flatCell = tableView.dequeueReusableCell(withIdentifier: "FlatCell", for: indexPath) as! Cell
+        let multimediaCell = tableView.dequeueReusableCell(withIdentifier: "MultimediaCell", for: indexPath) as! Cell
         let item = items[indexPath.row]
-        configure([cell], item)
-        return cell
+        return configure([multimediaCell, flatCell], item)!
     }
     
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {        
@@ -99,7 +100,7 @@ class GenericTableViewController<T, Cell: UITableViewCell>: UITableViewControlle
     func fetchOldPosts() {
         counter += 7
         let noPost = UInt(bitPattern: counter)
-        coordinator?.getMorePosts(noPosts: noPost)
+//        coordinator?.getMorePosts(noPosts: noPost)
         createNewestButton()
     }
     

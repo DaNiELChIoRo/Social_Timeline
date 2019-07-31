@@ -22,12 +22,16 @@ class PostInfoView: UIView {
         super.init(frame: frame)
     }
     
-    convenience init(titleLabel: UILabel?, releaseYearText: UILabel?, imageSize: CGFloat?, image: UIImage?){
+    convenience init(titleLabel: UILabel?, releaseYearText: UILabel?, imageSize: CGFloat?, image: UIImage?) {
         self.init()
-        self.titleLabel = titleLabel!
-        self.releaseYearTextLabel = releaseYearText!
-        self.imageSize = imageSize!
-        self.image = image!
+        guard let title = titleLabel,
+            let releaseYear = releaseYearText,
+            let imageSize = imageSize,
+            let image = image else { return }
+        self.titleLabel = title
+        self.releaseYearTextLabel = releaseYear
+        self.imageSize = imageSize
+        self.image = image
         setupView()
     }
     

@@ -9,14 +9,20 @@
 import UIKit
 import SnapKit
 
-class FlatMultimediaTableViewCell: UITableViewCell {
+protocol FlatMultimediaCell: BaseCell {
+    var titleLabel: UILabel? { get }
+    var publishDateLabel: UILabel? { get }
+    var contentLabel: UILabel? { get }
+}
+
+class FlatMultimediaTableViewCell: UITableViewCell, FlatMultimediaCell {
+    
     
     var titleLabel: UILabel? = UILabel().createDefaultLabel("", 24, .regular, .black, .left)
-    var releaseYearTextLabel: UILabel? = UILabel().createDefaultLabel("", 24, .regular, .black, .left)
+    var publishDateLabel: UILabel? = UILabel().createDefaultLabel("", 24, .regular, .black, .left)
     var contentLabel: UILabel? = UILabel().createDefaultLabel("", 24, .regular, .black, .center)
     var postInfo:PostInfoView?
-    var postHasMultimedia: Bool = false
-    var postMultimedia: UIView?
+   
     var postContent: PostContentView?
     var userImage: UIImage? = UIImage(named: "avatar")!
     
@@ -25,6 +31,7 @@ class FlatMultimediaTableViewCell: UITableViewCell {
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+       
         super.init(style: .subtitle, reuseIdentifier: nil)
         setupCell()
     }
@@ -34,20 +41,11 @@ class FlatMultimediaTableViewCell: UITableViewCell {
     func setupCell() {
         
         let imageSize = height*0.07
-        self.postInfo =  PostInfoView(titleLabel: self.titleLabel , releaseYearText: self.releaseYearTextLabel, imageSize: imageSize, image: userImage!)
+        self.postInfo =  PostInfoView(titleLabel: self.titleLabel , releaseYearText: self.publishDateLabel, imageSize: imageSize, image: userImage!)
         self.postContent = PostContentView(content: contentLabel)
-//        postInfo!.backgroundColor = .green
-//        postContent!.backgroundColor = .blue
         postContent!.sizeToFit()
         
-        if postHasMultimedia {
-            postMultimedia = UIView()
-            addSubviews([postInfo!, postContent!, postMultimedia!])
-            postMultimedia!.translatesAutoresizingMaskIntoConstraints = false
-            postMultimedia!.backgroundColor = .blue
-        } else {
-            addSubviews([postInfo!, postContent!])
-        }
+        addSubviews([postInfo!, postContent!])
         
         postInfo!.snp.makeConstraints { (make) in
             make.width.equalToSuperview().offset(-16)
@@ -64,14 +62,6 @@ class FlatMultimediaTableViewCell: UITableViewCell {
             make.bottom.equalToSuperview().offset(-8)
         }
         
-        guard let postMultimedia = postMultimedia else { return }
-        postMultimedia.snp.makeConstraints { (make) in
-            make.top.equalTo(postContent!.snp.bottom)
-            make.centerX.equalToSuperview()
-            make.width.equalToSuperview().offset(-16)
-            make.height.equalTo(height*0.3)
-        }
-        
     }
     
     func setImage(imageURL: String) {
@@ -81,9 +71,4 @@ class FlatMultimediaTableViewCell: UITableViewCell {
 
 extension FlatMultimediaTableViewCell: userImageDelegate {
     func changeUserImage() { }
-}
-
-
-class noFlatMultimediaTableViewCell: UITableViewCell {
-    
 }

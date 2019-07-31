@@ -101,7 +101,7 @@ class RealtimeDatabase {
         }
     }
     
-    func fetchAuthorInfo(authorID: String?, action: @escaping (_ username: String, _ imagePath: String) -> Void, onError: @escaping (_ error:String) -> Void) {
+    func fetchAuthorInfo(authorID: String?, action: @escaping (_ username: String, _ imagePath: String) -> Void) {
         ref.child("users").child(authorID!).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let value = snapshot.value as? NSDictionary else { return }
             guard let username = value["username"] as? String,
@@ -109,7 +109,7 @@ class RealtimeDatabase {
                 action(username, userimage)
         }) { (error) in
             print("Error has ocurred while trying to fetch the post's author, Error: \(error)")
-            onError(error.localizedDescription)
+            self.delegate?.onDBError(error.localizedDescription)
         }
     }
     

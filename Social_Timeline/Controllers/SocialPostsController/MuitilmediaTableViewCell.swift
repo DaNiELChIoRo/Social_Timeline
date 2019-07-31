@@ -7,16 +7,27 @@
 
 import UIKit
 
-class MultimediaTableViewCall: UITableViewCell {
-    
+@objc protocol BaseCell {
+    var titleLabel: UILabel? { get }
+    var publishDateLabel: UILabel? { get }
+    var contentLabel: UILabel? { get }
+}
+
+protocol MultimediaCell: BaseCell {
+   
+}
+
+class MultimediaTableViewCell: UITableViewCell, MultimediaCell {
     var titleLabel: UILabel?
-    var publishDate: UILabel?
+    var publishDateLabel: UILabel?
     var contentLabel: UILabel? = UILabel().createDefaultLabel("", 24, .regular, .black, .center)
     var postInfo:PostInfoView?
+    var postMultimedia: UIView?
     var postContent: PostContentView?
-    var userImage: UIImage? = UIImage(named: "avatar")!
+    var userImage:UIImage? = UIImage(named: "avatar")!
     
-    let height =  UIScreen.main.bounds.height
+    let imageSize = UIScreen.main.bounds.height*0.07
+    let height = UIScreen.main.bounds.height
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -28,11 +39,15 @@ class MultimediaTableViewCall: UITableViewCell {
     }
     
     func setupCell() {
-        let imageSize = height*0.07
-        self.postInfo =  PostInfoView(titleLabel: self.titleLabel , releaseYearText: self.publishDate, imageSize: imageSize, image: userImage!)
         self.postContent = PostContentView(content: contentLabel)
-                postInfo!.backgroundColor = .green
-                postContent!.backgroundColor = .blue
+        self.postMultimedia = UIView()
+        self.postInfo = PostInfoView(titleLabel: self.titleLabel , releaseYearText: self.publishDateLabel, imageSize: imageSize, image: userImage!)
+    }
+    
+    func setupLayout() {
+        
+        postMultimedia!.backgroundColor = .green
+        postMultimedia!.translatesAutoresizingMaskIntoConstraints = false
         postContent!.sizeToFit()
         addSubviews([postInfo!, postContent!])
         postInfo!.snp.makeConstraints { (make) in
@@ -50,6 +65,23 @@ class MultimediaTableViewCall: UITableViewCell {
             make.bottom.equalToSuperview().offset(-8)
         }
         
+        postMultimedia!.snp.makeConstraints { (make) in
+            make.top.equalTo(postContent!.snp.bottom)
+            make.centerX.equalToSuperview()
+            make.width.equalToSuperview().offset(-16)
+            make.height.equalTo(height*0.3)
+        }
+
+    }
+    
+    func setImage(imageURL: String) {
+        if let userImage = postInfo?.userImage?.userImage {
+            userImage.downloadImageFromFireStorage(imageURL: imageURL)
+        }
+    }
+    
+    func setMultimediaContent(_ contentURL: String) {
+         
     }
     
 }
