@@ -22,7 +22,6 @@ class FlatMultimediaTableViewCell: UITableViewCell, FlatMultimediaCell {
     var publishDateLabel: UILabel? = UILabel().createDefaultLabel("", 24, .regular, .black, .left)
     var contentLabel: UILabel? = UILabel().createDefaultLabel("", 24, .regular, .black, .center)
     var postInfo:PostInfoView?
-   
     var postContent: PostContentView?
     var userImage: UIImage? = UIImage(named: "avatar")!
     

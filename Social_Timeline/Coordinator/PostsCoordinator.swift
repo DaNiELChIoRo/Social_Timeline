@@ -29,15 +29,16 @@ class PostsCoordinator: NSObject, Coordinator {
         navigationController.navigationItem.largeTitleDisplayMode = .never
         
         self.start()
-        postsVC.refreshControl!.isRefreshing ? postsVC.refreshControl!.endRefreshing() : nil
+//        postsVC.refreshControl!.isRefreshing ? postsVC.refreshControl!.endRefreshing() : nil
     }
     
     func start() {
-        postsVC.title = "Say Something!"
+        let postTable = PostTableViewCellController(coordinator: self)
+        postTable.title = "Say Something!"
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonHandler))
-        postsVC.navigationItem.rightBarButtonItem = addButton
+        postTable.navigationItem.rightBarButtonItem = addButton
         navigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 1)
-        navigationController.viewControllers = [postsVC]
+        navigationController.viewControllers = [postTable]
     }
     
 //    func appendPost(timestamp: Double, content: String, multimedia: UIImage?) {

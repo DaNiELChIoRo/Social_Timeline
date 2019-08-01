@@ -83,10 +83,10 @@ class addPostView: UIViewController {
                     content != placeholder else { return }
                 let timestamp = Date().timeIntervalSince1970
                 if let image = multimediaView?.image {
-                    coordinator?.appendPost(timestamp: timestamp, content: content, multimedia: image)
+//                    coordinator?.appendPost(timestamp: timestamp, content: content, multimedia: image)
                     return
                 }
-                coordinator?.appendPost(timestamp: timestamp, content: content, multimedia: nil)
+//                coordinator?.appendPost(timestamp: timestamp, content: content, multimedia: nil)
             case postMultimedia:
                 print("addMultimedia Button press!")                
                 self.imagePicker.present()

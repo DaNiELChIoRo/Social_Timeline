@@ -13,6 +13,7 @@ class PostTableViewCellController: UITableViewController {
     var items:[Post] = [Post]()
     var realtimeDB: RealtimeDatabase!
     var fireStorage: FireStorage!
+    var coordinator: PostsCoordinator?
     var timestamp: Double?
     var content: String?
     var counter:Int?
@@ -22,16 +23,25 @@ class PostTableViewCellController: UITableViewController {
 //        navigationController.coordinator = self
         self.realtimeDB = RealtimeDatabase(delegate: self)
         self.fireStorage = FireStorage(delegate: self)
-        
         tableView.register(MultimediaTableViewCell.self, forCellReuseIdentifier: "MultimediaCell")
         tableView.register(FlatMultimediaTableViewCell.self, forCellReuseIdentifier: "FlatCell")
+        
+        startFecthingAllPosts()
     }
 
+    init(coordinator: PostsCoordinator) {
+        super.init(style: .grouped)
+        self.coordinator = coordinator
+    }
     
-    func configureCells(_ Cells:[UITableViewCell], _ post: Post) -> UITableViewCell? {
-        var tableViewCell: UITableViewCell?
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configureCells(_ Cells:[UITableViewCell], _ post: Post) -> UITableViewCell {
+        var tableViewCell = UITableViewCell()
         if let multimedia = post.multimedia as? NSDictionary {
-            if let cell = Cells[0] as? FlatMultimediaTableViewCell {
+            if let cell = Cells[0] as? MultimediaTableViewCell {
                 self.realtimeDB.fetchAuthorInfo(authorID: post.title, action: { (username, userimage) in
                     cell.titleLabel?.text = username
                     cell.setImage(imageURL: userimage)
@@ -39,13 +49,13 @@ class PostTableViewCellController: UITableViewController {
                     if let multimediaContent = multimedia["Content"] as? String  {
                         let postImageView = UIImageView()
                         postImageView.downloadImageFromFireStorage(imageURL: multimediaContent)
-                        //                            cell.postMultimedia!.addSubview(postImageView)
+//                        cell.postMultimedia!.addSubview(postImageView)
                     }
                     
                     cell.publishDateLabel?.text = "published: \(self.setCellDate(date: post.publishDate))"
                     cell.contentLabel?.text = post.content
-                    tableViewCell = cell
                 })
+                return cell
             }
         } else {
             if let cell = Cells[1] as? FlatMultimediaTableViewCell {
@@ -56,10 +66,11 @@ class PostTableViewCellController: UITableViewController {
                 
                 cell.publishDateLabel?.text = "published: \(self.setCellDate(date: post.publishDate))"
                 cell.contentLabel?.text = post.content
+                tableViewCell = cell
                 return cell
             }
         }
-        return tableViewCell!
+        return tableViewCell
     }
     
     func startFecthingAllPosts(){
@@ -137,7 +148,7 @@ class PostTableViewCellController: UITableViewController {
         let flatCell = tableView.dequeueReusableCell(withIdentifier: "FlatCell", for: indexPath) as! FlatMultimediaTableViewCell
         let multimediaCell = tableView.dequeueReusableCell(withIdentifier: "MultimediaCell", for: indexPath) as! MultimediaTableViewCell
         let item = items[indexPath.row]
-        return configureCells([multimediaCell, flatCell], item)!
+        return configureCells([multimediaCell, flatCell], item)
     }
     
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -157,6 +168,7 @@ class PostTableViewCellController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let item = items[indexPath.row]
+        print(item.self)
 //        selectHandler(item)
     }
     
