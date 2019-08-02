@@ -46,6 +46,7 @@
 		1AE19EC522BADFBD00387D8B /* UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE19EC422BADFBD00387D8B /* UITextView.swift */; };
 		A00A7A3C22EB720B002A9929 /* MuitilmediaTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00A7A3B22EB720A002A9929 /* MuitilmediaTableViewCell.swift */; };
 		A011D2E022DE543200B78D52 /* PostContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A011D2DF22DE543200B78D52 /* PostContentView.swift */; };
+		A047826E22F3570A005F8F7B /* PostMultimediaContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A047826D22F3570A005F8F7B /* PostMultimediaContentView.swift */; };
 		A083C79522F24ABC00A080BC /* PostTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A083C79422F24ABC00A080BC /* PostTableViewController.swift */; };
 		A76211AD180558FC93AF44FD /* Pods_Social_Timeline.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCF80998AD29F29A0EEADC99 /* Pods_Social_Timeline.framework */; };
 /* End PBXBuildFile section */
@@ -92,6 +93,7 @@
 		1AE19EC422BADFBD00387D8B /* UITextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextView.swift; sourceTree = "<group>"; };
 		A00A7A3B22EB720A002A9929 /* MuitilmediaTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MuitilmediaTableViewCell.swift; sourceTree = "<group>"; };
 		A011D2DF22DE543200B78D52 /* PostContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostContentView.swift; sourceTree = "<group>"; };
+		A047826D22F3570A005F8F7B /* PostMultimediaContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMultimediaContentView.swift; sourceTree = "<group>"; };
 		A083C79422F24ABC00A080BC /* PostTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostTableViewController.swift; sourceTree = "<group>"; };
 		A90160347182DB1F74EC1CDD /* Pods-Social_Timeline.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Social_Timeline.debug.xcconfig"; path = "Target Support Files/Pods-Social_Timeline/Pods-Social_Timeline.debug.xcconfig"; sourceTree = "<group>"; };
 		CCF80998AD29F29A0EEADC99 /* Pods_Social_Timeline.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Social_Timeline.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -127,6 +129,7 @@
 				1A55C7C922D3AB9F001248F0 /* ThumbnailImage.swift */,
 				A011D2DF22DE543200B78D52 /* PostContentView.swift */,
 				1A23472B22D8DA31003123BA /* PostInfoView.swift */,
+				A047826D22F3570A005F8F7B /* PostMultimediaContentView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -391,6 +394,7 @@
 				A011D2E022DE543200B78D52 /* PostContentView.swift in Sources */,
 				1A23473022D8F45B003123BA /* Films.swift in Sources */,
 				1A74F97C22B9580800F0C6F5 /* NoPostsView.swift in Sources */,
+				A047826E22F3570A005F8F7B /* PostMultimediaContentView.swift in Sources */,
 				1A97DCB222D4EEB0008A6DC8 /* CoordinatorProtocol.swift in Sources */,
 				1ACB245222B96FB500361106 /* UIInputText.swift in Sources */,
 				1AB09DB422B93C7A00E3EC81 /* AutoAnchors.swift in Sources */,

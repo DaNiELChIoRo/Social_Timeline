@@ -30,7 +30,7 @@ class PostTableViewCellController: UITableViewController {
     }
 
     init(coordinator: PostsCoordinator) {
-        super.init(style: .grouped)
+        super.init(style: .plain)
         self.coordinator = coordinator
     }
     
@@ -46,10 +46,8 @@ class PostTableViewCellController: UITableViewController {
                     cell.titleLabel?.text = username
                     cell.setImage(imageURL: userimage)
                     
-                    if let multimediaContent = multimedia["Content"] as? String  {
-                        let postImageView = UIImageView()
-                        postImageView.downloadImageFromFireStorage(imageURL: multimediaContent)
-//                        cell.postMultimedia!.addSubview(postImageView)
+                    if let multimediaContent = multimedia["location"] as? String  {                        
+                        cell.postMultimedia?.contentImageView.downloadImageFromFireStorage(imageURL: multimediaContent)
                     }
                     
                     cell.publishDateLabel?.text = "published: \(self.setCellDate(date: post.publishDate))"

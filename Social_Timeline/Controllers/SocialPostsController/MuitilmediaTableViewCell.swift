@@ -27,7 +27,7 @@ class MultimediaTableViewCell: UITableViewCell {
     var contentLabel: UILabel? = UILabel().createDefaultLabel("Default content", 24, .regular, .black, .center)
     var postInfo:PostInfoView?
     var postContent: PostContentView?
-    var postMultimedia: UIView?
+    var postMultimedia: PostMultimediaContentView?
     var userImage: UIImage? = UIImage(named: "avatar")!
     
     let imageSize = UIScreen.main.bounds.height*0.07
@@ -44,12 +44,11 @@ class MultimediaTableViewCell: UITableViewCell {
     
     func setupCell() {
         
-        backgroundColor = .red
         let imageSize = height*0.07
         self.postInfo =  PostInfoView(titleLabel: self.titleLabel , releaseYearText: self.publishDateLabel, imageSize: imageSize, image: userImage!)
         self.postContent = PostContentView(content: contentLabel)
         postContent!.sizeToFit()
-        self.postMultimedia = UIView()
+        self.postMultimedia = PostMultimediaContentView()
         
         addSubviews([postInfo!, postContent!, postMultimedia!])
         
@@ -68,7 +67,7 @@ class MultimediaTableViewCell: UITableViewCell {
 //            make.bottom.equalToSuperview().offset(-8)
         }
         
-        postMultimedia!.backgroundColor = .green
+//        postMultimedia!.backgroundColor = .green
         postMultimedia!.snp.makeConstraints { (make) in
             make.top.equalTo(postContent!.snp.bottom)
             make.centerX.equalToSuperview()
