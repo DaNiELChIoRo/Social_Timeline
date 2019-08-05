@@ -10,8 +10,6 @@ import UIKit
 import Foundation
 
 class PostsCoordinator: NSObject, Coordinator {
-    var posts = [Post]()
-    var postsVC : GenericTableViewController<Post, BaseCell>!
     
     var childCoordinators = [Coordinator]()
     weak var parentCoordinator: TabBarCoordinator?
@@ -19,17 +17,12 @@ class PostsCoordinator: NSObject, Coordinator {
     var navigationController: UINavigationController
     
     init(navigationController: CoordinatedNavigationController = CoordinatedNavigationController()) {
-        
         self.navigationController = navigationController
         super.init()
-        
         navigationController.coordinator = self
-        
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationItem.largeTitleDisplayMode = .never
-        
         self.start()
-//        postsVC.refreshControl!.isRefreshing ? postsVC.refreshControl!.endRefreshing() : nil
     }
     
     func start() {
@@ -39,26 +32,13 @@ class PostsCoordinator: NSObject, Coordinator {
         postTable.navigationItem.rightBarButtonItem = addButton
         navigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 1)
         navigationController.viewControllers = [postTable]
+        navigationController.navigationBar.prefersLargeTitles = true
     }
     
-//    func appendPost(timestamp: Double, content: String, multimedia: UIImage?) {
-//        self.timestamp = timestamp
-//        self.content = content
-//        navigationController.popViewController(animated: true)
-//        do {
-//            if let multimedia = multimedia {
-//                guard let multimediaData =  multimedia.jpegData(compressionQuality: 0.8) else { return }
-//                fireStorage.upload(filePath: "userposts/\(timestamp).jpeg", file: multimediaData)
-//                return
-//            }
-//            try realtimeDB.setUserPost(timestamp: timestamp, content: content, multimedia: false as AnyObject)
-//        } catch {
-//            navigationController.createAlertDesctructive("Error", "Lo sentimos ha ocurrido un error al intentar publicar su post", .alert, "Ya qué.....?")
-//        }
-//    }
-    
-    
-    
+    func backToPostsView() {
+        navigationController.popViewController(animated: true)
+    }
+
     @objc func addButtonHandler(){
         print("addButtonHandler!")
         let addPost = addPostView()

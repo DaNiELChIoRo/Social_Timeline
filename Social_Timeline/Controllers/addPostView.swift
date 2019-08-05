@@ -16,6 +16,8 @@ class addPostView: UIViewController {
     var postButton: UIButton?
     var imagePicker: ImagePicker!
     var multimediaView: UIImageView?
+    var realtimeDB: RealtimeDatabase!
+    var fireStorage: FireStorage!
     
     let height = UIScreen.main.bounds.height
     let width = UIScreen.main.bounds.width
@@ -30,6 +32,8 @@ class addPostView: UIViewController {
     }
     
     func setupView() {
+        self.fireStorage = FireStorage(delegate: self)
+        self.realtimeDB = RealtimeDatabase(delegate: self)
         postButton = UIButton().createDefaultButton("Postear", .red, 12, #selector(buttonPressHandler))
         postMultimedia = UIButton().createButtonWithImage((UIImage(named: "photo-camera")?.withRenderingMode(.alwaysTemplate))!, .white, 12, #selector(buttonPressHandler), 2, .blue)
         postMultimedia?.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
@@ -83,15 +87,30 @@ class addPostView: UIViewController {
                     content != placeholder else { return }
                 let timestamp = Date().timeIntervalSince1970
                 if let image = multimediaView?.image {
-//                    coordinator?.appendPost(timestamp: timestamp, content: content, multimedia: image)
+                    appendPostToDataBase(timestamp: timestamp, withContent: content, hasMultimedia: image)
                     return
                 }
-//                coordinator?.appendPost(timestamp: timestamp, content: content, multimedia: nil)
+                appendPostToDataBase(timestamp: timestamp, withContent: content, hasMultimedia: nil)
             case postMultimedia:
                 print("addMultimedia Button press!")                
                 self.imagePicker.present()
             default:
                 return
+        }
+    }
+    
+    func appendPostToDataBase(timestamp: Double, withContent content: String, hasMultimedia multimedia: UIImage?) {
+        do {
+            if let multimedia = multimedia {
+                guard let multimediaData =  multimedia.jpegData(compressionQuality: 0.8) else { return }
+                fireStorage.upload(filePath: "userposts/\(timestamp).jpeg", file: multimediaData)
+                coordinator?.backToPostsView()
+                return
+            }
+            try realtimeDB.setUserPost(timestamp: timestamp, content: content, multimedia: false as AnyObject)
+            coordinator?.backToPostsView()
+        } catch {
+//            navigationController.createAlertDesctructive("Error", "Lo sentimos ha ocurrido un error al intentar publicar su post", .alert, "Ya qué.....?")
         }
     }
     
@@ -109,6 +128,22 @@ extension addPostView: ImagePickerDelegate {
         if let image = image {
             multimediaView!.image = image
         }
+    }
+}
+
+extension addPostView: FireStorageDelegate {
+    func onError(_ error: String) {
+        self.createAlertDesctructive("Error", error, .alert, "Entendido")
+    }
+}
+
+extension addPostView: realtimeDelegate {
+    func onSuccess() {
+        
+    }
+    
+    func onDBError(_ error: String) {
+        
     }
 }
 

@@ -16,8 +16,8 @@ class PostTableViewCellController: UITableViewController {
     var coordinator: PostsCoordinator?
     var timestamp: Double?
     var content: String?
-    var counter:Int?
-    
+    var counter:Int? = 7
+     
     override func viewDidLoad(){
         super.viewDidLoad()
 //        navigationController.coordinator = self
@@ -27,6 +27,7 @@ class PostTableViewCellController: UITableViewController {
         tableView.register(FlatMultimediaTableViewCell.self, forCellReuseIdentifier: "FlatCell")
         
         startFecthingAllPosts()
+        setupRefreshControl()
     }
 
     init(coordinator: PostsCoordinator) {
@@ -74,6 +75,13 @@ class PostTableViewCellController: UITableViewController {
     func startFecthingAllPosts(){
         realtimeDB.fetchPosts(action: onAllPostsFetched)
     }
+    
+    func setupRefreshControl() {
+        refreshControl = UIRefreshControl()
+        refreshControl!.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl!.addTarget(self, action: #selector(refreshHandler), for: UIControl.Event.valueChanged)
+        refreshControl!.isRefreshing ? refreshControl!.endRefreshing() : nil
+    }
 
     func onAllPostsFetched(_ username: String, _ userimage: String, _ content:String, _ timestamp:Double, _ multimedia: Any?) {
         print("***** ALL POSTS CALLED: username: \(username), userimage: \(userimage), content: \(content), timestamp: \(timestamp)")
@@ -100,7 +108,6 @@ class PostTableViewCellController: UITableViewController {
     
     @objc func refreshHandler() {
         print("refresHandler")
-        
         refreshControl!.attributedTitle = NSAttributedString(string: "Fetching Data.... ")
         eliminateAllRows()
         fetchOldPosts()
@@ -137,6 +144,9 @@ class PostTableViewCellController: UITableViewController {
         realtimeDB.fetchMorePosts(noPosts: noPosts)
     }
     
+}
+
+extension PostTableViewCellController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
     }
@@ -167,9 +177,8 @@ class PostTableViewCellController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         let item = items[indexPath.row]
         print(item.self)
-//        selectHandler(item)
+        //        selectHandler(item)
     }
-    
 }
 
 extension PostTableViewCellController: realtimeDelegate {
