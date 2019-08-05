@@ -18,6 +18,8 @@ class addPostView: UIViewController {
     var multimediaView: UIImageView?
     var realtimeDB: RealtimeDatabase!
     var fireStorage: FireStorage!
+    var timestamp: Double?
+    var content: String?
     
     let height = UIScreen.main.bounds.height
     let width = UIScreen.main.bounds.width
@@ -46,9 +48,11 @@ class addPostView: UIViewController {
     func configureLayOut() {
         view.backgroundColor = .white
         view.addSubviews([postInput!, multimediaView!, postButton!, postMultimedia!])
-        postInput!.backgroundColor = .red
+//        postInput!.backgroundColor = .red
         postInput!.textAlignment = .left
         let textViewDelegate = self
+//        let barHeight = (navigationController?.navigationBar.bounds.height)! + UIApplication.shared.statusBarFrame.height
+        let viewHeight = self.view.frame.height//       height - barHeight
         
         guard let tabBarHeight = navigationController?.tabBarController?.tabBar.frame.height else { return }
         postInput!.delegate = textViewDelegate
@@ -56,15 +60,15 @@ class addPostView: UIViewController {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(16)
             make.width.equalToSuperview().offset(-width*0.1)
             make.centerX.equalToSuperview()
-            make.height.equalTo(height*0.15)
+            make.height.equalTo(viewHeight*0.15)
         }
         
-        multimediaView!.backgroundColor = .green
+//        multimediaView!.backgroundColor = .green
         multimediaView!.snp.makeConstraints { (make) in
             make.top.equalTo(postInput!.snp.bottom)
             make.width.equalToSuperview().offset(-width*0.1)
             make.centerX.equalToSuperview()
-            make.height.equalTo(height*0.4)
+            make.height.equalTo(viewHeight*0.4)
         }
         
         postButton!.autoAnchorsToBottom(bottomMargin: tabBarHeight, horizontalPadding: width*0.1, heightPercentage: 0.07)
@@ -102,6 +106,7 @@ class addPostView: UIViewController {
     func appendPostToDataBase(timestamp: Double, withContent content: String, hasMultimedia multimedia: UIImage?) {
         do {
             if let multimedia = multimedia {
+                self.timestamp = timestamp; self.content = content
                 guard let multimediaData =  multimedia.jpegData(compressionQuality: 0.8) else { return }
                 fireStorage.upload(filePath: "userposts/\(timestamp).jpeg", file: multimediaData)
                 coordinator?.backToPostsView()
@@ -110,7 +115,7 @@ class addPostView: UIViewController {
             try realtimeDB.setUserPost(timestamp: timestamp, content: content, multimedia: false as AnyObject)
             coordinator?.backToPostsView()
         } catch {
-//            navigationController.createAlertDesctructive("Error", "Lo sentimos ha ocurrido un error al intentar publicar su post", .alert, "Ya qué.....?")
+            print("Error Lo sentimos ha ocurrido un error al intentar publicar su post Ya qué.....?")
         }
     }
     
@@ -132,6 +137,18 @@ extension addPostView: ImagePickerDelegate {
 }
 
 extension addPostView: FireStorageDelegate {
+    
+    func onFileUploaded(_ filePath: String) {
+        guard let timestamp = timestamp,
+            let content = content else { return }
+        let multimediaStuff:NSDictionary = ["type": "image", "location": filePath]
+        do {
+            try realtimeDB.setUserPost(timestamp: timestamp, content: content, multimedia: multimediaStuff)
+        } catch {
+            print("Error ocurred while trying to save multimedia post!")
+        }
+    }
+    
     func onError(_ error: String) {
         self.createAlertDesctructive("Error", error, .alert, "Entendido")
     }

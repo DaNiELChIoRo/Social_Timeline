@@ -67,7 +67,6 @@ class MultimediaTableViewCell: UITableViewCell {
 //            make.bottom.equalToSuperview().offset(-8)
         }
         
-//        postMultimedia!.backgroundColor = .green
         postMultimedia!.snp.makeConstraints { (make) in
             make.top.equalTo(postContent!.snp.bottom)
             make.centerX.equalToSuperview()

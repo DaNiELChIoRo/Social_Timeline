@@ -43,17 +43,9 @@ class FireStorage {
         storageRef.putData(file, metadata: StorageMetadata()) { (meta, error) in
             if let error = error {
                 print("Error while uploading userImage!, Error: \(error)")
-                guard let delegate = self.delegate else { return }
-                delegate.onError(error.localizedDescription)
+                self.delegate?.onError(error.localizedDescription)
             }
-            do {
-                try RealtimeDatabase(userid: self.userUID!.uid).saveUserImagePath(userImagePath: "\(filePath)")
                 self.delegate?.onFileUploaded(filePath)
-            } catch {
-                print("Error al intantar guardar la referencia del usuario en la base de datos RealtimeDatabase")
-                guard let delegate = self.delegate else { return }
-                delegate.onError(error.localizedDescription)
-            }
         }
         
     }
@@ -62,10 +54,6 @@ class FireStorage {
         let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let localURL = documentsURL.appendingPathComponent("userAvatar.jpeg")
         let storageRef = Storage.storage().reference().child(fileURL)
-//        if let _imagePath = imageCache.object(forKey: NSString(string: fileURL)) {
-//            onsucess(String(_imagePath))
-//            return
-//        }
         storageRef.write(toFile: localURL) { (url, error) in
             if let error = error {
                 print("error trying to download the file, Error: \(error.localizedDescription)")

@@ -64,7 +64,7 @@ class RealtimeDatabase {
         }
     }
     
-    func saveUserImagePath(userImagePath: String) throws {
+    func saveUserPostMultimedia(userImagePath: String) throws {
         let value = ["userimage": userImagePath]
         guard let userid = userid  else {
             throw RealtimeDBError.emptyUserID

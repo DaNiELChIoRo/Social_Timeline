@@ -29,7 +29,8 @@ class PostMultimediaContentView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         addSubview(contentImageView)
         
-//        contentImageView.backgroundColor = .green
+        contentImageView.layer.cornerRadius = 12
+        contentImageView.layer.masksToBounds = true
         contentImageView.snp.makeConstraints { (make) in
             make.top.equalToSuperview()
             make.centerX.equalToSuperview()
