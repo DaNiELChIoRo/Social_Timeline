@@ -63,8 +63,8 @@ class FlatMultimediaTableViewCell: UITableViewCell, FlatMultimediaCell {
         
     }
     
-    func setImage(imageURL: String) {
-        postInfo?.userImage?.userImage?.downloadImageFromFireStorage(imageURL: imageURL)
+    func setImage(imageURL: String, username: String) {
+        postInfo?.userImage?.userImage?.downloadImageFromFireStorage(imageURL: imageURL, imageName: username + ".jpeg")
     }
 }
 

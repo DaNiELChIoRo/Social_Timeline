@@ -77,9 +77,9 @@ class MultimediaTableViewCell: UITableViewCell {
         
     }
     
-    func setImage(imageURL: String) {
+    func setImage(imageURL: String, username: String) {
         if let userImage = postInfo?.userImage?.userImage {
-            userImage.downloadImageFromFireStorage(imageURL: imageURL)
+            userImage.downloadImageFromFireStorage(imageURL: imageURL, imageName: username + ".jpeg")
         }
     }
     

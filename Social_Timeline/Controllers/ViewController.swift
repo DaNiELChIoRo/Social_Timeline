@@ -22,7 +22,7 @@ class ViewController: UITabBarController {
         if let views = coordinator?.childCoordinators[0].childCoordinators {
             if views.count > 0 {
                 var vis:[UIViewController] = [UIViewController]()
-                views.forEach {  vis.append($0.navigationController as! UIViewController) }
+                views.forEach {  vis.append($0.navigationController as UIViewController) }
                 viewControllers = vis
             } else {
                 print("the main coordinator has no childs!")

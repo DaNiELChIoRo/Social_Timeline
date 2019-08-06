@@ -44,10 +44,10 @@ class PostTableViewCellController: UITableViewController {
             if let cell = Cells[0] as? MultimediaTableViewCell {
                 self.realtimeDB.fetchAuthorInfo(authorID: post.title, action: { (username, userimage) in
                     cell.titleLabel?.text = username
-                    cell.setImage(imageURL: userimage)
+                    cell.setImage(imageURL: userimage, username: username)
                     
                     if let multimediaContent = multimedia["location"] as? String  {                        
-                        cell.postMultimedia?.contentImageView.downloadImageFromFireStorage(imageURL: multimediaContent)
+                        cell.postMultimedia?.contentImageView.downloadImageFromFireStorage(imageURL: multimediaContent, imageName: post.content + ".jpeg")
                     }
                     
                     cell.publishDateLabel?.text = "published: \(self.setCellDate(date: post.publishDate))"
@@ -59,7 +59,7 @@ class PostTableViewCellController: UITableViewController {
             if let cell = Cells[1] as? FlatMultimediaTableViewCell {
                 self.realtimeDB.fetchAuthorInfo(authorID: post.title, action: { (username, userimage) in
                     cell.titleLabel?.text = username
-                    cell.setImage(imageURL: userimage)
+                    cell.setImage(imageURL: userimage, username: username)
                 })
                 
                 cell.publishDateLabel?.text = "published: \(self.setCellDate(date: post.publishDate))"

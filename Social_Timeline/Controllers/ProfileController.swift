@@ -29,10 +29,12 @@ class ProfileController: UIViewController {
         super.viewDidLoad()
     }
     
-    convenience init(username: String, useremail: String){
+    convenience init(username: String, useremail: String, userimage:String) {
         self.init()
         self.userName = UILabel().createDefaultLabel(username, 24, .bold, .black, .center)
         self.userEmail = UILabel().createDefaultLabel(useremail, 24, .bold, .black, .center)
+        userImageThumbnailView = ThumbnailImageView(image: UIImage(named: "avatar")!, delegate: self)
+        userImageThumbnailView?.userImage?.downloadImageFromFireStorage(imageURL: userimage, imageName: username + ".jpeg")
         self.title = username        
         setupView()
         configureLayout()
@@ -43,7 +45,7 @@ class ProfileController: UIViewController {
         let attributes = [NSAttributedString.Key.font: font]
         let emailAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 20, weight: .regular)]
         userName!.attributedText = NSAttributedString(string: username, attributes: attributes)
-        userEmail!.attributedText = NSAttributedString(string: useremail, attributes: emailAttributes)
+        userEmail!.attributedText = NSAttributedString(string: useremail, attributes: emailAttributes)        
     }
     
     func setupView() {
@@ -52,7 +54,6 @@ class ProfileController: UIViewController {
         self.realtimeDB = RealtimeDatabase(delegate: self)
         logOutButton = UIButton().createDefaultButton("LogOut", .red, 12, #selector(buttonHandler))
         ressetPassButton = UIButton().createDefaultButton("Reset Password", .red, 12, #selector(buttonHandler))
-        userImageThumbnailView = ThumbnailImageView(image: UIImage(named: "avatar")!, delegate: self as userImageDelegate)
         eliminateAcountButton = UIButton().createBorderButton("Borrar Cuenta", .white, 12, #selector(buttonHandler), nil, .red)
         self.imagePicker = ImagePicker(presentationController: self, delegate: self)
     }
@@ -130,7 +131,7 @@ extension ProfileController: FireStorageDelegate {
 
 extension ProfileController: realtimeDelegate {
     func onUserInfoFetched(_ username: String, _ useremail: String, _ userimageURL: String) {
-        self.userImageThumbnailView?.userImage?.downloadImageFromFireStorage(imageURL: userimageURL)
+        self.userImageThumbnailView?.userImage?.downloadImageFromFireStorage(imageURL: userimageURL, imageName: username + ".jpeg")
     }
     
     func onSuccess() { }

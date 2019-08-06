@@ -8,7 +8,7 @@
 
 import UIKit
 
-let imageCache = NSCache<NSString, AnyObject>()
+let imageCache = NSCache<NSString, UIImage>()
 
 public extension UIView {
     
@@ -22,17 +22,15 @@ public extension UIView {
 
 public extension UIImageView {
     
-    func downloadImageFromFireStorage(imageURL: String) {
-        if let userimage = imageCache.object(forKey: NSString(string:imageURL)) as? UIImage {
-//            self.postInfo?.userImage?.changeUserImage(image: userimage)
+    func downloadImageFromFireStorage(imageURL: String, imageName: String) {
+        if let userimage = imageCache.object(forKey: NSString(string:imageURL)) {
             self.image = userimage
             return
         } else {
-            FireStorage().download(fileURL: imageURL, onsucess: { (imagePath) in
+            FireStorage().download(fileURL: imageURL, withFileName: imageName, onsucess: { (imagePath) in
                 guard let userimage = UIImage(contentsOfFile: imagePath) else { return }
                 imageCache.setObject(userimage, forKey: NSString(string: imageURL))
                 self.image = userimage
-//                self.postInfo?.userImage?.changeUserImage(image: userimage)
                 print("downloading image!!!!!!")
             }, onError: { (error) in
                 print("******* Error: " + error)

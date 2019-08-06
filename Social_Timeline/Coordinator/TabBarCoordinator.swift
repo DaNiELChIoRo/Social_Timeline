@@ -52,7 +52,6 @@ class TabBarCoordinator: NSObject, Coordinator {
                 childCoordinators.remove(at: index)
             }
         }
-//        parentCoordinator?.logOnUser(<#String#>)
         parentCoordinator?.childDidFinish(self)
     }
 }

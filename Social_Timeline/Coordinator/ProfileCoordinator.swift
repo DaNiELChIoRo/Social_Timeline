@@ -21,9 +21,7 @@ class ProfileCoordinator: Coordinator {
     
     init(navigationController: CoordinatedNavigationController = CoordinatedNavigationController()) {
         self.navigationController = navigationController
-        
         navigationController.coordinator = self
-        
         start()
     }
     
@@ -38,10 +36,6 @@ class ProfileCoordinator: Coordinator {
         }        
     }
     
-//    func uploadUserImage(image: UIImage, imageData: Data){
-//        vc?.userImageThumbnailView?.changeUserImage(image: image)
-//        fireStorage.upload(filePath: "avatar.jpeg", file: imageData)
-//    }
     
     func logOut(){
         fireAuth?.signOut(handler: {
@@ -91,11 +85,11 @@ extension ProfileCoordinator: userDelegate {
 extension ProfileCoordinator: realtimeDelegate {
 
     func onUserInfoFetched(_ username: String, _ useremail: String, _ userimageURL: String) {
-        vc = ProfileController(username: username, useremail: useremail)
+        vc = ProfileController(username: username, useremail: useremail, userimage: userimageURL)
         navigationController.tabBarItem =  UITabBarItem(tabBarSystemItem: .contacts, tag: 0)
         vc?.coordinator = self
         navigationController.viewControllers = [vc!]
-        vc?.userImageThumbnailView?.userImage?.downloadImageFromFireStorage(imageURL: userimageURL)
+//        vc?.userImageThumbnailView?.userImage?.downloadImageFromFireStorage(imageURL: userimageURL)
     }
     
     func onSuccess() { }

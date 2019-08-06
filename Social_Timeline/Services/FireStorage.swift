@@ -9,6 +9,8 @@
 import Foundation
 import Firebase
 
+let fileCache = NSCache<NSString, NSString>()
+
 protocol FireStorageDelegate {
     func onFileUploaded(_ filePath: String)
     func onFileDeleted()
@@ -59,9 +61,9 @@ class FireStorage {
         
     }
     
-    func download( fileURL: String, onsucess: @escaping (_ imagePath: String) -> Void, onError: @escaping (_ error: String) -> Void ) {
+    func download(fileURL: String, withFileName fileName: String, onsucess: @escaping (_ imagePath: String) -> Void, onError: @escaping (_ error: String) -> Void ) {
         let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let localURL = documentsURL.appendingPathComponent("userAvatar.jpeg")
+        let localURL = documentsURL.appendingPathComponent(fileName)
         let storageRef = self.storage.reference().child(fileURL)
         storageRef.write(toFile: localURL) { (url, error) in
             if let error = error {
