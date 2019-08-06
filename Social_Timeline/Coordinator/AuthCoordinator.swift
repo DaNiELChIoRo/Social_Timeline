@@ -24,13 +24,15 @@ class AuthCoordinator:Coordinator {
         navigationController.pushViewController(loginController, animated: false)
     }
     
-    func goToHomeView() {
+    func goToHomeView() {        
         parentCoordinator?.tabBarCoordinator()
+        navigationController.popViewController(animated: false)
+        navigationController.popViewController(animated: true)
         parentCoordinator?.childDidFinish(self)
     }
     
     func goToRegisterUser() {
-        let registerController = RegisterController(coordinator: self)       
+        let registerController = RegisterController(coordinator: self)
         navigationController.pushViewController(registerController, animated: true)
     }
     

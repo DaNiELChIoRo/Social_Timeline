@@ -35,8 +35,7 @@ class ProfileCoordinator: Coordinator {
             print("Error while trying to fetch user info!, error message: \(Error.self)")
         }        
     }
-    
-    
+        
     func logOut(){
         fireAuth?.signOut(handler: {
             parentCoordinator?.logOutUser()
