@@ -34,7 +34,9 @@ class ProfileController: UIViewController {
         self.userName = UILabel().createDefaultLabel(username, 24, .bold, .black, .center)
         self.userEmail = UILabel().createDefaultLabel(useremail, 24, .bold, .black, .center)
         userImageThumbnailView = ThumbnailImageView(image: UIImage(named: "avatar")!, delegate: self)
-        userImageThumbnailView?.userImage?.downloadImageFromFireStorage(imageURL: userimage, imageName: username + ".jpeg")
+        if userimage != "" {
+            userImageThumbnailView?.userImage?.downloadImageFromFireStorage(imageURL: userimage, imageName: username + ".jpeg")
+        }        
         self.title = username        
         setupView()
         configureLayout()
@@ -45,7 +47,7 @@ class ProfileController: UIViewController {
         let attributes = [NSAttributedString.Key.font: font]
         let emailAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 20, weight: .regular)]
         userName!.attributedText = NSAttributedString(string: username, attributes: attributes)
-        userEmail!.attributedText = NSAttributedString(string: useremail, attributes: emailAttributes)        
+        userEmail!.attributedText = NSAttributedString(string: useremail, attributes: emailAttributes)
     }
     
     func setupView() {

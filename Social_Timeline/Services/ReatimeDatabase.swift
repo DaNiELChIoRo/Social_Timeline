@@ -97,9 +97,12 @@ class RealtimeDatabase {
         ref.child("users").child(userid).observeSingleEvent(of: .value, with: { (snapshot) in
             guard let value = snapshot.value as? NSDictionary else { return }
             guard let username = value["username"] as? String,
-                let userimage = value["userimage"] as? String,
                 let useremail = value["useremail"] as? String else { return }
-            self.delegate?.onUserInfoFetched(username, useremail, userimage)
+            if let userimage = value["userimage"] as? String {
+                self.delegate?.onUserInfoFetched(username, useremail, userimage)
+            } else {
+                self.delegate?.onUserInfoFetched(username, useremail, "")
+            }
         }) { (error) in
             print("Error while trying to access user info, Error: \(error)")
             self.delegate?.onDBError("Error al intentar de extrear la información del usuario, error code: " + error.localizedDescription)
