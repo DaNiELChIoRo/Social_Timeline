@@ -29,8 +29,9 @@ class PostsCoordinator: NSObject, Coordinator {
         let postTable = PostTableViewCellController(coordinator: self)
         postTable.title = "Say Something!"
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonHandler))
-        postTable.navigationItem.rightBarButtonItem = addButton
-        navigationController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 1)
+        postTable.navigationItem.rightBarButtonItem = addButton        
+        let myTabBarItem = UITabBarItem(title: "Posts", image: UIImage(named: "posts")!, tag: 001)
+        navigationController.tabBarItem = myTabBarItem// UITabBarItem(tabBarSystemItem: .contacts, tag: 1)
         navigationController.viewControllers = [postTable]
         navigationController.navigationBar.prefersLargeTitles = true
     }
