@@ -12,13 +12,15 @@ import Firebase
 protocol realtimeDelegate {
     func onSuccess()
     func onDBError(_ error: String)
-    func onPostFetched(_ username: String, _ userimage:String, _ content: String, _ timestamp: Double)
+    func onPostFetched(_ username: String, _ userimage:String, _ content: String, _ timestamp: Double, _ multimedia: Any?)
     func onUserInfoFetched(_ username: String, _ useremail: String, _ userimage:String)
+    func onUserInfoChanged(_ username:String, _ userimage: String)
 }
 
 extension realtimeDelegate {
     func onUserInfoFetched(_ username: String, _ useremail: String, _ userimage:String) {}
-    func onPostFetched(_ username: String, _ userimage:String, _ content: String, _ timestamp: Double) {}
+    func onPostFetched(_ username: String, _ userimage:String, _ content: String, _ timestamp: Double, _ multimedia: Any?) {}
+    func onUserInfoChanged(_ username:String, _ userimage: String) {}
 }
 
 enum RealtimeDBError: Error {
@@ -30,6 +32,9 @@ class RealtimeDatabase {
     var ref: DatabaseReference!
     var userid: String?
     var delegate: realtimeDelegate?
+    var username:String?
+    var userimage: String?
+    var authorID: String?
     
     init(){
         ref = Database.database().reference()
@@ -64,7 +69,7 @@ class RealtimeDatabase {
         }
     }
     
-    func saveUserPostMultimedia(userImagePath: String) throws {
+    func updateUserImage(withUerImagePath userImagePath: String) throws {
         let value = ["userimage": userImagePath]
         guard let userid = userid  else {
             throw RealtimeDBError.emptyUserID
@@ -102,10 +107,19 @@ class RealtimeDatabase {
     }
     
     func fetchAuthorInfo(authorID: String?, action: @escaping (_ username: String, _ imagePath: String) -> Void) {
-        ref.child("users").child(authorID!).observeSingleEvent(of: .value, with: { (snapshot) in
+        if self.authorID != nil && self.authorID == authorID {
+            action(self.username!, self.userimage!)
+            return
+        }
+        let orderQuery = (ref.child("users").child(authorID!).queryOrderedByKey())
+        orderQuery
+            .observe( .value, with: { (snapshot) in
             guard let value = snapshot.value as? NSDictionary else { return }
             guard let username = value["username"] as? String,
                 let userimage = value["userimage"] as? String else { return }
+                self.authorID = authorID
+                self.username = username
+                self.userimage = userimage
                 action(username, userimage)
         }) { (error) in
             print("Error has ocurred while trying to fetch the post's author, Error: \(error)")
@@ -121,10 +135,10 @@ class RealtimeDatabase {
                 guard let author = value["author"] as? String,
                 let content = value["content"] as? String,
                 let timestamp = value["timestamp"] as? Double else { return }
-                if let multimedia = value["multimedia"] as? Bool {
-                    action(author, "avatar", content, timestamp, nil)
-                } else if let multimedia = value["multimedia"] as? NSDictionary {
+                if let multimedia = value["multimedia"] as? NSDictionary {
                     action(author, "avatar", content, timestamp, multimedia)
+                } else {
+                    action(author, "avatar", content, timestamp, nil)
                 }
         })
         { (error) in
@@ -141,11 +155,15 @@ class RealtimeDatabase {
                 guard let author = value["author"] as? String,
                     let content = value["content"] as? String,
                     let timestamp = value["timestamp"] as? Double else { return }
-                
-                self.delegate?.onPostFetched(author, "avatar", content, timestamp)
+                if let multimedia = value["multimedia"] as? NSDictionary {
+                    self.delegate?.onPostFetched(author, "avatar", content, timestamp, multimedia)
+                } else {
+                    self.delegate?.onPostFetched(author, "avatar", content, timestamp, nil)
+                }
         })
-            {(error) in
-                
+        { (error) in
+            print("An error ocurred while trying to fetch the Posts, error: \(error)")
+            self.delegate?.onDBError(error.localizedDescription)
         }
     }
     

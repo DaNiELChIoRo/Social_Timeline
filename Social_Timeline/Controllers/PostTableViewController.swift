@@ -20,7 +20,6 @@ class PostTableViewCellController: UITableViewController {
      
     override func viewDidLoad(){
         super.viewDidLoad()
-//        navigationController.coordinator = self
         self.realtimeDB = RealtimeDatabase(delegate: self)
         self.fireStorage = FireStorage(delegate: self)
         tableView.register(MultimediaTableViewCell.self, forCellReuseIdentifier: "MultimediaCell")
@@ -183,15 +182,18 @@ extension PostTableViewCellController {
 
 extension PostTableViewCellController: realtimeDelegate {
     
+    
     func onSuccess() {
         eliminateAllRows()
     }
     
-    func onPostFetched(_ username: String, _ userimage: String, _ content: String, _ timestamp: Double) {
-        print("***** ALL POSTS CALLED: username: \(username), userimage: \(userimage), content: \(content), timestamp: \(timestamp)")
-        let userImage = UIImage(contentsOfFile: userimage) ?? UIImage(named: "avatar" )
-        let fetchPost = Post(title: username, publishDate: timestamp, content: content, multimedia: false, userimage: userImage!)
-        appendItemToArray(item: fetchPost)
+    func onPostFetched(_ username: String, _ userimage: String, _ content: String, _ timestamp: Double, _ multimedia: Any?) {
+        print("***** REFRESH POST FETCHED: username: \(username), userimage: \(userimage), content: \(content), timestamp: \(timestamp)")
+        self.onAllPostsFetched(username, userimage, content, timestamp, multimedia)
+    }
+    
+    func onUserInfoChanged(_ username: String, _ userimage: String) {
+        print("Some user have change his image!")
     }
     
     func onError(_ error: String) {

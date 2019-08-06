@@ -38,10 +38,10 @@ class ProfileCoordinator: Coordinator {
         }        
     }
     
-    func uploadUserImage(image: UIImage, imageData: Data){
-        vc?.userImageThumbnailView?.changeUserImage(image: image)
-        fireStorage.upload(filePath: "avatar.jpeg", file: imageData)
-    }
+//    func uploadUserImage(image: UIImage, imageData: Data){
+//        vc?.userImageThumbnailView?.changeUserImage(image: image)
+//        fireStorage.upload(filePath: "avatar.jpeg", file: imageData)
+//    }
     
     func logOut(){
         fireAuth?.signOut(handler: {

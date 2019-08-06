@@ -14,7 +14,7 @@ class ProfileController: UIViewController {
     let width = UIScreen.main.bounds.width
     
     weak var coordinator: ProfileCoordinator?
-    var fireAuth: FireAuth?
+    var fireAuth: FireAuth!
     var userName:UILabel?
     var userEmail:UILabel?
     var logOutButton: UIButton?
@@ -22,6 +22,8 @@ class ProfileController: UIViewController {
     var eliminateAcountButton:UIButton?
     var userImageThumbnailView:ThumbnailImageView?
     var imagePicker: ImagePicker!
+    var fireStorage: FireStorage!
+    var realtimeDB: RealtimeDatabase!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,24 +48,13 @@ class ProfileController: UIViewController {
     
     func setupView() {
         view.backgroundColor = .white
-
+        self.fireStorage = FireStorage(delegate: self)
+        self.realtimeDB = RealtimeDatabase(delegate: self)
         logOutButton = UIButton().createDefaultButton("LogOut", .red, 12, #selector(buttonHandler))
         ressetPassButton = UIButton().createDefaultButton("Reset Password", .red, 12, #selector(buttonHandler))
-        userImageThumbnailView = ThumbnailImageView(image: UIImage(named: "avatar")!, delegate: self as! userImageDelegate)
+        userImageThumbnailView = ThumbnailImageView(image: UIImage(named: "avatar")!, delegate: self as userImageDelegate)
         eliminateAcountButton = UIButton().createBorderButton("Borrar Cuenta", .white, 12, #selector(buttonHandler), nil, .red)
         self.imagePicker = ImagePicker(presentationController: self, delegate: self)
-    }
-    
-    func configureLayout() {
-        view.addSubviews([userImageThumbnailView!, userName!, userEmail!, logOutButton!, ressetPassButton!, eliminateAcountButton!])
-        
-        let estimatedWidth = (height * 0.19) - width
-        view.autoAnchorsToTop(view: userImageThumbnailView!, topMargin: 50, horizontalPadding: estimatedWidth, heightPercentage: 0.19)
-        userName?.autoAnchorsXCenter(topView: userImageThumbnailView!, topMargin: 20, horizontalPadding: nil, heightPercentage: 0.05, widthPercentage: 0.7)
-        userEmail?.autoAnchorsXCenter(topView: userName!, topMargin: 5, horizontalPadding: nil, heightPercentage: 0.05, widthPercentage: 0.7)
-        logOutButton!.autoAnchorsToBottom(bottomMargin: 30, horizontalPadding: 50, heightPercentage: 0.065)
-        ressetPassButton?.autoAnchorsXCenter(bottomView: logOutButton!, bottomMargin: 12, horizontalPadding: nil, heightPercentage: 0.065, widthPercentage: 0.4)
-        eliminateAcountButton?.autoAnchorsXCenter(bottomView: ressetPassButton!, bottomMargin: 12, horizontalPadding: nil, heightPercentage: 0.065, widthPercentage: 0.4)
     }
     
     @objc func buttonHandler(_ sender: UIButton){
@@ -86,6 +77,28 @@ class ProfileController: UIViewController {
          print(self.userImageThumbnailView!.frame.size)
     }
     
+    func uploadUserImage(image: UIImage, imageData: Data) {
+        self.userImageThumbnailView?.changeUserImage(image: image)
+        let date = Date().timeIntervalSince1970.rounded()
+        guard let timestamp = Int(exactly: date) else { return }
+//        fireStorage.deleteFile(withFilePath: "avatar/")
+        fireStorage.upload(filePath: "avatar/avatar\(timestamp).jpeg", file: imageData, contentType: .image)
+    }
+    
+}
+
+extension ProfileController {
+    func configureLayout() {
+        view.addSubviews([userImageThumbnailView!, userName!, userEmail!, logOutButton!, ressetPassButton!, eliminateAcountButton!])
+        
+        let estimatedWidth = (height * 0.19) - width
+        view.autoAnchorsToTop(view: userImageThumbnailView!, topMargin: 50, horizontalPadding: estimatedWidth, heightPercentage: 0.19)
+        userName?.autoAnchorsXCenter(topView: userImageThumbnailView!, topMargin: 20, horizontalPadding: nil, heightPercentage: 0.05, widthPercentage: 0.7)
+        userEmail?.autoAnchorsXCenter(topView: userName!, topMargin: 5, horizontalPadding: nil, heightPercentage: 0.05, widthPercentage: 0.7)
+        logOutButton!.autoAnchorsToBottom(bottomMargin: 30, horizontalPadding: 50, heightPercentage: 0.065)
+        ressetPassButton?.autoAnchorsXCenter(bottomView: logOutButton!, bottomMargin: 12, horizontalPadding: nil, heightPercentage: 0.065, widthPercentage: 0.4)
+        eliminateAcountButton?.autoAnchorsXCenter(bottomView: ressetPassButton!, bottomMargin: 12, horizontalPadding: nil, heightPercentage: 0.065, widthPercentage: 0.4)
+    }
 }
 
 extension ProfileController: ImagePickerDelegate, userImageDelegate {
@@ -96,6 +109,34 @@ extension ProfileController: ImagePickerDelegate, userImageDelegate {
     func didSelect(image: UIImage?) {
         guard let image = image,
             let imageData = image.jpegData(compressionQuality: 0.8) else { return }
-        coordinator?.uploadUserImage(image: image, imageData: imageData)
+        uploadUserImage(image: image, imageData: imageData)
     }
+}
+
+extension ProfileController: FireStorageDelegate {
+    func onError(_ error: String) {
+        self.createAlertDesctructive("Error", error, .alert, "Entendido")
+    }
+    
+    func onFileUploaded(_ filePath: String) {
+        do {
+            try realtimeDB.updateUserImage(withUerImagePath: filePath)
+        } catch {
+            print("Error while trying to update the user's avatar filePath in the DB, error :", error.localizedDescription)
+        }
+    }
+    
+}
+
+extension ProfileController: realtimeDelegate {
+    func onUserInfoFetched(_ username: String, _ useremail: String, _ userimageURL: String) {
+        self.userImageThumbnailView?.userImage?.downloadImageFromFireStorage(imageURL: userimageURL)
+    }
+    
+    func onSuccess() { }
+    
+    func onDBError(_ error: String) {
+        self.createAlertDesctructive("Error", error, .alert, "Entendido")
+    }
+    
 }

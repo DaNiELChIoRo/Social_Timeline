@@ -91,10 +91,10 @@ class addPostView: UIViewController {
                     content != placeholder else { return }
                 let timestamp = Date().timeIntervalSince1970
                 if let image = multimediaView?.image {
-                    appendPostToDataBase(timestamp: timestamp, withContent: content, hasMultimedia: image)
+                    appendPostToDataBase(timestamp: timestamp, withContent: content, hasMultimedia: image, withContentType: .image)
                     return
                 }
-                appendPostToDataBase(timestamp: timestamp, withContent: content, hasMultimedia: nil)
+                appendPostToDataBase(timestamp: timestamp, withContent: content, hasMultimedia: nil, withContentType: nil)
             case postMultimedia:
                 print("addMultimedia Button press!")                
                 self.imagePicker.present()
@@ -103,12 +103,13 @@ class addPostView: UIViewController {
         }
     }
     
-    func appendPostToDataBase(timestamp: Double, withContent content: String, hasMultimedia multimedia: UIImage?) {
+    func appendPostToDataBase(timestamp: Double, withContent content: String, hasMultimedia multimedia: UIImage?, withContentType contentType: contentType?) {
         do {
             if let multimedia = multimedia {
                 self.timestamp = timestamp; self.content = content
-                guard let multimediaData =  multimedia.jpegData(compressionQuality: 0.8) else { return }
-                fireStorage.upload(filePath: "userposts/\(timestamp).jpeg", file: multimediaData)
+                guard let multimediaData =  multimedia.jpegData(compressionQuality: 0.8),
+                    let contentType = contentType else { return }
+                fireStorage.upload(filePath: "userposts/\(timestamp).jpeg", file: multimediaData, contentType: contentType)
                 coordinator?.backToPostsView()
                 return
             }
