@@ -42,7 +42,7 @@ class TabBarCoordinator: NSObject, Coordinator {
     }
     
     func logOutUser() {
-        parentCoordinator?.logOutUser()
+        parentCoordinator?.sendToLogIn()
         parentCoordinator?.childDidFinish(self)
     }
     

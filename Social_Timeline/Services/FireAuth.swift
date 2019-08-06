@@ -11,10 +11,18 @@ import Firebase
 
 protocol userDelegate {
     func onError(error: String)
-    func createUser(user: Usuario)
-    func logInUser(user: Usuario)
+    func onUserCreated(user: Usuario)
+    func onUserLogIn(user: Usuario)
     func elimateUser()
     func ressetPass()
+}
+
+extension userDelegate {
+    func onUserLogIn(user: Usuario) {}
+    func onUserCreated(user: Usuario) {}
+    func eliminateUser() {}
+    func elimateUser() {}
+    func ressetPass() {}
 }
 
 enum AuthError: Error {
@@ -65,7 +73,7 @@ class FireAuth {
                 return
             }
             let usuario = Usuario(uid: user.uid, username: username, email: user.email)
-            self.userDelegate.createUser(user: usuario)
+            self.userDelegate.onUserCreated(user: usuario)
         }
     }
     
@@ -79,7 +87,7 @@ class FireAuth {
                 return
             }
             let usuario = Usuario(uid: user.uid, username: user.email)
-            self.userDelegate.logInUser(user: usuario)
+            self.userDelegate.onUserLogIn(user: usuario)
         }
     }
     

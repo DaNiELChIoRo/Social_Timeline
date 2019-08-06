@@ -10,17 +10,34 @@ import UIKit
 
 class RegisterController: UIViewController {
     
-    weak var coordinator: MainCoordinator?    
+    weak var coordinator: AuthCoordinator?    
     var registerTitle: UILabel?
     var userNameInput: UITextField?
     var emailInput: UITextField?
     var passwordInput: UITextField?
     var registerButton: UIButton?
+    var realtimeDB: RealtimeDatabase!
+    var fireAuth: FireAuth!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureBounds()
         setupView()
         configureLayout()
+    }
+    
+    init(coordinator: AuthCoordinator) {
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configureBounds() {
+        self.realtimeDB = RealtimeDatabase(delegate: self)
+        self.fireAuth = FireAuth(userDelegate: self)
     }
     
     func setupView() {
@@ -52,7 +69,28 @@ class RegisterController: UIViewController {
                 createAlertDesctructive("Error", "algunos de los campos requeridos no han sido rellenados, favor de revisar", .alert, "Entendido")
                 return
         }
-        coordinator?.registerUser(username, email, password)
+        fireAuth.registerUser(username: username, email: email, password: password)
+    }
+    
+}
+
+extension RegisterController: realtimeDelegate {
+    func onDBError(_ error: String) {
+        self.createAlertDesctructive("Error", error, .alert, "Entendido")
+    }
+    
+    func onSuccess() {
+        coordinator?.goToHomeView()
+    }
+}
+
+extension RegisterController: userDelegate {
+    func onError(error: String) {
+        self.createAlertDesctructive("Error", "Error al intentar registrar el usuario, error message: "+error, .alert, "Entendido")
+    }
+    
+    func onUserCreated(user: Usuario) {
+        realtimeDB.writeUser(user: user)
     }
     
 }

@@ -40,6 +40,7 @@ class ProfileCoordinator: Coordinator {
     func logOut(){
         fireAuth?.signOut(handler: {
             parentCoordinator?.logOutUser()
+            parentCoordinator?.childDidFinish()
         })
     }
     
@@ -65,21 +66,13 @@ extension ProfileCoordinator: FireStorageDelegate {
 
 //MARK:- userDelegate
 extension ProfileCoordinator: userDelegate {
-    func ressetPass() { }
-    
     func onError(error: String) {
         navigationController.createAlertDesctructive("Error", error, .alert, "Arrggggg.... !!")
     }
     
-    func createUser(user: Usuario) { }
-    
-    func logInUser(user: Usuario) { }
-    
     func elimateUser() {
          parentCoordinator?.logOutUser()
     }
-    
-    func createUser() { }
 }
 
 extension ProfileCoordinator: realtimeDelegate {
@@ -89,7 +82,6 @@ extension ProfileCoordinator: realtimeDelegate {
         navigationController.tabBarItem =  UITabBarItem(tabBarSystemItem: .contacts, tag: 0)
         vc?.coordinator = self
         navigationController.viewControllers = [vc!]
-//        vc?.userImageThumbnailView?.userImage?.downloadImageFromFireStorage(imageURL: userimageURL)
     }
     
     func onSuccess() { }

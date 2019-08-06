@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class ViewController: UITabBarController {
     
@@ -15,22 +16,40 @@ class ViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        view.backgroundColor = .white
+    }
+    
+    init(coordinator: MainCoordinator) {
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        coordinator?.tabBarCoordinator()
-        if let views = coordinator?.childCoordinators[0].childCoordinators {
-            if views.count > 0 {
-                var vis:[UIViewController] = [UIViewController]()
-                views.forEach {  vis.append($0.navigationController as UIViewController) }
-                viewControllers = vis
+        decideViewFlow()
+    }
+
+    func decideViewFlow() {        
+        if Firebase.Auth.auth().currentUser != nil {
+            coordinator?.tabBarCoordinator()
+            if let views = coordinator?.childCoordinators[0].childCoordinators {
+                if views.count > 0 {
+                    var vis:[UIViewController] = [UIViewController]()
+                    views.forEach {  vis.append($0.navigationController as UIViewController) }
+                    viewControllers = vis
+                } else {
+                    print("the main coordinator has no childs!")
+                    return
+                }
             } else {
-                print("the main coordinator has no childs!")
-                return
+                print("Seems there are no views to display??")
             }
         } else {
-            print("Seems there are no views to display??")
+            coordinator.sendToLogIn()
         }
-    } 
-
+    }
+    
 }
