@@ -10,19 +10,19 @@ import Firebase
 
 
 protocol userDelegate {
-    func onError(error: String)
+    func onAuthError(error: String)
     func onUserCreated(user: Usuario)
     func onUserLogIn(user: Usuario)
-    func elimateUser()
-    func ressetPass()
+    func onUserEliminated()
+    func onPassResset()
 }
 
 extension userDelegate {
     func onUserLogIn(user: Usuario) {}
     func onUserCreated(user: Usuario) {}
     func eliminateUser() {}
-    func elimateUser() {}
-    func ressetPass() {}
+    func onUserEliminated() {}
+    func onPassResset() {}
 }
 
 enum AuthError: Error {
@@ -68,7 +68,7 @@ class FireAuth {
             guard let user = result?.user else {
                 if let error = error {
                     print("Somethign went wrong while trying to create new user, error: \(error)")
-                    self.userDelegate.onError(error: "Algo ha ocurrido al intentar crear el usuario, error code: " + error.localizedDescription)
+                    self.userDelegate.onAuthError(error: "Algo ha ocurrido al intentar crear el usuario, error code: " + error.localizedDescription)
                 }
                 return
             }
@@ -82,7 +82,7 @@ class FireAuth {
             guard let user = result?.user else {
                 if let error = error {
                     print("Somethign went wrong while singin with the user, error: \(error)")
-                    self.userDelegate.onError(error: "Algo ha ocurrido al intentar entrar con el email \(email), error code: " + error.localizedDescription)
+                    self.userDelegate.onAuthError(error: "Algo ha ocurrido al intentar entrar con el email \(email), error code: " + error.localizedDescription)
                 }
                 return
             }
@@ -97,7 +97,7 @@ class FireAuth {
             handler()
         } catch let error as NSError {
             print("An error ocurred while trying to singOut, error: \(error)")
-            self.userDelegate?.onError(error: "Error al intentar deslogear el usuario, error code: " + error.localizedDescription)
+            self.userDelegate?.onAuthError(error: "Error al intentar deslogear el usuario, error code: " + error.localizedDescription)
         }
     }
     
@@ -106,15 +106,15 @@ class FireAuth {
         user.delete { (error) in
             if let error = error {
                 print("Error ocurred while trying to eliminate user account!, Error: ", error.localizedDescription)
-                self.userDelegate.onError(error: error.localizedDescription)
+                self.userDelegate.onAuthError(error: error.localizedDescription)
             } else {
                 do {
                     try self.realtimeDB.eraseUser()
-                    self.userDelegate.elimateUser()
+                    self.userDelegate.onUserEliminated()
                 } catch RealtimeDBError.emptyUserID {
-                    self.userDelegate.onError(error: "No se puede acceder al ID del usuario para su borrado en la DB")
+                    self.userDelegate.onAuthError(error: "No se puede acceder al ID del usuario para su borrado en la DB")
                 } catch {
-                    self.userDelegate.onError(error: "unkwon error!")
+                    self.userDelegate.onAuthError(error: "unkwon error!")
                 }
             }
         }
@@ -124,9 +124,9 @@ class FireAuth {
         if let useremail = _Auth.currentUser?.email {
             _Auth.sendPasswordReset(withEmail: useremail) { (error) in
                 if let error = error {
-                    self.userDelegate?.onError(error: "Algo ha ocurrido al intentar reestablecer la contraseña del usuario, error code: " + error.localizedDescription)
+                    self.userDelegate?.onAuthError(error: "Algo ha ocurrido al intentar reestablecer la contraseña del usuario, error code: " + error.localizedDescription)
                 }
-                self.userDelegate?.ressetPass()
+                self.userDelegate?.onPassResset()
             }
         } else {
             throw AuthError.userIsNotLogOn

@@ -99,9 +99,7 @@ extension LoginController: realtimeDelegate {
 }
 
 extension LoginController: userDelegate {
-    func ressetPass() { }
-    
-    func onError(error: String) {
+    func onAuthError(error: String) {
         self.createAlertDesctructive("Error!", error, .alert, "Entendido")
     }
     
@@ -112,6 +110,4 @@ extension LoginController: userDelegate {
     func onUserLogIn(user: Usuario) {
         coordinator?.goToHomeView()
     }
-    
-    func elimateUser() { }
 }

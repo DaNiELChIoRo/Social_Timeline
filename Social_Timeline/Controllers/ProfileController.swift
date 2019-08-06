@@ -29,34 +29,37 @@ class ProfileController: UIViewController {
         super.viewDidLoad()
     }
     
-    convenience init(username: String, useremail: String, userimage:String) {
+    override func viewDidLayoutSubviews() {
+        print(self.userImageThumbnailView!.frame.size)
+    }
+    
+    convenience init(coordinator: ProfileCoordinator) {
         self.init()
-        self.userName = UILabel().createDefaultLabel(username, 24, .bold, .black, .center)
-        self.userEmail = UILabel().createDefaultLabel(useremail, 24, .bold, .black, .center)
-        userImageThumbnailView = ThumbnailImageView(image: UIImage(named: "avatar")!, delegate: self)
-        if userimage != "" {
-            userImageThumbnailView?.userImage?.downloadImageFromFireStorage(imageURL: userimage, imageName: username + ".jpeg")
-        }        
-        self.title = username        
+        self.coordinator = coordinator
+        configureBounds()
+        do {
+            try realtimeDB?.fetchUserInfo()
+        } catch {
+            print("Error while trying to fetch user info!, error message: \(Error.self)")
+        }
         setupView()
         configureLayout()
     }
     
-    func receiveUserData(username: String, useremail: String) {
-        let font = UIFont.boldSystemFont(ofSize: 24)
-        let attributes = [NSAttributedString.Key.font: font]
-        let emailAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 20, weight: .regular)]
-        userName!.attributedText = NSAttributedString(string: username, attributes: attributes)
-        userEmail!.attributedText = NSAttributedString(string: useremail, attributes: emailAttributes)
+    func configureBounds() {
+        self.fireAuth = FireAuth(userDelegate: self)
+        self.fireStorage = FireStorage(delegate: self)
+        self.realtimeDB = RealtimeDatabase(delegate: self)
     }
     
     func setupView() {
         view.backgroundColor = .white
-        self.fireStorage = FireStorage(delegate: self)
-        self.realtimeDB = RealtimeDatabase(delegate: self)
         logOutButton = UIButton().createDefaultButton("LogOut", .red, 12, #selector(buttonHandler))
         ressetPassButton = UIButton().createDefaultButton("Reset Password", .red, 12, #selector(buttonHandler))
         eliminateAcountButton = UIButton().createBorderButton("Borrar Cuenta", .white, 12, #selector(buttonHandler), nil, .red)
+        userName = UILabel().createDefaultLabel("username", 24, .bold, .black, .center)
+        userEmail = UILabel().createDefaultLabel("useremail", 24, .bold, .black, .center)
+        userImageThumbnailView = ThumbnailImageView(image: UIImage(named: "avatar")!, delegate: self)
         self.imagePicker = ImagePicker(presentationController: self, delegate: self)
     }
     
@@ -64,33 +67,55 @@ class ProfileController: UIViewController {
         switch sender {
         case eliminateAcountButton:
             print("elminateAccountButtonHandler")
-            coordinator?.eliminateAccount()
+            eliminateAccount()
         case ressetPassButton:
             print("ressetPasswordButtonHandler")
-            coordinator?.ressetUserPassword()
+            ressetPassword()
         case logOutButton:
             print("logOutButtonHandler")
-            coordinator?.logOut()
+            logOutUser()
         default:
             return
         }
     }
     
-    override func viewDidLayoutSubviews() {
-         print(self.userImageThumbnailView!.frame.size)
+    func logOutUser(){
+        fireAuth?.signOut(handler: {
+            coordinator?.logOut()
+        })
+    }
+    
+    func eliminateAccount() {
+        fireAuth?.eliminateAccount()
+    }
+    
+    func ressetPassword() {
+        do {
+            try fireAuth?.resetPassword()
+        } catch {
+            self.createAlertDesctructive("Error", "\(Error.self)", .alert, "Entendido")
+        }
     }
     
     func uploadUserImage(image: UIImage, imageData: Data) {
         self.userImageThumbnailView?.changeUserImage(image: image)
         let date = Date().timeIntervalSince1970.rounded()
         guard let timestamp = Int(exactly: date) else { return }
-//        fireStorage.deleteFile(withFilePath: "avatar/")
         fireStorage.upload(filePath: "avatar/avatar\(timestamp).jpeg", file: imageData, contentType: .image)
     }
     
 }
 
+//MARK:- LAYOUT FUNCTIONS
 extension ProfileController {
+    func onUserDataRevived(username: String, useremail: String) {
+        let font = UIFont.boldSystemFont(ofSize: 24)
+        let attributes = [NSAttributedString.Key.font: font]
+        let emailAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 20, weight: .regular)]
+        userName!.attributedText = NSAttributedString(string: username, attributes: attributes)
+        userEmail!.attributedText = NSAttributedString(string: useremail, attributes: emailAttributes)
+    }
+    
     func configureLayout() {
         view.addSubviews([userImageThumbnailView!, userName!, userEmail!, logOutButton!, ressetPassButton!, eliminateAcountButton!])
         
@@ -128,15 +153,40 @@ extension ProfileController: FireStorageDelegate {
             print("Error while trying to update the user's avatar filePath in the DB, error :", error.localizedDescription)
         }
     }
+}
+
+extension ProfileController: userDelegate {
     
+    func onAuthError(error: String) {
+        self.createAlertDesctructive("Error", "Ha ocurrido un error, error message: "+error, .alert, "Ya que?")
+    }
+    
+    func onPassResset() {
+        self.createAlertDesctructive("Mensaje", "Contraseña restablecida satisfactoria mente. Por favor siga las instrucciones que se le han enviado a su correo electronico", .alert, "Entendido")
+    }
+    
+    func onUserEliminated() {
+        do {
+           try realtimeDB.eraseUser()
+        } catch {
+            print("Error al intentar borrar el usuario de la base de datos!")
+        }
+        coordinator?.eliminateAccount()
+    }
 }
 
 extension ProfileController: realtimeDelegate {
     func onUserInfoFetched(_ username: String, _ useremail: String, _ userimageURL: String) {
+        self.title = username
         self.userImageThumbnailView?.userImage?.downloadImageFromFireStorage(imageURL: userimageURL, imageName: username + ".jpeg")
+        onUserDataRevived(username: username, useremail: useremail)
     }
     
     func onSuccess() { }
+    
+    func onUserDelete() {
+        coordinator?.logOut()
+    }
     
     func onDBError(_ error: String) {
         self.createAlertDesctructive("Error", error, .alert, "Entendido")

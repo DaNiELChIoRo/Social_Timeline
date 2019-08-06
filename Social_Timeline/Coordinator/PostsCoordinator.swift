@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Foundation
 
 class PostsCoordinator: NSObject, Coordinator {
     
@@ -31,7 +30,7 @@ class PostsCoordinator: NSObject, Coordinator {
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonHandler))
         postTable.navigationItem.rightBarButtonItem = addButton        
         let myTabBarItem = UITabBarItem(title: "Posts", image: UIImage(named: "posts")!, tag: 001)
-        navigationController.tabBarItem = myTabBarItem// UITabBarItem(tabBarSystemItem: .contacts, tag: 1)
+        navigationController.tabBarItem = myTabBarItem
         navigationController.viewControllers = [postTable]
         navigationController.navigationBar.prefersLargeTitles = true
     }

@@ -85,7 +85,7 @@ extension RegisterController: realtimeDelegate {
 }
 
 extension RegisterController: userDelegate {
-    func onError(error: String) {
+    func onAuthError(error: String) {
         self.createAlertDesctructive("Error", "Error al intentar registrar el usuario, error message: "+error, .alert, "Entendido")
     }
     

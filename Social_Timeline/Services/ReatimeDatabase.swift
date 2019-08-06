@@ -11,6 +11,7 @@ import Firebase
 
 protocol realtimeDelegate {
     func onSuccess()
+    func onUserDelete()
     func onDBError(_ error: String)
     func onPostFetched(_ username: String, _ userimage:String, _ content: String, _ timestamp: Double, _ multimedia: Any?)
     func onUserInfoFetched(_ username: String, _ useremail: String, _ userimage:String)
@@ -21,6 +22,7 @@ extension realtimeDelegate {
     func onUserInfoFetched(_ username: String, _ useremail: String, _ userimage:String) {}
     func onPostFetched(_ username: String, _ userimage:String, _ content: String, _ timestamp: Double, _ multimedia: Any?) {}
     func onUserInfoChanged(_ username:String, _ userimage: String) {}
+    func onUserDelete() {}
 }
 
 enum RealtimeDBError: Error {
@@ -63,7 +65,13 @@ class RealtimeDatabase {
     
     func eraseUser() throws {
         if let userid = userid {
-            ref.child("users").child(userid).removeValue()
+            ref.child("users").child(userid).removeValue { (error, data) in
+                if let error = error {
+                    self.delegate?.onDBError(error.localizedDescription)
+                } else {
+                  self.delegate?.onUserDelete()
+                }
+            }
         } else {
             throw RealtimeDBError.emptyUserID
         }
