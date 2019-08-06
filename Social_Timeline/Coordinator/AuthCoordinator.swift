@@ -15,8 +15,7 @@ class AuthCoordinator:Coordinator {
     var parentCoordinator: MainCoordinator?
     
     init(navigationController: UINavigationController) {
-        self.navigationController = navigationController
-        start()
+        self.navigationController = navigationController        
     }
     
     func start() {
@@ -25,8 +24,7 @@ class AuthCoordinator:Coordinator {
     }
     
     func goToHomeView() {        
-        parentCoordinator?.tabBarCoordinator()
-        navigationController.popViewController(animated: false)
+        parentCoordinator?.tabBarCoordinator()        
         navigationController.popViewController(animated: true)
         parentCoordinator?.childDidFinish(self)
     }
