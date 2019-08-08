@@ -91,10 +91,10 @@ class addPostView: UIViewController {
                     content != placeholder else { return }
                 let timestamp = Date().timeIntervalSince1970
                 if let image = multimediaView?.image {
-                    appendPostToDataBase(timestamp: timestamp, withContent: content, hasMultimedia: image, withContentType: .image)
+                    appendPostToDataBase(timestamp: timestamp, withContent: content, withMultimediaContent: image, withContentType: .image)
                     return
                 }
-                appendPostToDataBase(timestamp: timestamp, withContent: content, hasMultimedia: nil, withContentType: nil)
+                appendPostToDataBase(timestamp: timestamp, withContent: content, withMultimediaContent: nil, withContentType: nil)
             case postMultimedia:
                 print("addMultimedia Button press!")                
                 self.imagePicker.present()
@@ -103,7 +103,7 @@ class addPostView: UIViewController {
         }
     }
     
-    func appendPostToDataBase(timestamp: Double, withContent content: String, hasMultimedia multimedia: UIImage?, withContentType contentType: contentType?) {
+    func appendPostToDataBase(timestamp: Double, withContent content: String, withMultimediaContent multimedia: UIImage?, withContentType contentType: contentType?) {
         do {
             if let multimedia = multimedia {
                 self.timestamp = timestamp; self.content = content

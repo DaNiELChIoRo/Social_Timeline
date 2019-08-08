@@ -124,7 +124,7 @@ class RealtimeDatabase {
         }
         let orderQuery = (ref.child("users").child(authorID!).queryOrderedByKey())
         orderQuery
-            .observe( .value, with: { (snapshot) in
+            .observeSingleEvent(of: .value, with: { (snapshot) in
             guard let value = snapshot.value as? NSDictionary else { return }
             guard let username = value["username"] as? String,
                 let userimage = value["userimage"] as? String else { return }
@@ -160,6 +160,7 @@ class RealtimeDatabase {
     
     func fetchMorePosts(noPosts: UInt) {
         let orderedChildren = (ref.child("post").queryOrdered(byChild: "timestamp").queryLimited(toLast: noPosts))
+        orderedChildren.removeAllObservers()
         orderedChildren
             .observe(.childAdded, with: { (snaptshot) in
                 guard let value = snaptshot.value as? NSDictionary else { return }
